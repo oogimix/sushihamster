@@ -1,4 +1,4 @@
-/* style.css - Y2K sidebar & 最終完全版 */
+/* style.css - 緑系レトロチープサイドバー差し替え版 */
 
 body {
   margin: 0;
@@ -49,104 +49,50 @@ a:hover {
   background-color: #eaffea;
 }
 
-/* --- Y2K風スケルトンサイドバー --- */
+/* --- 緑系レトロチープサイドバー --- */
 .sidebar {
   width: 180px;
-  background: 
-    linear-gradient(145deg,
-      rgba(148, 95, 255, 0.15),
-      rgba(190, 140, 255, 0.25)
-    );
-  border: 2.5px solid rgba(180, 120, 255, 0.7);
-  border-radius: 24px;
-  box-shadow:
-    0 0 8px rgba(180, 120, 255, 0.9),
-    0 10px 25px rgba(150, 80, 255, 0.3),
-    inset 0 0 15px rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  padding: 18px 20px;
-  color: rgba(255, 255, 255, 0.85);
-  font-family: 'Rounded Mplus 1c', 'ＭＳ Ｐゴシック', Osaka, sans-serif;
-  font-size: 19px;
-  line-height: 2.3;
+  background-color: rgba(200, 240, 210, 0.7); /* 薄いミントグリーン */
+  border: 3px dotted #7fc18a; /* 緑系のドット枠線 */
+  border-radius: 12px;
+  box-shadow: none;
+  padding: 15px 18px;
+  color: #3a5a33; /* 濃い緑めの文字色 */
+  font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
+  font-size: 18px;
+  line-height: 2.2;
   user-select: none;
-  transition: box-shadow 0.4s ease;
-  position: relative;
-}
-
-/* 輪郭の蛍光ラインをアニメーションで光らせる */
-.sidebar::before {
-  content: '';
-  pointer-events: none;
-  position: absolute;
-  top: -6px; bottom: -6px;
-  left: -6px; right: -6px;
-  border-radius: 28px;
-  border: 2px solid rgba(190, 140, 255, 0.8);
-  filter: drop-shadow(0 0 8px #b48cff);
-  animation: neonPulse 3.5s infinite alternate;
-  opacity: 0.7;
-  z-index: -1;
-}
-
-@keyframes neonPulse {
-  from {
-    filter: drop-shadow(0 0 8px #b48cff);
-    opacity: 0.7;
-  }
-  to {
-    filter: drop-shadow(0 0 18px #d1bcff);
-    opacity: 1;
-  }
-}
-
-.sidebar:hover {
-  box-shadow:
-    0 0 14px rgba(190, 130, 255, 1),
-    0 16px 30px rgba(160, 80, 255, 0.6),
-    inset 0 0 25px rgba(255, 255, 255, 0.75);
 }
 
 .menu-links {
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow:
-    0 0 3px rgba(255, 255, 255, 0.9),
-    0 2px 5px rgba(80, 20, 150, 0.4);
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  color: #416d3a;
+  text-shadow: none;
+  font-weight: normal;
 }
 
 .menu-links b {
-  color: rgba(235, 200, 255, 0.9);
-  text-shadow: 0 0 10px rgba(230, 190, 255, 0.8);
+  color: #5a7f50;
+  font-weight: bold;
+  text-shadow: none;
 }
 
 .menu-links a {
-  color: rgba(210, 190, 255, 0.85);
+  color: #2f4d24;
   text-decoration: underline;
-  text-shadow: 0 0 4px rgba(200, 180, 255, 0.7);
-  transition: color 0.25s ease, text-shadow 0.25s ease;
+  transition: color 0.2s ease;
 }
 
 .menu-links a:hover {
-  color: rgba(255, 230, 255, 1);
-  text-shadow:
-    0 0 10px rgba(255, 210, 255, 1),
-    0 0 20px rgba(255, 170, 255, 0.8);
-  text-decoration: none;
+  color: #609f51;
+  text-decoration: underline;
   cursor: pointer;
 }
 
 .menu-links a .icon {
-  filter: brightness(0.85) opacity(0.75);
+  filter: none;
   margin-right: 6px;
   vertical-align: middle;
-  transition: filter 0.25s ease;
-}
-
-.menu-links a:hover .icon {
-  filter: brightness(1.1) opacity(1);
+  transition: none;
 }
 
 .main {
