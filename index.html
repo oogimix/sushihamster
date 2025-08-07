@@ -14,12 +14,6 @@
       cursor: url('asset/cursor/pastelpink.cur'), auto;
     }
 
-    h1 {
-      text-align: center;
-      font-size: 28px;
-      margin: 20px 0;
-    }
-
     a {
       color: #0000cc;
       text-decoration: underline;
@@ -44,7 +38,15 @@
 
     .main {
       flex: 1;
-      padding: 20px;
+      padding: 0 0 0 10px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 1400px;
+      border: none;
+      background-color: #ffffffcc;
+      box-shadow: 0 0 8px #99ccff;
     }
 
     .mobile-nav {
@@ -55,23 +57,23 @@
       .container {
         flex-direction: column;
       }
-
       .sidebar {
         width: 100%;
       }
-
       .mobile-nav {
         display: block;
         background-color: #ccffcc;
         text-align: center;
         padding: 10px;
       }
-
       .mobile-nav a {
         display: inline-block;
         margin: 0 10px;
         font-size: 20px;
         text-decoration: none;
+      }
+      iframe {
+        height: 1800px;
       }
     }
   </style>
@@ -80,114 +82,46 @@
 
   <!-- スマホ用ナビ -->
   <div class="mobile-nav">
-    <a href="index.html">🏠</a>
-    <a href="prof/sushiham_prof.html">🐹</a>
-    <a href="discography.html">🎵</a>
-    <a href="gallery.html">🖼️</a>
-    <a href="bbs.html">📬</a>
-    <a href="link.html">🔗</a>
+    <a href="home.html" target="mainframe">🏠</a>
+    <a href="sushiham_prof.html" target="mainframe">🐹</a>
+    <a href="discography.html" target="mainframe">🎵</a>
+    <a href="gallery.html" target="mainframe">🖼️</a>
+    <a href="bbs.html" target="mainframe">📬</a>
+    <a href="link.html" target="mainframe">🔗</a>
   </div>
 
   <!-- タイトル -->
-<div style="
-  font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
-  font-size: clamp(22px, 6vw, 40px);
-  text-align: center;
-  color: #9933cc;
-  margin: 30px auto 20px;
-  text-shadow:
-    0 0 5px #ffccff,
-    1px 1px 2px #cc99ff,
-    -1px -1px 2px #ccffff;
-  letter-spacing: 1px;">
-  ★☆ sushihamsterのホームページ ☆★
-</div>
+  <div style="
+    font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
+    font-size: clamp(22px, 6vw, 40px);
+    text-align: center;
+    color: #9933cc;
+    margin: 30px auto 20px;
+    text-shadow:
+      0 0 5px #ffccff,
+      1px 1px 2px #cc99ff,
+      -1px -1px 2px #ccffff;
+    letter-spacing: 1px;">
+    ★☆ sushihamsterのホームページ ☆★
+  </div>
 
   <div class="container">
-
     <!-- サイドメニュー -->
     <div class="sidebar">
       <b>▼ メニュー</b><br />
-      ┣ <a href="index.html">トップ</a><br />
-      ┣ <a href="sushiham_prof.html">プロフィール</a><br />
-      ┣ <a href="discography.html">音源</a><br />
-      ┣ <a href="gallery.html">ギャラリー</a><br />
-      ┣ <a href="bbs.html">BBS集</a><br />
-      ┗ <a href="link.html">リンク集</a><br />
-	<br>
-	<table border="0" cellspacing="0" cellpadding="0"><tr><td align="center"><a href="http://www.rays-counter.com/"><img src="http://www.rays-counter.com/d1300_f6_072/68944eb1b9094/" alt="アクセスカウンター""border="0"></a></td></tr><tr><td align="center"><img src="http://www.rays-counter.com/images/counter_01.gif" border="0"><img src="http://www.rays-counter.com/images/counter_02.gif" border="0"><img src="http://www.rays-counter.com/images/counter_03.gif" border="0"><img src="http://www.rays-counter.com/images/counter_04.gif" border="0" ><img src="http://www.rays-counter.com/images/counter_05.gif" border="0"></td></tr></table><!--ここまで-->
+      ┣ <a href="home.html" target="mainframe">トップ</a><br />
+      ┣ <a href="sushiham_prof.html" target="mainframe">プロフィール</a><br />
+      ┣ <a href="discography.html" target="mainframe">音源</a><br />
+      ┣ <a href="gallery.html" target="mainframe">ギャラリー</a><br />
+      ┣ <a href="bbs.html" target="mainframe">BBS集</a><br />
+      ┗ <a href="link.html" target="mainframe">リンク集</a><br />
+      <br>
+      <!--タグはここから--><table border="0" cellspacing="0" cellpadding="0"><tr><td align="center"><a href="http://www.rays-counter.com/"><img src="http://www.rays-counter.com/d1300_f6_072/68944eb1b9094/" alt="アクセスカウンター" border="0"></a></td></tr><tr><td align="center"><img src="http://www.rays-counter.com/images/counter_01.gif" border="0"><img src="http://www.rays-counter.com/images/counter_02.gif" border="0"><img src="http://www.rays-counter.com/images/counter_03.gif" border="0"><img src="http://www.rays-counter.com/images/counter_04.gif" border="0"><img src="http://www.rays-counter.com/images/counter_05.gif" border="0"></td></tr></table><!--ここまで-->
     </div>
 
-    <!-- メイン -->
+    <!-- iframeメイン表示部 -->
     <div class="main">
-
-      <!-- トップ画像 -->
-      <div style="
-        border: 4px ridge #ccf;
-        padding: 10px;
-        background: linear-gradient(to bottom right, #eaffff, #ccf);
-        max-width: 640px;
-        margin: auto;
-        box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
-        ">
-        <img src="asset/img/image.png" style="width: 100%; height: auto;" alt="スシハム画像">
-      </div>
-
-      <!-- キャッチコピー -->
-      <div style="
-        font-family: 'MS UI Gothic', Osaka, sans-serif;
-        font-size: 18px;
-        padding: 15px;
-        background: linear-gradient(to bottom right, #f8fcff, #d8ecff);
-        border: 2px solid #99ccff;
-        border-radius: 10px;
-        box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
-        max-width: 650px;
-        margin: 30px auto;
-        color: #003366;
-        line-height: 1.6;
-      ">
-        <span style="font-size: 20px; font-weight: bold; text-shadow: 1px 1px 2px #66f, 0 0 8px #99f;">
-          💿 スシハムスター（sushihamster）
-        </span><br>
-        世界初の「<b>寿司</b>」と「<b>ハムスター</b>」が融合した音楽ユニット。<br>
-        ピンクの回転寿司ターンテーブルにビートをのせて、<b>高次元まで響かせるぜ。</b>
-        <marquee behavior="scroll" direction="left" scrollamount="6" style="color: #ff00cc; font-weight: bold; font-size: 16px; margin-top: 10px; text-shadow: 0 0 6px #f0f;">
-          🌀 LET'S SUSHI! 🐹💿🌈 TURN IT UP!! 🌸🍣🐹💫
-        </marquee>
-      </div>
-
-      <!-- 最新情報 -->
-      <hr />
-      <h2>★ 最新情報 ★</h2>
-      <div style="
-        max-height: 180px;
-        overflow-y: auto;
-        border: 2px inset #99ccff;
-        background-color: #f6fcff;
-        padding: 10px;
-        margin-bottom: 20px;
-        font-family: 'MS UI Gothic', Osaka, sans-serif;
-        line-height: 1.6;
-      ">
-        <ul style="margin: 0; padding-left: 20px;">
-          <li>「sushihamster」 オフィシャルホームページ開設 <span style="color: red;">New!</span></li>
-          <li>「<a href='https://youtu.be/dqTXIbdbpMU?si=pjWWV3yExXTOJgHR'>sushihamster DJmix</a>」 2025年6月25日公開 <span style="color: red;">New!</span></li>
-          <li>「<a href='https://www.instagram.com/sush1h4mst3r/'>sushihamster 公式Instagram</a>」 開設 <span style="color: red;">New!</span></li>
-        </ul>
-      </div>
-
-      <!-- お問い合わせ -->
-      <p>📩 イベント・メディア・コラボなどのお問い合わせは：<br />
-        <a href="mailto:sush1h4mst3r@gmail.com">sush1h4mst3r@gmail.com</a>
-      </p>
-
-      <!-- 注意事項 -->
-      <p style="color: red;"><b>
-        🚫 サイト内のすべての画像・文章の無断転載を禁止します。<br />
-        SNSでの偽アカウントにもご注意ください。
-      </b></p>
-
+      <iframe src="home.html" name="mainframe"></iframe>
     </div>
   </div>
 </body>
