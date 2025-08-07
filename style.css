@@ -49,20 +49,20 @@ a:hover {
   background-color: #eaffea;
 }
 
+/* --- Y2K風サイドバー --- */
 .sidebar {
-  position: static;  /* 固定解除 */
-  width: 220px;      /* 少し広め */
-  padding: 12px;
-  background: linear-gradient(to bottom, #f0fff0, #ddeeff);
-  border: 2px ridge #aaccee;
-  box-shadow: 0 0 8px rgba(153, 204, 255, 0.4);
-  border-radius: 10px;
+  width: 200px;
+  padding: 10px;
+  background: linear-gradient(to bottom, #e0ffe0, #ccf);
+  border: 4px ridge #99ccff;
+  box-shadow: 4px 4px 12px #99f;
+  border-radius: 8px;
   box-sizing: border-box;
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
-  min-height: auto;  /* 高さ自動 */
-}
-.container {
-  margin-left: 0; /* 余白も戻す */
+  background-image: url('asset/img/bg_stars.gif'); /* 任意：なければ削除 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 
