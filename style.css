@@ -58,6 +58,7 @@ a:hover {
     0 0 15px #cc99ff,
     0 0 30px #cc99ff;
   background-color: #f3e6ff;
+  background: linear-gradient(135deg, #e0f7ff, #ffdeff);
 }
 
 .menu-links {
