@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sushihamsterのホームページ</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <script>
     // ページ内リンクに反応して中身を切り替え
     function loadPage(page) {
@@ -24,23 +24,25 @@
 <body>
 
   <!-- スマホ用ナビ -->
-  <div class="mobile-nav">
+  <nav class="mobile-nav">
     <a href="#" onclick="loadPage('home.html')">🏠</a>
     <a href="#" onclick="loadPage('sushiham_prof.html')">🐹</a>
     <a href="#" onclick="loadPage('discography.html')">🎵</a>
     <a href="#" onclick="loadPage('gallery.html')">🎨</a>
     <a href="#" onclick="loadPage('bbs.html')">📬</a>
     <a href="#" onclick="loadPage('link.html')">📎</a>
-  </div>
+  </nav>
 
-  <!-- タイトル -->
-  <div class="title">
-    ☆☆ sushihamsterのホームページ ☆☆
-  </div>
+  <!-- タイトル（header構造） -->
+  <header>
+    <div class="title">
+      ☆☆ sushihamsterのホームページ ☆☆
+    </div>
+  </header>
 
   <div class="container">
     <!-- サイドメニュー -->
-    <div class="sidebar">
+    <aside class="sidebar">
       <div class="menu-links">
         <b>▼ メニュー</b><br />
         ┓ <a href="#" onclick="loadPage('home.html')">トップ</a><br />
@@ -51,12 +53,12 @@
         ┗ <a href="#" onclick="loadPage('link.html')">リンク集</a><br />
         <br />
       </div>
-    </div>
+    </aside>
 
     <!-- メイン表示部 -->
-    <div class="main" id="page-content">
+    <main class="main" id="page-content">
       <!-- JSで読み込み -->
-    </div>
+    </main>
   </div>
 
   <!-- カウンター（中央下） -->
