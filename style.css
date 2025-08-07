@@ -75,7 +75,7 @@ a:hover {
 
 .title {
   font-family: 'Impact', 'Arial Black', '公語 MS ピゴシック', sans-serif;
-  font-size: clamp(22px, 6vw, 40px);
+  font-size: clamp(16px, 6vw, 40px);  /* ← スマホでも自動調整 */
   text-align: center;
   color: #9933cc;
   margin: 30px auto 20px;
@@ -84,12 +84,21 @@ a:hover {
     1px 1px 2px #cc99ff,
     -1px -1px 2px #ccffff;
   letter-spacing: 1px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+
+  white-space: nowrap;       /* 折り返し防止 */
+  overflow: hidden;          /* 念のため */
+  text-overflow: clip;       /* 省略記号を出さない */
+  padding: 0 5vw;            /* スマホでの左右マージン確保 */
 }
 
 .counter {
   text-align: center;
   margin: 40px auto 20px;
+  width: 100%;
+}
+
+.counter script,
+.counter img {
+  display: inline-block;
+  margin: 0 auto;
 }
