@@ -6,29 +6,11 @@
   <title>プロフィール | sushihamster</title>
   <style>
     body {
-      background-color: #eaffea;
+      background-color: transparent;
       font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
       font-size: 16px;
+      color: #003366;
       margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: row;
-      max-width: 1100px;
-      margin: auto;
-      padding: 10px;
-    }
-
-    .sidebar {
-      width: 200px;
-      background-color: #ccffcc;
-      padding: 10px;
-    }
-
-    .main {
-      flex: 1;
       padding: 20px;
     }
 
@@ -70,86 +52,69 @@
     }
 
     .friends {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 30px;
+      text-align: center;
       margin-top: 40px;
     }
 
-    .friend-box {
-      text-align: center;
+    .friend-photo {
+      width: 90%;
+      max-width: 480px;
+      border: 4px ridge #cc99ff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #ccf;
+    }
+
+    .friend-links {
+      margin-top: 15px;
       font-size: 14px;
     }
 
-    .friend-box img {
-      width: 150px;
-      border: 3px ridge #99ccff;
-      border-radius: 12px;
+    .friend-links a {
+      display: inline-block;
+      margin: 0 8px;
+      text-decoration: none;
+      color: #cc00cc;
     }
 
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <h2>🌟 プロフィール 🌟</h2>
 
-    <!-- サイドバー -->
-    <div class="sidebar">
-      <b>▼ メニュー</b><br />
-      ┣ <a href="../index.html">トップ</a><br />
-      ┣ <a href="sushiham_prof.html">プロフィール</a><br />
-      ┣ <a href="../discography.html">音源</a><br />
-      ┣ <a href="../gallery.html">ギャラリー</a><br />
-      ┣ <a href="../bbs.html">BBS集</a><br />
-      ┗ <a href="../link.html">リンク集</a><br />
+  <div class="profile-box">
+    <img src="asset/img/sushihamster.png" class="char-img" alt="スシハムスター">
+    <div class="char-name">スシハムスター</div>
+    <div class="char-desc">
+      青いヘッドホンをつけたDJハムスター。<br>
+      未来のサウンドを寿司と共に届ける！<br>
+      「にぎりビートで世界をつなぐ！」が口癖。
     </div>
+  </div>
 
-    <!-- メインエリア -->
-    <div class="main">
-      <h2>🌟 プロフィール 🌟</h2>
+  <div class="profile-box">
+    <img src="asset/img/sushifairy.png" class="char-img" alt="スシフェアリー">
+    <div class="char-name">スシフェアリー</div>
+    <div class="char-desc">
+      シャリの妖精。頭にのったサーモンがチャームポイント。<br>
+      ダンスと回転で、フロアを魔法に包む。
+    </div>
+  </div>
 
-      <div class="profile-box">
-        <img src="../asset/img/sushihamster.png" class="char-img" alt="スシハムスター">
-        <div class="char-name">スシハムスター</div>
-        <div class="char-desc">
-          青いヘッドホンをつけたDJハムスター。未来のサウンドを寿司と共に届ける！<br>
-          「にぎりビートで世界をつなぐ！」が口癖。
-        </div>
-      </div>
-
-      <div class="profile-box">
-        <img src="../asset/img/sushifairy.png" class="char-img" alt="スシフェアリー">
-        <div class="char-name">スシフェアリー</div>
-        <div class="char-desc">
-          シャリの妖精。頭にのったサーモンがチャームポイント。<br>
-          ダンスと回転で、フロアを魔法に包む。
-        </div>
-      </div>
-
-      <div class="profile-box">
-        <div class="char-name">💿 中の人たち 💿</div>
-        <div class="friends">
-          <div class="friend-box">
-            <img src="../asset/img/oogimix.png" alt="oogimix">
-            <div>oogimix</div>
-            <div>Y2K魂を背負った構築系アーティスト。<br>HTMLと愛でフロアを染める。</div>
-          </div>
-          <div class="friend-box">
-            <img src="../asset/img/linopink.png" alt="linopink">
-            <div>Linopink</div>
-            <div>元バンドマン、現ピンクDJ。<br>スシハムの愛をマイクに込めて。</div>
-          </div>
-        </div>
-      </div>
+  <div class="profile-box friends">
+    <img src="asset/img/IMG_7997.jpg" class="friend-photo" alt="oogimixとLinopink">
+    <div class="char-name">oogimix ＆ Linopink</div>
+    <div class="char-desc">
+      スシハムスターを操るふたりの仲間。<br>
+      ピンクの宇宙で寿司と音楽を愛する同志たち。
+    </div>
+    <div class="friend-links">
+      <b>oogimix：</b>
+      <a href="https://x.com/oogimix" target="_blank">Twitter</a>
+      <a href="https://www.instagram.com/oogimix/" target="_blank">Instagram</a>
+      <br>
+      <b>Linopink：</b>
+      <a href="https://x.com/_llno_" target="_blank">Twitter</a>
+      <a href="https://www.instagram.com/___loveonly___/" target="_blank">Instagram</a>
     </div>
   </div>
 </body>
