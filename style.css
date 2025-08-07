@@ -50,8 +50,12 @@ a:hover {
 }
 
 .sidebar {
-  width: 260px; /* 幅を200px→260pxに拡大 */
-  min-height: 100vh; /* ビューポートの高さいっぱいに */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh; /* 画面全体の高さ */
+  overflow-y: auto; /* 必要に応じてスクロール */
   padding: 12px;
   background: linear-gradient(to bottom, #f0fff0, #ddeeff);
   border: 2px ridge #aaccee;
@@ -59,10 +63,6 @@ a:hover {
   border-radius: 10px;
   box-sizing: border-box;
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
-  position: fixed; /* 固定表示にしてスクロールしても残る */
-  top: 0;
-  left: 0;
-  overflow-y: auto; /* コンテンツが多くなってもスクロール可能 */
 }
 
 .menu-links {
