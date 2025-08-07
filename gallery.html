@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>sushihamster ギャラリー</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h2">🖼 ギャラリー 🖼</h2>
+  </header>
+
+  <main>
+
+    <!-- ギャラリーグリッド -->
+    <div class="gallery-grid" id="gallery">
+      <!-- 画像 -->
+      <div class="gallery-item" data-type="image" data-src="asset/gallery/image1_large.jpg">
+        <img src="asset/gallery/image1_large.jpg" alt="スシハム画像1" />
+      </div>
+      <div class="gallery-item" data-type="image" data-src="asset/gallery/image2_large.jpg">
+        <img src="asset/gallery/image2_large.jpg" alt="スシハム画像2" />
+      </div>
+
+      <!-- YouTube動画 -->
+      <div class="gallery-item" data-type="video" data-src="https://www.youtube.com/watch?v=gfs2Hi1BCKU">
+        <div class="video-thumb" style="background-image:url('https://img.youtube.com/vi/gfs2Hi1BCKU/maxresdefault.jpg');"></div>
+      </div>
+      <div class="gallery-item" data-type="video" data-src="https://www.youtube.com/embed/VIDEO_ID2">
+        <div class="video-thumb" style="background-image:url('https://img.youtube.com/vi/VIDEO_ID2/hqdefault.jpg');"></div>
+      </div>
+    </div>
+
+    <!-- モーダル -->
+    <div id="modal-overlay" role="dialog" aria-modal="true" tabindex="-1">
+      <div id="modal-content">
+        <span id="modal-close" aria-label="閉じる">&times;</span>
+        <!-- JSでここにimgまたはiframeが挿入される -->
+      </div>
+    </div>
+
+    <!-- Instagram埋め込み -->
+    <div id="instagram-feed">
+      <!-- Instagram公式埋め込み例 -->
+      <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/sush1h4mst3r/" data-instgrm-version="14"></blockquote>
+      <script async src="//www.instagram.com/embed.js"></script>
+    </div>
+
+  </main>
+
+  <script>
+    const gallery = document.getElementById('gallery');
+    const modal = document.getElementById('modal-overlay');
+    const modalContent = document.getElementById('modal-content');
+
+    gallery.addEventListener('click', e => {
+      let item = e.target.closest('.gallery-item');
+      if (!item) return;
+
+      const type = item.getAttribute('data-type');
+      const src = item.getAttribute('data-src');
+
+      if(type === 'image') {
+        modalContent.innerHTML = '<span id="modal-close" aria-label="閉じる">&times;</span><img src="' + src + '" alt="" />';
+      } else if(type === 'video') {
+        modalContent.innerHTML = '<span id="modal-close" aria-label="閉じる">&times;</span><iframe src="' + src + '" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>';
+      }
+      modal.style.display = 'flex';
+
+      modalContent.querySelector('#modal-close').addEventListener('click', () => {
+        modal.style.display = 'none';
+        modalContent.innerHTML = '';
+      });
+    });
+
+    modal.addEventListener('click', e => {
+      if(e.target === modal) {
+        modal.style.display = 'none';
+        modalContent.innerHTML = '';
+      }
+    });
+  </script>
+
+</body>
+</html>
