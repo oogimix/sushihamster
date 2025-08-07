@@ -1,19 +1,24 @@
-/* style.css - 緑系レトロチープサイドバー + スマホ余白調整 + サイドバー画面高さ対応 */
+/* style.css - 修正版 */
 
+/* 基本のhtml,body設定 */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
+/* body全体 */
 body {
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
   font-size: 16px;
   background-color: #eaffea;
   color: #003366;
   cursor: url('asset/cursor/pastelpink.cur'), auto;
+  position: relative; /* 固定要素用 */
+  min-height: 100vh;
 }
 
+/* リンク基本 */
 a {
   color: #0000cc;
   text-decoration: underline;
@@ -43,7 +48,7 @@ a:hover {
   scroll-behavior: smooth;
 }
 
-/* コンテナとサイドバー */
+/* コンテナ */
 .container {
   display: flex;
   flex-direction: row;
@@ -51,62 +56,28 @@ a:hover {
   margin: auto;
   padding: 10px;
   background-color: #eaffea;
-  min-height: 100vh; /* 画面高さいっぱいに */
+  min-height: calc(100vh - 110px); /* タイトル+余白程度の高さ分引く */
   box-sizing: border-box;
-  align-items: stretch; /* 追加: 子要素の高さを揃えて伸ばす */
+  align-items: stretch;
 }
 
-/* --- 緑系レトロチープサイドバー --- */
+/* サイドバー */
 .sidebar {
   width: 180px;
-  background-color: rgba(200, 240, 210, 0.7); /* 薄いミントグリーン */
-  border: 3px dotted #7fc18a; /* 緑系のドット枠線 */
+  background-color: rgba(200, 240, 210, 0.7);
+  border: 3px dotted #7fc18a;
   border-radius: 12px;
   padding: 15px 18px;
-  color: #3a5a33; /* 濃い緑めの文字色 */
+  color: #3a5a33;
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
   font-size: 18px;
   line-height: 2.2;
   user-select: none;
-  height: auto; /* 修正: 100% → auto に変更 */
   box-sizing: border-box;
-  align-self: stretch; /* 追加: 親の高さに合わせて伸ばす */
+  align-self: stretch;
 }
 
-.menu-links {
-  color: #416d3a;
-  text-shadow: none;
-  font-weight: normal;
-}
-
-.menu-links b {
-  color: #5a7f50;
-  font-weight: bold;
-  text-shadow: none;
-}
-
-.menu-links a {
-  color: #2f4d24;
-  text-decoration: underline;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.menu-links a:hover {
-  color: #cc66cc; /* ほのかなピンク */
-  text-shadow:
-    0 0 6px #f9a9f9,
-    0 0 12px #f2a9f2;
-  text-decoration: none;
-  cursor: url('asset/cursor/linopink.png'), pointer;
-}
-
-.menu-links a .icon {
-  filter: none;
-  margin-right: 6px;
-  vertical-align: middle;
-  transition: none;
-}
-
+/* メイン */
 .main {
   flex: 1;
   padding-left: 10px;
@@ -114,14 +85,20 @@ a:hover {
   background-color: #eaffea;
 }
 
-.mobile-nav {
-  display: none;
-}
-
+/* カウンター（固定で画面下中央に表示） */
 .counter {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: rgba(255,255,255,0.9);
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.15);
   text-align: center;
-  margin: 40px auto 20px;
-  width: 100%;
+  width: auto;
+  max-width: 90vw;
 }
 
 .counter script,
@@ -130,7 +107,12 @@ a:hover {
   margin: 0 auto;
 }
 
-/* home.html 用 */
+/* 以下は元のまま */
+
+.mobile-nav {
+  display: none;
+}
+
 .top-image {
   border: 4px ridge #ccf;
   padding: 10px;
@@ -280,7 +262,7 @@ ul {
 
   .container {
     display: block;
-    padding-left: 15px; /* 左右均等に調整 */
+    padding-left: 15px;
     padding-right: 15px;
   }
 
