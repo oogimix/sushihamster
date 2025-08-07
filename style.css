@@ -75,8 +75,7 @@ a:hover {
 
 .title {
   font-family: 'Impact', 'Arial Black', '公語 MS ピゴシック', sans-serif;
-  font-size: 40px;  /* PC用：大きく */
-  text-align: center;
+  font-size: 40px; /* PCの基本サイズ */
   color: #9933cc;
   margin: 30px auto 20px;
   text-shadow:
@@ -85,19 +84,21 @@ a:hover {
     -1px -1px 2px #ccffff;
   letter-spacing: 1px;
 
-  white-space: nowrap;       /* 一行固定 */
-  overflow: hidden;
-  text-overflow: clip;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+
   padding: 0 10px;
   box-sizing: border-box;
 }
 
-/* スマホ表示用：文字サイズだけ縮小 */
+/* スマホでは文字サイズをvw単位にして自動縮小 */
 @media (max-width: 768px) {
   .title {
-    font-size: 22px;
+    font-size: 6vw; /* 画面幅に合わせて縮小する */
   }
 }
 
