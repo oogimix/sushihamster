@@ -53,6 +53,7 @@ a:hover {
   background-color: #eaffea;
   min-height: 100vh; /* 画面高さいっぱいに */
   box-sizing: border-box;
+  align-items: stretch; /* 追加: 子要素の高さを揃えて伸ばす */
 }
 
 /* --- 緑系レトロチープサイドバー --- */
@@ -61,15 +62,15 @@ a:hover {
   background-color: rgba(200, 240, 210, 0.7); /* 薄いミントグリーン */
   border: 3px dotted #7fc18a; /* 緑系のドット枠線 */
   border-radius: 12px;
-  box-shadow: none;
   padding: 15px 18px;
   color: #3a5a33; /* 濃い緑めの文字色 */
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
   font-size: 18px;
   line-height: 2.2;
   user-select: none;
-  height: 100%; /* 画面高さいっぱいに */
+  height: auto; /* 修正: 100% → auto に変更 */
   box-sizing: border-box;
+  align-self: stretch; /* 追加: 親の高さに合わせて伸ばす */
 }
 
 .menu-links {
