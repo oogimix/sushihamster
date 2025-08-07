@@ -1,5 +1,137 @@
 <!DOCTYPE html>
-<html>
-<head><title>test</title></head>
-<body>hello!</body>
-</html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>★☆ sushihamsterのホームページ ☆★</title>
+  <style>
+    body {
+      background-color: #eaffea;
+      font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
+      font-size: 16px;
+      margin: 0;
+      padding: 0;
+      cursor: url('asset/cursor/pastelpink.cur'), auto;
+    }
+    a {
+      color: #0000cc;
+      text-decoration: underline;
+    }
+    a:hover {
+      cursor: url('asset/cursor/linopink.png'), pointer;
+    }
+    .container {
+      display: flex;
+      flex-direction: row;
+      max-width: 1100px;
+      margin: auto;
+      padding: 10px;
+    }
+    .sidebar {
+      width: 200px;
+      background-color: #ccffcc;
+      padding: 10px;
+    }
+    .main {
+      flex: 1;
+      padding: 20px;
+    }
+    .mobile-nav {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+      }
+      .mobile-nav {
+        display: block;
+        background-color: #ccffcc;
+        text-align: center;
+        padding: 10px;
+      }
+      .mobile-nav a {
+        display: inline-block;
+        margin: 0 10px;
+        font-size: 20px;
+        text-decoration: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- モバイル用メニュー -->
+  <div class="mobile-nav">
+    <a href="index.html">🏠</a>
+    <a href="?page=prof"> 🐹</a>
+    <a href="?page=discography">🎵</a>
+    <a href="?page=gallery">🖼️</a>
+    <a href="?page=bbs">📬</a>
+    <a href="?page=link">🔗</a>
+  </div>
+
+  <!-- タイトル（ページごとに変化） -->
+  <div id="page-title" style="
+    font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
+    font-size: clamp(22px, 6vw, 40px);
+    text-align: center;
+    color: #9933cc;
+    margin: 30px auto 20px;
+    text-shadow:
+      0 0 5px #ffccff,
+      1px 1px 2px #cc99ff,
+      -1px -1px 2px #ccffff;
+    letter-spacing: 1px;">
+    ★☆ sushihamsterのホームページ ☆★
+  </div>
+
+  <div class="container">
+    <!-- サイドメニュー -->
+    <div class="sidebar">
+      <b>▼ メニュー</b><br />
+      ┣ <a href="index.html">トップ</a><br />
+      ┣ <a href="?page=prof">プロフィール</a><br />
+      ┣ <a href="?page=discography">音源</a><br />
+      ┣ <a href="?page=gallery">ギャラリー</a><br />
+      ┣ <a href="?page=bbs">BBS集</a><br />
+      ┗ <a href="?page=link">リンク集</a><br />
+      <br>
+      <!-- アクセスカウンター -->
+      <table border="0" cellspacing="0" cellpadding="0">
+        <tr><td align="center">
+          <a href="http://www.rays-counter.com/">
+            <img src="http://www.rays-counter.com/d1300_f6_072/68944eb1b9094/" alt="アクセスカウンター" border="0">
+          </a>
+        </td></tr>
+        <tr><td align="center">
+          <img src="http://www.rays-counter.com/images/counter_01.gif" border="0">
+          <img src="http://www.rays-counter.com/images/counter_02.gif" border="0">
+          <img src="http://www.rays-counter.com/images/counter_03.gif" border="0">
+          <img src="http://www.rays-counter.com/images/counter_04.gif" border="0">
+          <img src="http://www.rays-counter.com/images/counter_05.gif" border="0">
+        </td></tr>
+      </table>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="main" id="main-content">
+      <!-- JavaScriptがここにHTMLを挿入する -->
+    </div>
+  </div>
+
+  <script>
+    const main = document.getElementById('main-content');
+    const title = document.getElementById('page-title');
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = urlParams.get('page') || 'home';
+
+    const pageTitles = {
+      home: 'sushihamsterのホームページ',
+      prof: 'プロフィール',
+      discography: '音源',
+      gallery: 'ギャラリー',
+      bbs: 'BBS集',
+      link:
