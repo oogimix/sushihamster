@@ -32,7 +32,32 @@ a:hover {
   background-color: #ccffcc;
   padding: 10px;
   box-sizing: border-box;
+  min-height: 100vh; /* ←これを追加 */
 }
+
+  .container {
+    flex-direction: column;
+  }
+
+  .mobile-nav {
+    display: flex;
+    background-color: #ccffcc;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .mobile-nav a {
+    font-size: 24px;
+    text-decoration: none;
+  }
+
+  .menu-links {
+    display: none;
+  }
+}
+
 
 .main {
   flex: 1;
@@ -51,7 +76,7 @@ a:hover {
   }
 
   .sidebar {
-    width: 100%;
+    display: none; /* ←ここ修正 */
   }
 
   .mobile-nav {
