@@ -6,7 +6,7 @@
   <title>home | sushihamster</title>
   <style>
     html, body {
-      background-color: transparent;
+      background-color: #eaffea;
       font-family: "MS UI Gothic", Osaka, sans-serif;
       font-size: 16px;
       color: #003366;
@@ -23,6 +23,7 @@
       border: 4px ridge #ccf;
       padding: 10px;
       background: linear-gradient(to bottom right, #eaffff, #ccf);
+      width: 90%;
       max-width: 640px;
       margin: auto;
       box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
@@ -35,6 +36,7 @@
       border: 2px solid #99ccff;
       border-radius: 10px;
       box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
+      width: 90%;
       max-width: 650px;
       margin: 30px auto;
       line-height: 1.6;
@@ -45,6 +47,8 @@
       font-size: 20px;
       font-weight: bold;
       text-shadow: 1px 1px 2px #66f, 0 0 8px #99f;
+      word-break: keep-all;
+      white-space: nowrap;
     }
 
     marquee {
@@ -63,6 +67,7 @@
       padding: 10px;
       margin: 20px auto;
       line-height: 1.6;
+      width: 90%;
       max-width: 700px;
     }
 
@@ -72,7 +77,8 @@
       text-shadow: 1px 1px 2px #cc99ff;
     }
 
-    .contact {
+    .contact, .caution {
+      width: 90%;
       max-width: 700px;
       margin: 20px auto;
     }
@@ -81,8 +87,18 @@
       color: red;
       font-weight: bold;
       text-align: center;
-      max-width: 700px;
-      margin: 30px auto;
+      margin-top: 30px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    @media (max-width: 480px) {
+      .catchcopy span {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
@@ -103,7 +119,7 @@
 
   <h2>★ 最新情報 ★</h2>
   <div class="news">
-    <ul style="margin: 0; padding-left: 20px;">
+    <ul>
       <li>「sushihamster」 オフィシャルホームページ開設 <span style="color: red;">New!</span></li>
       <li>「<a href='https://youtu.be/dqTXIbdbpMU?si=pjWWV3yExXTOJgHR'>sushihamster DJmix</a>」 2025年6月25日公開 <span style="color: red;">New!</span></li>
       <li>「<a href='https://www.instagram.com/sush1h4mst3r/'>sushihamster 公式Instagram</a>」 開設 <span style="color: red;">New!</span></li>
