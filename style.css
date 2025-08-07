@@ -49,7 +49,6 @@ a:hover {
   background-color: #eaffea;
 }
 
-/* --- Y2K風サイドバー --- */
 .sidebar {
   width: 260px; /* 幅を200px→260pxに拡大 */
   min-height: 100vh; /* ビューポートの高さいっぱいに */
