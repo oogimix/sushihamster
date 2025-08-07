@@ -51,14 +51,12 @@ a:hover {
 
 /* --- Y2K風サイドバー --- */
 .sidebar {
-  border: 3px solid #cc99ff;
-  border-radius: 15px;
-  box-shadow:
-    0 0 5px #cc99ff,
-    0 0 15px #cc99ff,
-    0 0 30px #cc99ff;
-  background-color: #f3e6ff;
-  background: linear-gradient(135deg, #e0f7ff, #ffdeff);
+  background: linear-gradient(135deg, #ccddff 0%, #ffe0ff 50%, #ccddff 100%);
+  opacity: 0.9;
+  backdrop-filter: blur(6px);
+  border: 4px ridge #99ccff;
+  box-shadow: 0 0 12px #99aaff;
+  border-radius: 12px;
 }
 
 .menu-links {
