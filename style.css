@@ -353,6 +353,39 @@ ul {
   margin-top: 10px;
 }
 
+/* リンク集ページ用 */
+table.link-table {
+  width: 90%;
+  max-width: 700px;
+  margin: 30px auto;
+  border-collapse: collapse;
+  font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
+  background: #f0f8ff;
+  box-shadow: 0 0 10px #99ccff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+table.link-table th,
+table.link-table td {
+  border: 1px solid #99ccff;
+  padding: 12px 16px;
+  text-align: left;
+  vertical-align: top;
+}
+
+table.link-table th {
+  background: #ccddff;
+  color: #003366;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 0 0 4px #6699cc;
+}
+
+table.link-table tr:hover {
+  background-color: #e6f0ff;
+}
+
 
 /* モバイル対応 */
 @media (max-width: 768px) {
