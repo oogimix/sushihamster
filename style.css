@@ -51,7 +51,8 @@ a:hover {
 
 /* --- Y2K風サイドバー --- */
 .sidebar {
-  width: 200px;
+  width: 260px; /* 幅を200px→260pxに拡大 */
+  min-height: 100vh; /* ビューポートの高さいっぱいに */
   padding: 12px;
   background: linear-gradient(to bottom, #f0fff0, #ddeeff);
   border: 2px ridge #aaccee;
@@ -59,6 +60,10 @@ a:hover {
   border-radius: 10px;
   box-sizing: border-box;
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
+  position: fixed; /* 固定表示にしてスクロールしても残る */
+  top: 0;
+  left: 0;
+  overflow-y: auto; /* コンテンツが多くなってもスクロール可能 */
 }
 
 .menu-links {
