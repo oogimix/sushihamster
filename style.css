@@ -51,48 +51,43 @@ a:hover {
 
 /* --- Y2K風サイドバー --- */
 .sidebar {
-  position: static;  /* 固定解除 */
-  width: 220px;      /* 少し広め */
-  padding: 12px;
-  background: linear-gradient(to bottom, #f0fff0, #ddeeff);
-  border: 2px ridge #aaccee;
-  box-shadow: 0 0 8px rgba(153, 204, 255, 0.4);
-  border-radius: 10px;
-  box-sizing: border-box;
-  font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
-  min-height: auto;  /* 高さ自動 */
+  border: 3px solid #cc99ff;
+  border-radius: 15px;
+  box-shadow:
+    0 0 5px #cc99ff,
+    0 0 15px #cc99ff,
+    0 0 30px #cc99ff;
+  background-color: #f3e6ff;
 }
-.container {
-  margin-left: 0; /* 余白も戻す */
-}
-
 
 .menu-links {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #004080;
-  text-shadow: 0 0 1px #bbddee;
+  font-family: 'Rounded Mplus 1c', 'ＭＳ Ｐゴシック', Osaka, sans-serif; /* 例：丸みのある日本語フォント */
+  font-size: 20px; /* 好きなサイズに調整してください */
+  line-height: 2; /* 行間も少しゆったり目に */
+  color: #003366; /* 文字色 */
+  text-shadow: 1px 1px #ccf; /* 軽く光らせる感じ */
 }
 
 .menu-links b {
-  font-size: 15px;
-  color: #773399;
-  text-shadow: 0 0 4px #ccaaff;
+  font-size: 16px;
+  color: #9900cc;
+  text-shadow: 0 0 5px #ffccff;
 }
 
 .menu-links a {
-  color: #003366;
+  font-family: inherit; /* リンクも同じフォント */
+  font-size: inherit; /* リンクも同じサイズ */
+  color: #0033cc;
   text-decoration: underline;
-  text-shadow: none;
-  transition: color 0.25s ease;
+  text-shadow: 0 0 2px #99f;
+  transition: all 0.2s ease;
 }
 
 .menu-links a:hover {
-  color: #9966cc;
+  color: #cc00cc;
   text-decoration: none;
-  text-shadow: 0 0 5px #c8a9ff;
+  text-shadow: 0 0 6px #f0f;
 }
-
 
 .main {
   flex: 1;
