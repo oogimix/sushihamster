@@ -1,8 +1,12 @@
-/* style.css - 緑系レトロチープサイドバー差し替え版 + スマホ余白調整 */
+/* style.css - 緑系レトロチープサイドバー + スマホ余白調整 + サイドバー画面高さ対応 */
 
-body {
+html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
+}
+
+body {
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
   font-size: 16px;
   background-color: #eaffea;
@@ -47,6 +51,8 @@ a:hover {
   margin: auto;
   padding: 10px;
   background-color: #eaffea;
+  min-height: 100vh; /* 画面高さいっぱいに */
+  box-sizing: border-box;
 }
 
 /* --- 緑系レトロチープサイドバー --- */
@@ -62,6 +68,8 @@ a:hover {
   font-size: 18px;
   line-height: 2.2;
   user-select: none;
+  height: 100%; /* 画面高さいっぱいに */
+  box-sizing: border-box;
 }
 
 .menu-links {
@@ -79,17 +87,16 @@ a:hover {
 .menu-links a {
   color: #2f4d24;
   text-decoration: underline;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .menu-links a:hover {
-  color: #cc66cc; /* 薄めのピンク */
+  color: #cc66cc; /* ほのかなピンク */
   text-shadow:
     0 0 6px #f9a9f9,
     0 0 12px #f2a9f2;
   text-decoration: none;
   cursor: url('asset/cursor/linopink.png'), pointer;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .menu-links a .icon {
