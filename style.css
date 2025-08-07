@@ -271,6 +271,17 @@ ul {
   margin-right: 4px;
 }
 
+/* 音楽ページ用 */
+.artwork {
+  max-width: 300px;
+  width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(204, 153, 255, 0.6);
+  margin: 15px auto 30px; /* 上マージンと下マージン */
+  display: block;
+}
+
+
 /* モバイル対応 */
 @media (max-width: 768px) {
   .title {
