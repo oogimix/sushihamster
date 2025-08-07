@@ -180,6 +180,11 @@ marquee {
   max-width: 700px;
 }
 
+.news ul li::before {
+  content: "🍣 ";
+  margin-right: 6px; /* 絵文字とテキストの間の余白 */
+}
+
 h2 {
   text-align: center;
   color: #9933cc;
