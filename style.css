@@ -100,9 +100,9 @@ a:hover {
   background-color: #eaffea;
 }
 
-/* カウンター（固定解除して通常フローに） */
+/* カウンター*/
 .counter {
-  position: static; /* fixed → static に変更 */
+  position: static; 
   bottom: auto;
   left: auto;
   transform: none;
@@ -123,8 +123,6 @@ a:hover {
   display: inline-block;
   margin: 0 auto;
 }
-
-/* 以下は元のまま */
 
 .mobile-nav {
   display: none;
