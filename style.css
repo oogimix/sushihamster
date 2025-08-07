@@ -1,4 +1,4 @@
-/* style.css - sushihamster 最終版 */
+/* style.css - 最終完全版 */
 
 body {
   margin: 0;
@@ -19,7 +19,7 @@ a:hover {
   cursor: url('asset/cursor/linopink.png'), pointer;
 }
 
-/* タイトル */
+/* タイトル（1行保持＋スマホ対応） */
 .title {
   font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
   font-size: 40px;
@@ -34,8 +34,9 @@ a:hover {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0 12px;
+  padding: 0 8px;
   box-sizing: border-box;
+  max-width: 100vw;
 }
 
 /* レイアウト */
@@ -159,7 +160,7 @@ ul {
 /* モバイル対応 */
 @media (max-width: 768px) {
   .title {
-    font-size: 28px;
+    font-size: 22px;
   }
 
   .container {
@@ -194,7 +195,7 @@ ul {
 
 @media (max-width: 480px) {
   .title {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   .catchcopy span {
