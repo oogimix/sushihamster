@@ -50,6 +50,22 @@
       display: none;
     }
 
+    .main-title {
+      font-family: 'Impact', 'Arial Black', '公語 MS ピゴシック', sans-serif;
+      font-size: clamp(18px, 5vw, 32px);
+      text-align: center;
+      color: #9933cc;
+      margin: 30px auto 20px;
+      white-space: nowrap;
+      overflow-x: auto;
+      text-shadow:
+        0 0 5px #ffccff,
+        1px 1px 2px #cc99ff,
+        -1px -1px 2px #ccffff;
+      letter-spacing: 1px;
+    }
+
+    /* スマホ用スタイル */
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
@@ -66,21 +82,26 @@
         padding: 10px;
       }
 
-      .mobile-nav a {
-        display: inline-block;
-        margin: 0 10px;
-        font-size: 20px;
-        text-decoration: none;
+      .nav-icons {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 10px;
+        overflow-x: auto;
       }
 
-      /* メニュー文字を非表示 */
+      .nav-icons a {
+        font-size: 24px;
+        text-decoration: none;
+        flex-shrink: 0;
+      }
+
       .menu-links {
         display: none;
       }
     }
   </style>
   <script>
-    // ページ内リンクに反応して中身を切り替え
     function loadPage(page) {
       fetch(page)
         .then(res => res.text())
@@ -99,26 +120,18 @@
 
   <!-- スマホ用ナビ -->
   <div class="mobile-nav">
-    <a href="#" onclick="loadPage('home.html')">🏠</a>
-    <a href="#" onclick="loadPage('sushiham_prof.html')">🐹</a>
-    <a href="#" onclick="loadPage('discography.html')">🎵</a>
-    <a href="#" onclick="loadPage('gallery.html')">🖼️</a>
-    <a href="#" onclick="loadPage('bbs.html')">📬</a>
-    <a href="#" onclick="loadPage('link.html')">🔗</a>
+    <div class="nav-icons">
+      <a href="#" onclick="loadPage('home.html')">🏠</a>
+      <a href="#" onclick="loadPage('sushiham_prof.html')">🐹</a>
+      <a href="#" onclick="loadPage('discography.html')">🎵</a>
+      <a href="#" onclick="loadPage('gallery.html')">🖼️</a>
+      <a href="#" onclick="loadPage('bbs.html')">📬</a>
+      <a href="#" onclick="loadPage('link.html')">🔗</a>
+    </div>
   </div>
 
   <!-- タイトル -->
-  <div style="
-    font-family: 'Impact', 'Arial Black', '公語 MS ピゴシック', sans-serif;
-    font-size: clamp(22px, 6vw, 40px);
-    text-align: center;
-    color: #9933cc;
-    margin: 30px auto 20px;
-    text-shadow:
-      0 0 5px #ffccff,
-      1px 1px 2px #cc99ff,
-      -1px -1px 2px #ccffff;
-    letter-spacing: 1px;">
+  <div class="main-title">
     ★☆ sushihamsterのホームページ ☆★
   </div>
 
@@ -135,20 +148,19 @@
         ┗ <a href="#" onclick="loadPage('link.html')">リンク集</a><br />
         <br />
       </div>
+      <!-- FC2カウンター -->
+      <div class="counter">
+        <script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script>
+        <noscript>
+          <img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" />
+        </noscript>
+      </div>
     </div>
 
     <!-- メイン表示部 -->
     <div class="main" id="page-content">
       <!-- JSで読み込み -->
     </div>
-  </div>
-
-  <!-- アクセスカウンター：常にページ下部に表示 -->
-  <div class="counter" style="text-align:center; padding: 10px;">
-    <script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script>
-    <noscript>
-      <img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" />
-    </noscript>
   </div>
 
 </body>
