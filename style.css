@@ -1,4 +1,4 @@
-/* style.css - 改行防止＋スマホ横スク対応版 */
+/* style.css - Y2K sidebar & 最終完全版 */
 
 body {
   margin: 0;
@@ -39,7 +39,7 @@ a:hover {
   scroll-behavior: smooth;
 }
 
-/* レイアウト */
+/* コンテナとサイドバー */
 .container {
   display: flex;
   flex-direction: row;
@@ -49,11 +49,46 @@ a:hover {
   background-color: #eaffea;
 }
 
+/* --- Y2K風サイドバー --- */
 .sidebar {
   width: 200px;
-  background-color: #ccffcc;
   padding: 10px;
+  background: linear-gradient(to bottom, #e0ffe0, #ccf);
+  border: 4px ridge #99ccff;
+  box-shadow: 4px 4px 12px #99f;
+  border-radius: 8px;
   box-sizing: border-box;
+  font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
+  background-image: url('asset/img/bg_stars.gif'); /* 任意：なければ削除 */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.menu-links {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #003366;
+  text-shadow: 1px 1px #ccf;
+}
+
+.menu-links b {
+  font-size: 16px;
+  color: #9900cc;
+  text-shadow: 0 0 5px #ffccff;
+}
+
+.menu-links a {
+  color: #0033cc;
+  text-decoration: underline;
+  text-shadow: 0 0 2px #99f;
+  transition: all 0.2s ease;
+}
+
+.menu-links a:hover {
+  color: #cc00cc;
+  text-decoration: none;
+  text-shadow: 0 0 6px #f0f;
 }
 
 .main {
@@ -158,13 +193,6 @@ ul {
 }
 
 /* プロフィールページ用 */
-
-h2 {
-  text-align: center;
-  color: #9933cc;
-  text-shadow: 1px 1px 2px #cc99ff;
-}
-
 .profile-box {
   background: #ffffffcc;
   border: 2px dashed #cc99ff;
