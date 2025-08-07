@@ -83,9 +83,13 @@ a:hover {
 }
 
 .menu-links a:hover {
-  color: #609f51;
-  text-decoration: underline;
-  cursor: pointer;
+  color: #cc66cc; /* 薄めのピンク */
+  text-shadow:
+    0 0 6px #f9a9f9,
+    0 0 12px #f2a9f2;
+  text-decoration: none;
+  cursor: url('asset/cursor/linopink.png'), pointer;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .menu-links a .icon {
