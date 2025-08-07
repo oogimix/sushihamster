@@ -1,11 +1,13 @@
 /* style.css - sushihamster */
 
+/* 共通設定 */
 body {
   margin: 0;
   padding: 0;
-  font-family: "公語 MS ピゴシック", Osaka, sans-serif;
+  font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
   font-size: 16px;
   background-color: #eaffea;
+  color: #003366;
   cursor: url('asset/cursor/pastelpink.cur'), auto;
 }
 
@@ -18,6 +20,37 @@ a:hover {
   cursor: url('asset/cursor/linopink.png'), pointer;
 }
 
+/* タイトル（header内） */
+.title {
+  font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
+  font-size: 40px;
+  color: #9933cc;
+  margin: 30px auto 20px;
+  text-shadow:
+    0 0 5px #ffccff,
+    1px 1px 2px #cc99ff,
+    -1px -1px 2px #ccffff;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  display: block;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 26px;
+  }
+}
+
+/* レイアウト */
 .container {
   display: flex;
   flex-direction: row;
@@ -73,46 +106,7 @@ a:hover {
   }
 }
 
-/* --- タイトル部分（最強版） --- */
-
-.title {
-  font-family: 'Impact', 'Arial Black', '公語 MS ピゴシック', sans-serif;
-  font-size: 40px;
-  color: #9933cc;
-  margin: 30px auto 20px;
-  text-shadow:
-    0 0 5px #ffccff,
-    1px 1px 2px #cc99ff,
-    -1px -1px 2px #ccffff;
-  letter-spacing: 1px;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
-
-  display: inline-block;
-  max-width: 100vw;
-  transform: scale(1);
-  transform-origin: center;
-  text-align: center;
-  container-type: inline-size;
-}
-
-/* スマホで縮める */
-@media (max-width: 768px) {
-  .title {
-    transform: scale(0.75);
-  }
-}
-
-@media (max-width: 480px) {
-  .title {
-    transform: scale(0.65);
-  }
-}
-
-/* --- カウンター中央 --- */
-
+/* カウンター中央 */
 .counter {
   text-align: center;
   margin: 40px auto 20px;
@@ -123,4 +117,89 @@ a:hover {
 .counter img {
   display: inline-block;
   margin: 0 auto;
+}
+
+/* home.html用スタイル */
+
+.top-image {
+  border: 4px ridge #ccf;
+  padding: 10px;
+  background: linear-gradient(to bottom right, #eaffff, #ccf);
+  width: 90%;
+  max-width: 640px;
+  margin: auto;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
+}
+
+.catchcopy {
+  font-size: 18px;
+  padding: 15px;
+  background: linear-gradient(to bottom right, #f8fcff, #d8ecff);
+  border: 2px solid #99ccff;
+  border-radius: 10px;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
+  width: 90%;
+  max-width: 650px;
+  margin: 30px auto;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.catchcopy span {
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #66f, 0 0 8px #99f;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+marquee {
+  color: #ff00cc;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 10px;
+  text-shadow: 0 0 6px #f0f;
+}
+
+.news {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 2px inset #99ccff;
+  background-color: #f6fcff;
+  padding: 10px;
+  margin: 20px auto;
+  line-height: 1.6;
+  width: 90%;
+  max-width: 700px;
+}
+
+h2 {
+  text-align: center;
+  color: #9933cc;
+  text-shadow: 1px 1px 2px #cc99ff;
+}
+
+.contact,
+.caution {
+  width: 90%;
+  max-width: 700px;
+  margin: 20px auto;
+}
+
+.caution {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 30px;
+}
+
+ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+@media (max-width: 480px) {
+  .catchcopy span {
+    font-size: 18px;
+  }
 }
