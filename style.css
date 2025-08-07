@@ -25,7 +25,9 @@ a {
 }
 
 a:hover {
+  color: #cc3399;
   cursor: url('asset/cursor/linopink.png'), pointer;
+  text-decoration: underline;
 }
 
 /* タイトル */
