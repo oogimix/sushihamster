@@ -25,7 +25,10 @@ a {
 }
 
 a:hover {
-  color: #cc3399;
+  color: #cc66cc; /* ほのかなピンク */
+  text-shadow:
+    0 0 6px #f9a9f9,
+    0 0 12px #f2a9f2;
   cursor: url('asset/cursor/linopink.png'), pointer;
   text-decoration: underline;
 }
