@@ -282,59 +282,61 @@ ul {
 }
 
 /* 掲示板ページ用 */
-.bbs-warning {
-  background: #fff8f8;
-  border: 3px dashed #ff99cc;
-  border-radius: 16px;
-  padding: 20px 30px;
+.framed-box {
+  background-color: #fff8ff;
+  border: 3px dotted #cc99ff;
+  border-radius: 14px;
+  padding: 22px 30px;
   max-width: 700px;
   margin: 30px auto;
+  box-shadow: 0 0 14px #d4b6ff88;
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
-  color: #cc3399;
-  box-shadow: 0 0 12px #ffb6c1;
+  color: #663399;
+  line-height: 1.7;
   text-align: left;
-  line-height: 1.8;
 }
 
-.bbs-warning h2 {
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive, "ＭＳ Ｐゴシック";
-  color: #d1477a;
-  text-shadow: 1px 1px 1px #ffa6c9;
-  font-size: 24px;
-  margin-bottom: 12px;
-  letter-spacing: 2px;
+.framed-box h2 {
+  font-family: 'Impact', 'Arial Black', sans-serif, "ＭＳ Ｐゴシック";
+  font-size: 26px;
+  color: #9933cc;
+  text-shadow:
+    0 0 6px #d9b3ff,
+    1px 1px 3px #9c50ff;
+  letter-spacing: 1.5px;
+  margin-bottom: 15px;
 }
 
-.bbs-warning ul {
+.framed-box ul {
   list-style: none;
   padding-left: 0;
+  margin-bottom: 15px;
 }
 
-.bbs-warning ul li {
-  margin-bottom: 8px;
+.framed-box ul li {
   font-size: 18px;
-  padding-left: 24px;
+  padding-left: 26px;
+  margin-bottom: 10px;
   position: relative;
-  font-weight: bold;
+  font-weight: 600;
+  color: #7a3299;
 }
 
-.bbs-warning ul li::before {
-  content: "🍣"; /* 寿司絵文字を先頭に */
+.framed-box ul li::before {
+  content: "🍣";
   position: absolute;
   left: 0;
-  top: 0;
-  font-size: 18px;
-  line-height: 1.2;
+  top: 2px;
+  font-size: 20px;
 }
 
-.bbs-warning p {
-  margin-top: 18px;
+.framed-box p {
   font-size: 16px;
   font-style: italic;
-  color: #b24d73;
+  color: #9933cccc;
   text-align: center;
+  margin-top: 10px;
 }
-
 
 
 /* モバイル対応 */
