@@ -1,4 +1,4 @@
-/* style.css - 最終完全版 */
+/* style.css - 改行防止＋スマホ横スク対応版 */
 
 body {
   margin: 0;
@@ -19,7 +19,7 @@ a:hover {
   cursor: url('asset/cursor/linopink.png'), pointer;
 }
 
-/* タイトル（1行保持＋スマホ対応） */
+/* タイトル */
 .title {
   font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
   font-size: 40px;
@@ -32,11 +32,11 @@ a:hover {
   letter-spacing: 1px;
   text-align: center;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow-x: auto;
   padding: 0 8px;
   box-sizing: border-box;
   max-width: 100vw;
+  scroll-behavior: smooth;
 }
 
 /* レイアウト */
@@ -79,7 +79,7 @@ a:hover {
   margin: 0 auto;
 }
 
-/* home.html 用スタイル */
+/* home.html 用 */
 .top-image {
   border: 4px ridge #ccf;
   padding: 10px;
