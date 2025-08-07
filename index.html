@@ -8,7 +8,7 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
+      font-family: "公語 MS ピゴシック", Osaka, sans-serif;
       font-size: 16px;
       background-color: #eaffea;
       cursor: url('asset/cursor/pastelpink.cur'), auto;
@@ -70,10 +70,19 @@
         font-size: 20px;
         text-decoration: none;
       }
+
+      /* --- sidebarの文字部分のみ非表示（アクセスカウンターは残す） --- */
+      .sidebar a,
+      .sidebar b,
+      .sidebar br,
+      .sidebar font,
+      .sidebar td:not(:has(img)) {
+        display: none !important;
+      }
     }
   </style>
   <script>
-    // ページ内リンクに反応して中身を差し替え
+    // ページ内リンクに反応して中身を切り替え
     function loadPage(page) {
       fetch(page)
         .then(res => res.text())
@@ -102,7 +111,7 @@
 
   <!-- タイトル -->
   <div style="
-    font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
+    font-family: 'Impact', 'Arial Black', '公語 MS ピゴシック', sans-serif;
     font-size: clamp(22px, 6vw, 40px);
     text-align: center;
     color: #9933cc;
@@ -119,11 +128,11 @@
     <!-- サイドメニュー -->
     <div class="sidebar">
       <b>▼ メニュー</b><br />
-      ┣ <a href="#" onclick="loadPage('home.html')">トップ</a><br />
-      ┣ <a href="#" onclick="loadPage('sushiham_prof.html')">プロフィール</a><br />
-      ┣ <a href="#" onclick="loadPage('discography.html')">音源</a><br />
-      ┣ <a href="#" onclick="loadPage('gallery.html')">ギャラリー</a><br />
-      ┣ <a href="#" onclick="loadPage('bbs.html')">BBS集</a><br />
+      ┓ <a href="#" onclick="loadPage('home.html')">トップ</a><br />
+      ┓ <a href="#" onclick="loadPage('sushiham_prof.html')">プロフィール</a><br />
+      ┓ <a href="#" onclick="loadPage('discography.html')">音源</a><br />
+      ┓ <a href="#" onclick="loadPage('gallery.html')">ギャラリー</a><br />
+      ┓ <a href="#" onclick="loadPage('bbs.html')">BBS集</a><br />
       ┗ <a href="#" onclick="loadPage('link.html')">リンク集</a><br />
       <br />
       <!-- アクセスカウンター -->
