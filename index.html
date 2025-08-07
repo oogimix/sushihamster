@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sushihamsterのホームページ</title>
   <style>
-    body {
-      background-color: #eaffea;
-      font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
-      font-size: 16px;
+    html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
+      font-size: 16px;
+      background-color: #eaffea;
       cursor: url('asset/cursor/pastelpink.cur'), auto;
     }
 
@@ -18,6 +20,7 @@
       color: #0000cc;
       text-decoration: underline;
     }
+
     a:hover {
       cursor: url('asset/cursor/linopink.png'), pointer;
     }
@@ -26,6 +29,7 @@
       display: flex;
       flex-direction: row;
       max-width: 1100px;
+      height: calc(100vh - 100px); /* タイトル分を除外 */
       margin: auto;
       padding: 10px;
     }
@@ -34,18 +38,21 @@
       width: 200px;
       background-color: #ccffcc;
       padding: 10px;
+      box-sizing: border-box;
+      overflow-y: auto;
     }
 
     .main {
       flex: 1;
-      padding: 0 0 0 10px;
+      padding-left: 10px;
+      box-sizing: border-box;
     }
 
     iframe {
       width: 100%;
-      height: 1400px;
+      height: 100%;
       border: none;
-      background-color: #ffffffcc;
+      background-color: transparent;
       box-shadow: 0 0 8px #99ccff;
     }
 
@@ -56,24 +63,34 @@
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
+        height: auto;
       }
+
       .sidebar {
         width: 100%;
       }
+
       .mobile-nav {
         display: block;
         background-color: #ccffcc;
         text-align: center;
         padding: 10px;
       }
+
       .mobile-nav a {
         display: inline-block;
         margin: 0 10px;
         font-size: 20px;
         text-decoration: none;
       }
+
+      .main {
+        height: 100vh;
+        padding: 0;
+      }
+
       iframe {
-        height: 1800px;
+        height: 100vh;
       }
     }
   </style>
@@ -115,13 +132,31 @@
       ┣ <a href="gallery.html" target="mainframe">ギャラリー</a><br />
       ┣ <a href="bbs.html" target="mainframe">BBS集</a><br />
       ┗ <a href="link.html" target="mainframe">リンク集</a><br />
-      <br>
-      <!--タグはここから--><table border="0" cellspacing="0" cellpadding="0"><tr><td align="center"><a href="http://www.rays-counter.com/"><img src="http://www.rays-counter.com/d1300_f6_072/68944eb1b9094/" alt="アクセスカウンター" border="0"></a></td></tr><tr><td align="center"><img src="http://www.rays-counter.com/images/counter_01.gif" border="0"><img src="http://www.rays-counter.com/images/counter_02.gif" border="0"><img src="http://www.rays-counter.com/images/counter_03.gif" border="0"><img src="http://www.rays-counter.com/images/counter_04.gif" border="0"><img src="http://www.rays-counter.com/images/counter_05.gif" border="0"></td></tr></table><!--ここまで-->
+      <br />
+      <!-- アクセスカウンター -->
+      <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td align="center">
+            <a href="http://www.rays-counter.com/">
+              <img src="http://www.rays-counter.com/d1300_f6_072/68944eb1b9094/" alt="アクセスカウンター" border="0">
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <img src="http://www.rays-counter.com/images/counter_01.gif" border="0">
+            <img src="http://www.rays-counter.com/images/counter_02.gif" border="0">
+            <img src="http://www.rays-counter.com/images/counter_03.gif" border="0">
+            <img src="http://www.rays-counter.com/images/counter_04.gif" border="0">
+            <img src="http://www.rays-counter.com/images/counter_05.gif" border="0">
+          </td>
+        </tr>
+      </table>
     </div>
 
-    <!-- iframeメイン表示部 -->
+    <!-- メイン表示部 -->
     <div class="main">
-      <iframe src="home.html" name="mainframe"></iframe>
+      <iframe src="home.html" name="mainframe" allowtransparency="true"></iframe>
     </div>
   </div>
 </body>
