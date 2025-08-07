@@ -61,7 +61,7 @@ a:hover {
 
 .menu-links {
   font-family: 'Rounded Mplus 1c', 'ＭＳ Ｐゴシック', Osaka, sans-serif; /* 例：丸みのある日本語フォント */
-  font-size: 20px; /* 好きなサイズに調整してください */
+  font-size: 18px; /* 好きなサイズに調整してください */
   line-height: 2; /* 行間も少しゆったり目に */
   color: #003366; /* 文字色 */
   text-shadow: 1px 1px #ccf; /* 軽く光らせる感じ */
