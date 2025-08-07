@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sushihamsterのホームページ</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <script>
+    // ページ内リンクに反応して中身を切り替え
     function loadPage(page) {
       fetch(page)
         .then(res => res.text())
@@ -21,19 +22,20 @@
   </script>
 </head>
 <body>
+
   <!-- スマホ用ナビ -->
   <div class="mobile-nav">
     <a href="#" onclick="loadPage('home.html')">🏠</a>
     <a href="#" onclick="loadPage('sushiham_prof.html')">🐹</a>
     <a href="#" onclick="loadPage('discography.html')">🎵</a>
-    <a href="#" onclick="loadPage('gallery.html')">🖼️</a>
+    <a href="#" onclick="loadPage('gallery.html')">🎨</a>
     <a href="#" onclick="loadPage('bbs.html')">📬</a>
-    <a href="#" onclick="loadPage('link.html')">🔗</a>
+    <a href="#" onclick="loadPage('link.html')">📎</a>
   </div>
 
   <!-- タイトル -->
-  <div class="site-title">
-    ★☆ sushihamsterのホームページ ☆★
+  <div class="page-title">
+    ☆☆ sushihamsterのホームページ ☆☆
   </div>
 
   <div class="container">
@@ -57,15 +59,13 @@
     </div>
   </div>
 
-  <!-- フッター（カウンター） -->
-  <footer class="footer">
-    <div class="counter">
-      <!-- FC2カウンター -->
-      <script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script>
-      <noscript>
-        <img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" />
-      </noscript>
-    </div>
-  </footer>
+  <!-- カウンター（中央下） -->
+  <div class="counter">
+    <script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script>
+    <noscript>
+      <img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" />
+    </noscript>
+  </div>
+
 </body>
 </html>
