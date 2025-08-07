@@ -6,6 +6,7 @@
   <title>sushihamsterのホームページ</title>
   <link rel="stylesheet" href="style.css">
   <script>
+    // ページ内リンクに反応して中身を切り替え
     function loadPage(page) {
       fetch(page)
         .then(res => res.text())
@@ -33,13 +34,13 @@
   </div>
 
   <!-- タイトル -->
-  <header class="title">
+  <div class="title">
     ☆☆ sushihamsterのホームページ ☆☆
-  </header>
+  </div>
 
   <div class="container">
     <!-- サイドメニュー -->
-    <aside class="sidebar">
+    <div class="sidebar">
       <div class="menu-links">
         <b>▼ メニュー</b><br />
         ┓ <a href="#" onclick="loadPage('home.html')">トップ</a><br />
@@ -50,21 +51,21 @@
         ┗ <a href="#" onclick="loadPage('link.html')">リンク集</a><br />
         <br />
       </div>
-    </aside>
+    </div>
 
     <!-- メイン表示部 -->
-    <main class="main" id="page-content">
+    <div class="main" id="page-content">
       <!-- JSで読み込み -->
-    </main>
+    </div>
   </div>
 
-  <!-- カウンター -->
-  <footer class="counter">
+  <!-- カウンター（中央下） -->
+  <div class="counter">
     <script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script>
     <noscript>
       <img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" />
     </noscript>
-  </footer>
+  </div>
 
 </body>
 </html>
