@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sushihamsterのホームページ</title>
   <style>
-    html, body {
+    body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      overflow: hidden;
       font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
       font-size: 16px;
       background-color: #eaffea;
@@ -29,7 +27,6 @@
       display: flex;
       flex-direction: row;
       max-width: 1100px;
-      height: calc(100vh - 100px); /* タイトル分を除外 */
       margin: auto;
       padding: 10px;
     }
@@ -39,21 +36,12 @@
       background-color: #ccffcc;
       padding: 10px;
       box-sizing: border-box;
-      overflow-y: auto;
     }
 
     .main {
       flex: 1;
       padding-left: 10px;
       box-sizing: border-box;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background-color: transparent;
-      box-shadow: 0 0 8px #99ccff;
     }
 
     .mobile-nav {
@@ -63,7 +51,6 @@
     @media (max-width: 768px) {
       .container {
         flex-direction: column;
-        height: auto;
       }
 
       .sidebar {
@@ -83,28 +70,34 @@
         font-size: 20px;
         text-decoration: none;
       }
-
-      .main {
-        height: 100vh;
-        padding: 0;
-      }
-
-      iframe {
-        height: 100vh;
-      }
     }
   </style>
+  <script>
+    // ページ内リンクに反応して中身を差し替え
+    function loadPage(page) {
+      fetch(page)
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('page-content').innerHTML = html;
+          window.scrollTo(0, 0);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadPage("home.html");
+    });
+  </script>
 </head>
 <body>
 
   <!-- スマホ用ナビ -->
   <div class="mobile-nav">
-    <a href="home.html" target="mainframe">🏠</a>
-    <a href="sushiham_prof.html" target="mainframe">🐹</a>
-    <a href="discography.html" target="mainframe">🎵</a>
-    <a href="gallery.html" target="mainframe">🖼️</a>
-    <a href="bbs.html" target="mainframe">📬</a>
-    <a href="link.html" target="mainframe">🔗</a>
+    <a href="#" onclick="loadPage('home.html')">🏠</a>
+    <a href="#" onclick="loadPage('sushiham_prof.html')">🐹</a>
+    <a href="#" onclick="loadPage('discography.html')">🎵</a>
+    <a href="#" onclick="loadPage('gallery.html')">🖼️</a>
+    <a href="#" onclick="loadPage('bbs.html')">📬</a>
+    <a href="#" onclick="loadPage('link.html')">🔗</a>
   </div>
 
   <!-- タイトル -->
@@ -126,12 +119,12 @@
     <!-- サイドメニュー -->
     <div class="sidebar">
       <b>▼ メニュー</b><br />
-      ┣ <a href="home.html" target="mainframe">トップ</a><br />
-      ┣ <a href="sushiham_prof.html" target="mainframe">プロフィール</a><br />
-      ┣ <a href="discography.html" target="mainframe">音源</a><br />
-      ┣ <a href="gallery.html" target="mainframe">ギャラリー</a><br />
-      ┣ <a href="bbs.html" target="mainframe">BBS集</a><br />
-      ┗ <a href="link.html" target="mainframe">リンク集</a><br />
+      ┣ <a href="#" onclick="loadPage('home.html')">トップ</a><br />
+      ┣ <a href="#" onclick="loadPage('sushiham_prof.html')">プロフィール</a><br />
+      ┣ <a href="#" onclick="loadPage('discography.html')">音源</a><br />
+      ┣ <a href="#" onclick="loadPage('gallery.html')">ギャラリー</a><br />
+      ┣ <a href="#" onclick="loadPage('bbs.html')">BBS集</a><br />
+      ┗ <a href="#" onclick="loadPage('link.html')">リンク集</a><br />
       <br />
       <!-- アクセスカウンター -->
       <table border="0" cellspacing="0" cellpadding="0">
@@ -155,8 +148,8 @@
     </div>
 
     <!-- メイン表示部 -->
-    <div class="main">
-      <iframe src="home.html" name="mainframe" allowtransparency="true"></iframe>
+    <div class="main" id="page-content">
+      <!-- JSで読み込み -->
     </div>
   </div>
 </body>
