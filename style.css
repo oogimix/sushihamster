@@ -1,4 +1,4 @@
-/* style.css - 緑系レトロチープサイドバー差し替え版 */
+/* style.css - 緑系レトロチープサイドバー差し替え版 + スマホ余白調整 */
 
 body {
   margin: 0;
@@ -268,7 +268,13 @@ ul {
 
   .container {
     display: block;
-    padding: 0 10px;
+    padding-left: 15px; /* 左右均等に調整 */
+    padding-right: 15px;
+  }
+
+  .main {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .sidebar {
