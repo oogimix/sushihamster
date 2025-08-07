@@ -281,6 +281,61 @@ ul {
   display: block;
 }
 
+/* 掲示板ページ用 */
+.bbs-warning {
+  background: #fff8f8;
+  border: 3px dashed #ff99cc;
+  border-radius: 16px;
+  padding: 20px 30px;
+  max-width: 700px;
+  margin: 30px auto;
+  font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
+  color: #cc3399;
+  box-shadow: 0 0 12px #ffb6c1;
+  text-align: left;
+  line-height: 1.8;
+}
+
+.bbs-warning h2 {
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive, "ＭＳ Ｐゴシック";
+  color: #d1477a;
+  text-shadow: 1px 1px 1px #ffa6c9;
+  font-size: 24px;
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+
+.bbs-warning ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.bbs-warning ul li {
+  margin-bottom: 8px;
+  font-size: 18px;
+  padding-left: 24px;
+  position: relative;
+  font-weight: bold;
+}
+
+.bbs-warning ul li::before {
+  content: "🍣"; /* 寿司絵文字を先頭に */
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.bbs-warning p {
+  margin-top: 18px;
+  font-size: 16px;
+  font-style: italic;
+  color: #b24d73;
+  text-align: center;
+}
+
+
 
 /* モバイル対応 */
 @media (max-width: 768px) {
