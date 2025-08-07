@@ -25,6 +25,7 @@ a:hover {
   margin: auto;
   padding: 10px;
   background-color: #eaffea;
+  align-items: stretch; /* ← 追加で高さ伸ばす */
 }
 
 .sidebar {
@@ -32,32 +33,9 @@ a:hover {
   background-color: #ccffcc;
   padding: 10px;
   box-sizing: border-box;
-  min-height: 100vh; /* ←これを追加 */
+  min-height: 100vh;   /* ← 高さを画面いっぱいに */
+  flex-shrink: 0;      /* ← 潰れ防止 */
 }
-
-  .container {
-    flex-direction: column;
-  }
-
-  .mobile-nav {
-    display: flex;
-    background-color: #ccffcc;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    padding: 12px;
-  }
-
-  .mobile-nav a {
-    font-size: 24px;
-    text-decoration: none;
-  }
-
-  .menu-links {
-    display: none;
-  }
-}
-
 
 .main {
   flex: 1;
@@ -70,13 +48,14 @@ a:hover {
   display: none;
 }
 
+/* --- スマホ表示用 --- */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
   }
 
   .sidebar {
-    display: none; /* ←ここ修正 */
+    display: none; /* ← スマホでは非表示 */
   }
 
   .mobile-nav {
@@ -99,8 +78,7 @@ a:hover {
 }
 
 /* --- タイトル部分（最強版） --- */
-
-.title {
+header.title {
   font-family: 'Impact', 'Arial Black', '公語 MS ピゴシック', sans-serif;
   font-size: 40px;
   color: #9933cc;
@@ -125,19 +103,18 @@ a:hover {
 
 /* スマホで縮める */
 @media (max-width: 768px) {
-  .title {
+  header.title {
     transform: scale(0.75);
   }
 }
 
 @media (max-width: 480px) {
-  .title {
+  header.title {
     transform: scale(0.65);
   }
 }
 
 /* --- カウンター中央 --- */
-
 .counter {
   text-align: center;
   margin: 40px auto 20px;
