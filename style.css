@@ -43,25 +43,17 @@ a:hover {
   scroll-behavior: smooth;
 }
 
-/* コンテナ全体を縦flexに */
+/* コンテナとサイドバー */
 .container {
   display: flex;
-  flex-direction: row; /* ここは横並びを維持 */
+  flex-direction: row;
   max-width: 1100px;
   margin: auto;
   padding: 10px;
   background-color: #eaffea;
   min-height: 100vh; /* 画面高さいっぱいに */
   box-sizing: border-box;
-  align-items: stretch; /* 子要素の高さを揃えて伸ばす */
-}
-
-/* content-area はメイン＋カウンターを縦に並べるflex */
-.content-area {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0; /* スクロール対応 */
+  align-items: stretch; /* 追加: 子要素の高さを揃えて伸ばす */
 }
 
 /* --- 緑系レトロチープサイドバー --- */
@@ -76,9 +68,9 @@ a:hover {
   font-size: 18px;
   line-height: 2.2;
   user-select: none;
-  height: auto;
+  height: auto; /* 修正: 100% → auto に変更 */
   box-sizing: border-box;
-  align-self: stretch;
+  align-self: stretch; /* 追加: 親の高さに合わせて伸ばす */
 }
 
 .menu-links {
@@ -120,17 +112,16 @@ a:hover {
   padding-left: 10px;
   box-sizing: border-box;
   background-color: #eaffea;
-  display: flex;
-  flex-direction: column;
-  min-height: 0; /* スクロール対応 */
+}
+
+.mobile-nav {
+  display: none;
 }
 
 .counter {
-  margin-top: auto; /* メインの下部に押し込む */
   text-align: center;
   margin: 40px auto 20px;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .counter script,
@@ -139,12 +130,7 @@ a:hover {
   margin: 0 auto;
 }
 
-/* 以下は元のまま */
-
-.mobile-nav {
-  display: none;
-}
-
+/* home.html 用 */
 .top-image {
   border: 4px ridge #ccf;
   padding: 10px;
@@ -279,6 +265,13 @@ ul {
   color: #cc00cc;
 }
 
+.sns-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
 /* モバイル対応 */
 @media (max-width: 768px) {
   .title {
@@ -287,7 +280,7 @@ ul {
 
   .container {
     display: block;
-    padding-left: 15px;
+    padding-left: 15px; /* 左右均等に調整 */
     padding-right: 15px;
   }
 
