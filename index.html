@@ -29,6 +29,7 @@
       max-width: 1100px;
       margin: auto;
       padding: 10px;
+      background-color: #eaffea;
     }
 
     .sidebar {
@@ -42,6 +43,7 @@
       flex: 1;
       padding-left: 10px;
       box-sizing: border-box;
+      background-color: #eaffea;
     }
 
     .mobile-nav {
@@ -71,13 +73,9 @@
         text-decoration: none;
       }
 
-      /* --- sidebarの文字部分のみ非表示（アクセスカウンターは残す） --- */
-      .sidebar a,
-      .sidebar b,
-      .sidebar br,
-      .sidebar font,
-      .sidebar td:not(:has(img)) {
-        display: none !important;
+      /* メニュー文字を非表示 */
+      .menu-links {
+        display: none;
       }
     }
   </style>
@@ -127,17 +125,24 @@
   <div class="container">
     <!-- サイドメニュー -->
     <div class="sidebar">
-      <b>▼ メニュー</b><br />
-      ┓ <a href="#" onclick="loadPage('home.html')">トップ</a><br />
-      ┓ <a href="#" onclick="loadPage('sushiham_prof.html')">プロフィール</a><br />
-      ┓ <a href="#" onclick="loadPage('discography.html')">音源</a><br />
-      ┓ <a href="#" onclick="loadPage('gallery.html')">ギャラリー</a><br />
-      ┓ <a href="#" onclick="loadPage('bbs.html')">BBS集</a><br />
-      ┗ <a href="#" onclick="loadPage('link.html')">リンク集</a><br />
-      <br />
+      <div class="menu-links">
+        <b>▼ メニュー</b><br />
+        ┓ <a href="#" onclick="loadPage('home.html')">トップ</a><br />
+        ┓ <a href="#" onclick="loadPage('sushiham_prof.html')">プロフィール</a><br />
+        ┓ <a href="#" onclick="loadPage('discography.html')">音源</a><br />
+        ┓ <a href="#" onclick="loadPage('gallery.html')">ギャラリー</a><br />
+        ┓ <a href="#" onclick="loadPage('bbs.html')">BBS集</a><br />
+        ┗ <a href="#" onclick="loadPage('link.html')">リンク集</a><br />
+        <br />
+      </div>
       <!-- FC2カウンター ここから -->
-<script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script><noscript><img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" /></noscript>
-<!-- FC2カウンター ここまで -->
+      <div class="counter">
+        <script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script>
+        <noscript>
+          <img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" />
+        </noscript>
+      </div>
+      <!-- FC2カウンター ここまで -->
     </div>
 
     <!-- メイン表示部 -->
