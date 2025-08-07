@@ -4,103 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sushihamsterのホームページ</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "公語 MS ピゴシック", Osaka, sans-serif;
-      font-size: 16px;
-      background-color: #eaffea;
-      cursor: url('asset/cursor/pastelpink.cur'), auto;
-    }
-
-    a {
-      color: #0000cc;
-      text-decoration: underline;
-    }
-
-    a:hover {
-      cursor: url('asset/cursor/linopink.png'), pointer;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: row;
-      max-width: 1100px;
-      margin: auto;
-      padding: 10px;
-      background-color: #eaffea;
-    }
-
-    .sidebar {
-      width: 200px;
-      background-color: #ccffcc;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    .main {
-      flex: 1;
-      padding-left: 10px;
-      box-sizing: border-box;
-      background-color: #eaffea;
-    }
-
-    .mobile-nav {
-      display: none;
-    }
-
-    .main-title {
-      font-family: 'Impact', 'Arial Black', '公語 MS ピゴシック', sans-serif;
-      font-size: clamp(18px, 5vw, 32px);
-      text-align: center;
-      color: #9933cc;
-      margin: 30px auto 20px;
-      white-space: nowrap;
-      overflow-x: auto;
-      text-shadow:
-        0 0 5px #ffccff,
-        1px 1px 2px #cc99ff,
-        -1px -1px 2px #ccffff;
-      letter-spacing: 1px;
-    }
-
-    /* スマホ用スタイル */
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-      }
-
-      .mobile-nav {
-        display: block;
-        background-color: #ccffcc;
-        text-align: center;
-        padding: 10px;
-      }
-
-      .nav-icons {
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: center;
-        gap: 10px;
-        overflow-x: auto;
-      }
-
-      .nav-icons a {
-        font-size: 24px;
-        text-decoration: none;
-        flex-shrink: 0;
-      }
-
-      .menu-links {
-        display: none;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
   <script>
     function loadPage(page) {
       fetch(page)
@@ -117,21 +21,18 @@
   </script>
 </head>
 <body>
-
   <!-- スマホ用ナビ -->
   <div class="mobile-nav">
-    <div class="nav-icons">
-      <a href="#" onclick="loadPage('home.html')">🏠</a>
-      <a href="#" onclick="loadPage('sushiham_prof.html')">🐹</a>
-      <a href="#" onclick="loadPage('discography.html')">🎵</a>
-      <a href="#" onclick="loadPage('gallery.html')">🖼️</a>
-      <a href="#" onclick="loadPage('bbs.html')">📬</a>
-      <a href="#" onclick="loadPage('link.html')">🔗</a>
-    </div>
+    <a href="#" onclick="loadPage('home.html')">🏠</a>
+    <a href="#" onclick="loadPage('sushiham_prof.html')">🐹</a>
+    <a href="#" onclick="loadPage('discography.html')">🎵</a>
+    <a href="#" onclick="loadPage('gallery.html')">🖼️</a>
+    <a href="#" onclick="loadPage('bbs.html')">📬</a>
+    <a href="#" onclick="loadPage('link.html')">🔗</a>
   </div>
 
   <!-- タイトル -->
-  <div class="main-title">
+  <div class="site-title">
     ★☆ sushihamsterのホームページ ☆★
   </div>
 
@@ -148,13 +49,6 @@
         ┗ <a href="#" onclick="loadPage('link.html')">リンク集</a><br />
         <br />
       </div>
-      <!-- FC2カウンター -->
-      <div class="counter">
-        <script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script>
-        <noscript>
-          <img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" />
-        </noscript>
-      </div>
     </div>
 
     <!-- メイン表示部 -->
@@ -163,5 +57,15 @@
     </div>
   </div>
 
+  <!-- フッター（カウンター） -->
+  <footer class="footer">
+    <div class="counter">
+      <!-- FC2カウンター -->
+      <script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script>
+      <noscript>
+        <img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" />
+      </noscript>
+    </div>
+  </footer>
 </body>
 </html>
