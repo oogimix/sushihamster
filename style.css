@@ -77,6 +77,16 @@ a:hover {
   align-self: stretch;
 }
 
+/* メイン＋カウンターまとめラッパー */
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /* メイン */
 .main {
   flex: 1;
@@ -85,13 +95,13 @@ a:hover {
   background-color: #eaffea;
 }
 
-/* カウンター（固定で画面下中央に表示） */
+/* カウンター（固定解除して通常フローに） */
 .counter {
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
+  position: static; /* fixed → static に変更 */
+  bottom: auto;
+  left: auto;
+  transform: none;
+  z-index: auto;
   background-color: rgba(255,255,255,0.9);
   padding: 5px 10px;
   border-radius: 8px;
@@ -99,6 +109,8 @@ a:hover {
   text-align: center;
   width: auto;
   max-width: 90vw;
+  margin-top: 20px; /* メインとの余白 */
+  align-self: center; /* 横中央に */
 }
 
 .counter script,
