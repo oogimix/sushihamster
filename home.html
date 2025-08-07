@@ -1,140 +1,33 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>home | sushihamster</title>
-  <style>
-    html, body {
-      background-color: #eaffea;
-      font-family: "MS UI Gothic", Osaka, sans-serif;
-      font-size: 16px;
-      color: #003366;
-      margin: 0;
-      padding: 20px;
-      cursor: url('asset/cursor/pastelpink.cur'), auto;
-    }
+<!-- home.html（JSで読み込まれるコンテンツパーツ） -->
 
-    a:hover {
-      cursor: url('asset/cursor/linopink.png'), pointer;
-    }
+<div class="top-image">
+  <img src="asset/img/image.png" style="width: 100%; height: auto;" alt="スシハム画像">
+</div>
 
-    .top-image {
-      border: 4px ridge #ccf;
-      padding: 10px;
-      background: linear-gradient(to bottom right, #eaffff, #ccf);
-      width: 90%;
-      max-width: 640px;
-      margin: auto;
-      box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
-    }
+<div class="catchcopy">
+  <span>💿 スシハムスター（sushihamster）</span><br>
+  世界初の「<b>寿司</b>」と「<b>ハムスター</b>」が融合した音楽ユニット。<br>
+  ピンクの回転寿司ターンテーブルにビートをのせて、<b>高次元まで響かせるぜ。</b>
+  <marquee behavior="scroll" direction="left" scrollamount="6">
+    🌀 LET'S SUSHI! 🐹💿🌈 TURN IT UP!! 🌸🍣🐹💫
+  </marquee>
+</div>
 
-    .catchcopy {
-      font-size: 18px;
-      padding: 15px;
-      background: linear-gradient(to bottom right, #f8fcff, #d8ecff);
-      border: 2px solid #99ccff;
-      border-radius: 10px;
-      box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
-      width: 90%;
-      max-width: 650px;
-      margin: 30px auto;
-      line-height: 1.6;
-      text-align: center;
-    }
+<h2>★ 最新情報 ★</h2>
+<div class="news">
+  <ul>
+    <li>「sushihamster」 オフィシャルホームページ開設 <span style="color: red;">New!</span></li>
+    <li>「<a href='https://youtu.be/dqTXIbdbpMU?si=pjWWV3yExXTOJgHR'>sushihamster DJmix</a>」 2025年6月25日公開 <span style="color: red;">New!</span></li>
+    <li>「<a href='https://www.instagram.com/sush1h4mst3r/'>sushihamster 公式Instagram</a>」 開設 <span style="color: red;">New!</span></li>
+  </ul>
+</div>
 
-    .catchcopy span {
-      font-size: 20px;
-      font-weight: bold;
-      text-shadow: 1px 1px 2px #66f, 0 0 8px #99f;
-      word-break: keep-all;
-      white-space: nowrap;
-    }
+<div class="contact">
+  📩 イベント・メディア・コラボなどのお問い合わせは：<br />
+  <a href="mailto:sush1h4mst3r@gmail.com">sush1h4mst3r@gmail.com</a>
+</div>
 
-    marquee {
-      color: #ff00cc;
-      font-weight: bold;
-      font-size: 16px;
-      margin-top: 10px;
-      text-shadow: 0 0 6px #f0f;
-    }
-
-    .news {
-      max-height: 180px;
-      overflow-y: auto;
-      border: 2px inset #99ccff;
-      background-color: #f6fcff;
-      padding: 10px;
-      margin: 20px auto;
-      line-height: 1.6;
-      width: 90%;
-      max-width: 700px;
-    }
-
-    h2 {
-      text-align: center;
-      color: #9933cc;
-      text-shadow: 1px 1px 2px #cc99ff;
-    }
-
-    .contact, .caution {
-      width: 90%;
-      max-width: 700px;
-      margin: 20px auto;
-    }
-
-    .caution {
-      color: red;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 30px;
-    }
-
-    ul {
-      margin: 0;
-      padding-left: 20px;
-    }
-
-    @media (max-width: 480px) {
-      .catchcopy span {
-        font-size: 18px;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="top-image">
-    <img src="asset/img/image.png" style="width: 100%; height: auto;" alt="スシハム画像">
-  </div>
-
-  <div class="catchcopy">
-    <span>💿 スシハムスター（sushihamster）</span><br>
-    世界初の「<b>寿司</b>」と「<b>ハムスター</b>」が融合した音楽ユニット。<br>
-    ピンクの回転寿司ターンテーブルにビートをのせて、<b>高次元まで響かせるぜ。</b>
-    <marquee behavior="scroll" direction="left" scrollamount="6">
-      🌀 LET'S SUSHI! 🐹💿🌈 TURN IT UP!! 🌸🍣🐹💫
-    </marquee>
-  </div>
-
-  <h2>★ 最新情報 ★</h2>
-  <div class="news">
-    <ul>
-      <li>「sushihamster」 オフィシャルホームページ開設 <span style="color: red;">New!</span></li>
-      <li>「<a href='https://youtu.be/dqTXIbdbpMU?si=pjWWV3yExXTOJgHR'>sushihamster DJmix</a>」 2025年6月25日公開 <span style="color: red;">New!</span></li>
-      <li>「<a href='https://www.instagram.com/sush1h4mst3r/'>sushihamster 公式Instagram</a>」 開設 <span style="color: red;">New!</span></li>
-    </ul>
-  </div>
-
-  <div class="contact">
-    📩 イベント・メディア・コラボなどのお問い合わせは：<br />
-    <a href="mailto:sush1h4mst3r@gmail.com">sush1h4mst3r@gmail.com</a>
-  </div>
-
-  <div class="caution">
-    🚫 サイト内のすべての画像・文章の無断転載を禁止します。<br />
-    SNSでの偽アカウントにもご注意ください。
-  </div>
-
-</body>
-</html>
+<div class="caution">
+  🚫 サイト内のすべての画像・文章の無断転載を禁止します。<br />
+  SNSでの偽アカウントにもご注意ください。
+</div>
