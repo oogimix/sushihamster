@@ -33,9 +33,11 @@
 
               const title = doc.querySelector("title")?.textContent ?? filename;
               const date = doc.querySelector("small")?.textContent ?? "";
-              const preview = doc.querySelector("p:nth-of-type(2)")?.textContent?.trim()
-                            ?? doc.querySelector("p")?.textContent?.trim()
-                            ?? "（本文なし）";
+              const preview =
+                    doc.querySelector(".news-preview")?.textContent?.trim() ||
+                    doc.querySelector("p:nth-of-type(2)")?.textContent?.trim() ||
+                    doc.querySelector("p")?.textContent?.trim() ||
+                     "（本文なし）";
               const imageUrl = doc.querySelector("img")?.getAttribute("src") ?? null;
 
               const url = `news/${filename}`;

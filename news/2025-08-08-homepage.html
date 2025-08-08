@@ -39,42 +39,49 @@
 
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const pathParts = window.location.pathname.split("/");
-      const currentFilename = pathParts[pathParts.length - 1];
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const currentFilename = window.location.pathname.split("/").pop();
 
-      fetch("/news/files-html.json")
-        .then(res => res.json())
-        .then(files => {
-          const index = files.indexOf(currentFilename);
-          if (index === -1) {
-            console.error("現在のファイル名が files-html.json に見つかりません:", currentFilename);
-            return;
-          }
+    fetch("/news/files-html.json?nocache=" + Date.now())
+      .then(res => {
+        if (!res.ok) throw new Error("ファイル取得エラー");
+        return res.json();
+      })
+      .then(files => {
+        const index = files.indexOf(currentFilename);
+        if (index === -1) {
+          console.warn("現在のファイルが一覧に見つかりません:", currentFilename);
+          return;
+        }
 
-          const prev = files[index + 1];
-          const next = files[index - 1];
+        const prev = files[index + 1];
+        const next = files[index - 1];
 
-          const nav = document.querySelector(".news-nav");
-          if (!nav) return;
+        const nav = document.querySelector(".news-nav");
+        if (!nav) return;
 
-          const createLink = (file, text) => {
-            const a = document.createElement("a");
-            a.href = `/news/${file}`;
-            a.textContent = text;
-            return a;
-          };
+        const createLink = (file, text) => {
+          const a = document.createElement("a");
+          a.href = `/news/${file}`;
+          a.textContent = text;
+          return a;
+        };
 
-          nav.innerHTML = "";
-          nav.appendChild(prev ? createLink(prev, "← 前の記事へ") : document.createElement("span"));
-          nav.appendChild(createLink("information.html", "お知らせ一覧へ戻る"));
-          nav.appendChild(next ? createLink(next, "次の記事へ →") : document.createElement("span"));
-        })
-        .catch(err => {
-          console.error("JSON読み込みエラー:", err);
-        });
-    });
-  </script>
+        nav.innerHTML = "";
+        nav.appendChild(prev ? createLink(prev, "← 前の記事へ") : document.createElement("span"));
+        nav.appendChild(createLink("information.html", "お知らせ一覧へ戻る"));
+        nav.appendChild(next ? createLink(next, "次の記事へ →") : document.createElement("span"));
+      })
+      .catch(err => {
+        console.error("ナビゲーション生成エラー:", err);
+        const nav = document.querySelector(".news-nav");
+        if (nav) {
+          nav.innerHTML = "<span style='color: red;'>記事ナビの読み込みに失敗しました。</span>";
+        }
+      });
+  });
+</script>
+
 </body>
 </html>

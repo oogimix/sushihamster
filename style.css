@@ -667,6 +667,56 @@ table.link-table tr:hover {
   }
 }
 
+/* === ブログ記事 === */
+
+/* メイン画像中央寄せ */
+.news-feature img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+/* === お知らせ内ナビ（前・次リンク）=== */
+.news-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.news-nav a {
+  flex: 1;
+  min-width: 100px;
+}
+
+/* スマホ用レスポンシブ */
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px dashed #99ccff;
+    margin-bottom: 10px;
+  }
+
+  .news-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .news-nav a {
+    width: 100%;
+  }
+}
+
 
 /* === 日本語最適化クラス === */
 .kinsoku, p, li, .char-desc, .catchcopy, .framed-box, .profile-box {

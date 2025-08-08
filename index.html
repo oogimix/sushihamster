@@ -14,6 +14,18 @@
   <link rel="manifest" href="/site.webmanifest" />
 
   <script>
+    function addScript(src, id, callback) {
+      const old = document.getElementById(id);
+      if (old) old.remove();
+
+      const script = document.createElement("script");
+      script.src = src + "?" + Date.now(); // キャッシュバスター
+      script.id = id;
+      script.onload = callback;
+      script.onerror = () => console.error(`❌ ${src} failed to load`);
+      document.body.appendChild(script);
+    }
+
     function loadPage(page) {
       fetch(page)
         .then(res => {
@@ -25,30 +37,25 @@
           container.innerHTML = html;
           window.scrollTo(0, 0);
 
-          // information.html 用 JS 読み込み
+          // 各ページごとの追加JS読み込み処理
           if (page.includes("information.html")) {
-            const old = document.getElementById("news-loader-script");
-            if (old) old.remove();
-
-            const script = document.createElement("script");
-            script.src = "/news-loader-html.js?" + Date.now();
-            script.id = "news-loader-script";
-            script.onload = () => console.log("✅ news-loader-html.js loaded");
-            script.onerror = () => console.error("❌ news-loader-html.js failed to load");
-            document.body.appendChild(script);
+            addScript("/news-loader-html.js", "news-loader-script", () =>
+              console.log("✅ news-loader-html.js loaded"));
           }
 
-          // home.html 用 JS 読み込み（トップページ）
           if (page.includes("home.html")) {
-            const old = document.getElementById("news-top-script");
-            if (old) old.remove();
+            addScript("/news-top.js", "news-top-script", () =>
+              console.log("✅ news-top.js loaded"));
+          }
 
-            const script = document.createElement("script");
-            script.src = "/news-top.js?" + Date.now();
-            script.id = "news-top-script";
-            script.onload = () => console.log("✅ news-top.js loaded");
-            script.onerror = () => console.error("❌ news-top.js failed to load");
-            document.body.appendChild(script);
+          if (page.startsWith("news/") && page.endsWith(".html")) {
+            const filename = page.split("/").pop();
+            addScript("/news-nav.js", "news-nav-script", () => {
+              if (typeof generateNewsNav === "function") {
+                generateNewsNav(filename);
+                console.log("✅ news-nav.js loaded & generateNewsNav called");
+              }
+            });
           }
         })
         .catch(err => {
@@ -57,7 +64,6 @@
         });
     }
 
-    // 初期表示で home.html を読み込む
     document.addEventListener("DOMContentLoaded", () => {
       loadPage("home.html");
     });
