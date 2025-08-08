@@ -1,7 +1,7 @@
 (() => {
   const container = document.getElementById('news-list');
 
-  fetch('news/files.json')
+  fetch('news/files-html.json')
     .then(res => res.json())
     .then(files => {
       const sortedFiles = files.slice().reverse(); // 新しい順
@@ -10,22 +10,15 @@
         sortedFiles.map(filename =>
           fetch(`news/${filename}`)
             .then(res => res.text())
-            .then(text => {
-              const title = text.match(/title:\s*(.+)/)?.[1] ?? filename;
-              const date = text.match(/date:\s*(.+)/)?.[1] ?? '';
-              const url = `/news/${filename.replace('.md', '.html')}`;
+            .then(html => {
+              const title = html.match(/<title>(.*?)<\/title>/i)?.[1] ?? filename;
+              const dateMatch = html.match(/<small[^>]*>(\d{4}-\d{2}-\d{2})<\/small>/);
+              const date = dateMatch?.[1] ?? '';
+              const preview = html.match(/<p>(.*?)<\/p>/is)?.[1]?.replace(/<[^>]+>/g, '') ?? '（本文なし）';
+              const thumbMatch = html.match(/<img[^>]+src=["']([^"']+)["'][^>]*class=["'][^"']*news-thumb[^"']*["']/i);
+              const imageUrl = thumbMatch?.[1] ?? null;
 
-              const parts = text.split('---');
-              const body = parts.length >= 3 ? parts.slice(2).join('---').trim() : '';
-
-              const imageRegex = /!\[.*?\]\(([^)]+)\)/;
-              const imageMatch = body.match(imageRegex);
-              const imageUrl = imageMatch ? imageMatch[1] : null;
-
-              const preview = body
-                .split('\n')
-                .map(line => line.trim())
-                .filter(line => line && !imageRegex.test(line))[0] ?? '（本文なし）';
+              const url = `news/${filename}`;
 
               return `
                 <a class="news-post-link" href="${url}" onclick="loadPage('${url}'); return false;">
