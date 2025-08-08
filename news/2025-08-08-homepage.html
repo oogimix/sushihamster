@@ -26,12 +26,11 @@
     </div>
 
     <div class="share-buttons" style="margin: 24px 0; text-align: center;">
-      <a href="#" class="sns-btn tw">Twitterでシェア</a>
-      <a href="#" class="sns-btn ig">Instagramストーリーズ</a>
-      <a href="#" class="sns-btn yt">YouTubeで見る</a>
+      <a href="javascript:void(0)" class="sns-btn tw" id="twitter-share-btn">Twitterでシェア</a>
+      <a href="javascript:void(0)" class="sns-btn ig">Instagramストーリーズ</a>
+      <a href="javascript:void(0)" class="sns-btn yt">YouTubeで見る</a>
     </div>
 
-    <!-- ナビゲーション -->
     <div class="news-nav"
       style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; flex-wrap: wrap; gap: 10px; text-align: center;">
       <span>読み込み中...</span>
@@ -39,49 +38,49 @@
 
   </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const currentFilename = window.location.pathname.split("/").pop();
+  <!-- 記事ナビ生成JS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentFilename = window.location.pathname.split("/").pop();
 
-    fetch("/news/files-html.json?nocache=" + Date.now())
-      .then(res => {
-        if (!res.ok) throw new Error("ファイル取得エラー");
-        return res.json();
-      })
-      .then(files => {
-        const index = files.indexOf(currentFilename);
-        if (index === -1) {
-          console.warn("現在のファイルが一覧に見つかりません:", currentFilename);
-          return;
-        }
+      fetch("/news/files-html.json?nocache=" + Date.now())
+        .then(res => {
+          if (!res.ok) throw new Error("ファイル取得エラー");
+          return res.json();
+        })
+        .then(files => {
+          const index = files.indexOf(currentFilename);
+          if (index === -1) return;
 
-        const prev = files[index + 1];
-        const next = files[index - 1];
+          const prev = files[index + 1];
+          const next = files[index - 1];
+          const nav = document.querySelector(".news-nav");
+          if (!nav) return;
 
-        const nav = document.querySelector(".news-nav");
-        if (!nav) return;
+          const createLink = (file, text) => {
+            const a = document.createElement("a");
+            a.href = `/news/${file}`;
+            a.textContent = text;
+            return a;
+          };
 
-        const createLink = (file, text) => {
-          const a = document.createElement("a");
-          a.href = `/news/${file}`;
-          a.textContent = text;
-          return a;
-        };
+          nav.innerHTML = "";
+          nav.appendChild(prev ? createLink(prev, "← 前の記事へ") : document.createElement("span"));
+          nav.appendChild(createLink("information.html", "お知らせ一覧へ戻る"));
+          nav.appendChild(next ? createLink(next, "次の記事へ →") : document.createElement("span"));
+        })
+        .catch(err => {
+          console.error("ナビゲーション生成エラー:", err);
+          const nav = document.querySelector(".news-nav");
+          if (nav) {
+            nav.innerHTML = "<span style='color: red;'>記事ナビの読み込みに失敗しました。</span>";
+          }
+        });
+    });
+  </script>
 
-        nav.innerHTML = "";
-        nav.appendChild(prev ? createLink(prev, "← 前の記事へ") : document.createElement("span"));
-        nav.appendChild(createLink("information.html", "お知らせ一覧へ戻る"));
-        nav.appendChild(next ? createLink(next, "次の記事へ →") : document.createElement("span"));
-      })
-      .catch(err => {
-        console.error("ナビゲーション生成エラー:", err);
-        const nav = document.querySelector(".news-nav");
-        if (nav) {
-          nav.innerHTML = "<span style='color: red;'>記事ナビの読み込みに失敗しました。</span>";
-        }
-      });
-  });
-</script>
-
+  <!-- シェアボタン用JSを明示的に読み込む -->
+  <script src="../share.js"></script>
+  <script>initShareButtons();</script>
 </body>
 </html>

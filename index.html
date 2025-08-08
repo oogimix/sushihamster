@@ -11,74 +11,31 @@
   <link rel="shortcut icon" href="/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="sushihamster" />
+  <!-- ✅ OGP基本情報 -->
+  <meta property="og:title" content="sushihamsterのホームページ">
+  <meta property="og:description" content="寿司とハムスターが融合した世界初の音楽ユニット🐹🍣の公式サイト。最新情報、出演情報など随時更新中！">
+  <meta property="og:image" content="https:///asset/img/ogp.jpg">
+  <meta property="og:url" content="https://sushihamster.com">
+  <meta property="og:type" content="website">
+
+  <!-- ✅ Twitterカード用 -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@sush1h4mst3r
+
   <link rel="manifest" href="/site.webmanifest" />
-
-  <script>
-    function addScript(src, id, callback) {
-      const old = document.getElementById(id);
-      if (old) old.remove();
-
-      const script = document.createElement("script");
-      script.src = src + "?" + Date.now(); // キャッシュバスター
-      script.id = id;
-      script.onload = callback;
-      script.onerror = () => console.error(`❌ ${src} failed to load`);
-      document.body.appendChild(script);
-    }
-
-    function loadPage(page) {
-      fetch(page)
-        .then(res => {
-          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-          return res.text();
-        })
-        .then(html => {
-          const container = document.getElementById('page-content');
-          container.innerHTML = html;
-          window.scrollTo(0, 0);
-
-          // 各ページごとの追加JS読み込み処理
-          if (page.includes("information.html")) {
-            addScript("/news-loader-html.js", "news-loader-script", () =>
-              console.log("✅ news-loader-html.js loaded"));
-          }
-
-          if (page.includes("home.html")) {
-            addScript("/news-top.js", "news-top-script", () =>
-              console.log("✅ news-top.js loaded"));
-          }
-
-          if (page.startsWith("news/") && page.endsWith(".html")) {
-            const filename = page.split("/").pop();
-            addScript("/news-nav.js", "news-nav-script", () => {
-              if (typeof generateNewsNav === "function") {
-                generateNewsNav(filename);
-                console.log("✅ news-nav.js loaded & generateNewsNav called");
-              }
-            });
-          }
-        })
-        .catch(err => {
-          console.error("ページ読み込みエラー:", err);
-          document.getElementById('page-content').innerHTML = "<p>読み込みに失敗しました。</p>";
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      loadPage("home.html");
-    });
-  </script>
+  <script src="main.js" defer></script>
+  <script src="/share.js"></script>
 </head>
 
 <body>
   <nav class="mobile-nav">
-    <a href="#" onclick="loadPage('home.html')">🏠</a>
-    <a href="#" onclick="loadPage('information.html')">📢</a>
-    <a href="#" onclick="loadPage('sushiham_prof.html')">🐹</a>
-    <a href="#" onclick="loadPage('discography.html')">🎵</a>
-    <a href="#" onclick="loadPage('gallery.html')">🎥</a>
-    <a href="#" onclick="loadPage('bbs.html')">📋</a>
-    <a href="#" onclick="loadPage('link.html')">📎</a>
+    <a href="#home.html">🏠</a>
+    <a href="#information.html">📢</a>
+    <a href="#sushiham_prof.html">🐹</a>
+    <a href="#discography.html">🎵</a>
+    <a href="#gallery.html">🎥</a>
+    <a href="#bbs.html">📋</a>
+    <a href="#link.html">📎</a>
   </nav>
 
   <header>
@@ -91,14 +48,13 @@
     <aside class="sidebar">
       <div class="menu-links">
         <b>▼ メニュー</b><br />
-        🏠 <a href="#" onclick="loadPage('home.html')">トップ</a><br />
-        📢 <a href="#" onclick="loadPage('information.html')">お知らせ</a><br />
-        🐹 <a href="#" onclick="loadPage('sushiham_prof.html')">プロフィール</a><br />
-        🎵 <a href="#" onclick="loadPage('discography.html')">音楽</a><br />
-        🎥 <a href="#" onclick="loadPage('gallery.html')">ギャラリー</a><br />
-        📋 <a href="#" onclick="loadPage('bbs.html')">BBS集</a><br />
-        📎 <a href="#" onclick="loadPage('link.html')">リンク集</a><br />
-        <br />
+        🏠 <a href="#home.html">トップ</a><br />
+        📢 <a href="#information.html">お知らせ</a><br />
+        🐹 <a href="#sushiham_prof.html">プロフィール</a><br />
+        🎵 <a href="#discography.html">音楽</a><br />
+        🎥 <a href="#gallery.html">ギャラリー</a><br />
+        📋 <a href="#bbs.html">BBS集</a><br />
+        📎 <a href="#link.html">リンク集</a><br />
       </div>
     </aside>
 
