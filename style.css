@@ -197,32 +197,33 @@ h2 {
   font-size: 14px;
   padding: 20px;
   width: 90%;
-  max-width: 650px;
+  max-width: 700px; /* 最新情報欄に合わせて700pxに拡大 */
   margin: 20px auto 30px;
   line-height: 1.5;
   text-align: center;
-  color: #fff;
+  color: #ffffff; /* 文字は白に */
   font-weight: bold;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  text-shadow:
+    2px 2px 4px rgba(0, 0, 50, 0.8); /* 黒に近い濃い影で読みやすく */
   border-radius: 12px;
   overflow: hidden;
   box-sizing: border-box;
-  background: none; /* 元の背景は消す */
+  background: none;
 }
 
-/* 背景画像を ::before で入れる */
+/* 背景画像 */
 .contact::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: url('/asset/img/contact_bg.jpeg') no-repeat center center;
   background-size: cover;
-  opacity: 0.35;  /* 半透明で文字を読みやすく */
+  opacity: 0.45;  /* 少し透明度上げて明るく */
   z-index: 0;
   border-radius: 12px;
 }
 
-/* 文字部分を前面に */
+/* 文字を前面に */
 .contact > * {
   position: relative;
   z-index: 1;
@@ -234,7 +235,7 @@ h2 {
   font-weight: bold;
   text-decoration: underline;
   text-shadow:
-    0 0 5px #ff99cc,
+    0 0 6px #ff99cc,
     0 0 12px #ff66aa;
   transition: all 0.3s ease;
 }
@@ -244,6 +245,7 @@ h2 {
   text-shadow:
     0 0 12px #ff3388,
     0 0 18px #ff99cc;
+  cursor: url('asset/cursor/pastelpink.cur'), pointer;
 }
 
 /* friend-links を左寄せに揃え＆Y2K風 */
