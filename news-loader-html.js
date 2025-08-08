@@ -12,40 +12,57 @@
     fetch(FILES_JSON)
       .then(res => res.json())
       .then(files => {
-        const sortedFiles = files.slice().reverse(); // 新しい順
+        const sortedFiles = files
+          .filter(file => file.endsWith(".html"))
+          .map(filename => {
+            const dateStr = filename.split("-").slice(0, 3).join("-");
+            return { filename, date: new Date(dateStr) };
+          })
+          .sort((a, b) => b.date - a.date);
 
-        return Promise.all(
-          sortedFiles.map(filename =>
-            fetch(`news/${filename}`)
-              .then(res => res.text())
-              .then(html => {
-                const title = html.match(/<title>(.*?)<\/title>/i)?.[1] ?? filename;
-                const dateMatch = html.match(/<small[^>]*>(\d{4}-\d{2}-\d{2})<\/small>/);
-                const date = dateMatch?.[1] ?? '';
-                const preview = html.match(/<p>(.*?)<\/p>/is)?.[1]?.replace(/<[^>]+>/g, '') ?? '（本文なし）';
-                const thumbMatch = html.match(/<img[^>]+src=["']([^"']+)["'][^>]*class=["'][^"']*news-thumb[^"']*["']/i);
-                const imageUrl = thumbMatch?.[1] ?? null;
+        const renderPosts = async () => {
+          const results = [];
 
-                const url = `news/${filename}`;
+          for (const { filename } of sortedFiles) {
+            try {
+              const res = await fetch(`news/${filename}`);
+              const html = await res.text();
 
-                return `
-                  <a class="news-post-link" href="${url}" onclick="loadPage('${url}'); return false;">
-                    <div class="news-post">
-                      ${imageUrl ? `<img src="${imageUrl}" alt="" class="news-thumb" />` : ''}
-                      <div class="news-text">
-                        <h2 class="news-title">${title}</h2>
-                        <small class="news-date">${date}</small>
-                        <p class="news-preview">${preview}</p>
-                      </div>
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, "text/html");
+
+              const title = doc.querySelector("title")?.textContent ?? filename;
+              const date = doc.querySelector("small")?.textContent ?? "";
+              const preview = doc.querySelector("p:nth-of-type(2)")?.textContent?.trim()
+                            ?? doc.querySelector("p")?.textContent?.trim()
+                            ?? "（本文なし）";
+              const imageUrl = doc.querySelector("img")?.getAttribute("src") ?? null;
+
+              const url = `news/${filename}`;
+
+              const postHTML = `
+                <a class="news-post-link" href="${url}" onclick="loadPage('${url}'); return false;">
+                  <div class="news-post">
+                    ${imageUrl ? `<img src="${imageUrl}" alt="" class="news-thumb" />` : ''}
+                    <div class="news-text">
+                      <h2 class="news-title">${title}</h2>
+                      <small class="news-date">${date}</small>
+                      <p class="news-preview">${preview}</p>
                     </div>
-                  </a>
-                `;
-              })
-          )
-        );
-      })
-      .then(posts => {
-        container.innerHTML = posts.join('');
+                  </div>
+                </a>
+              `;
+
+              results.push(postHTML);
+            } catch (err) {
+              console.error(`🛑 ${filename} の読み込み失敗:`, err);
+            }
+          }
+
+          container.innerHTML = results.join('');
+        };
+
+        renderPosts();
       })
       .catch(err => {
         console.error("お知らせ一覧の読み込み失敗:", err);

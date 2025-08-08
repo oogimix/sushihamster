@@ -164,20 +164,45 @@ marquee {
 }
 
 .news {
-  max-height: 180px;
-  overflow-y: auto;
-  border: 2px inset #99ccff;
+  border: 2px solid #99ccff;
   background-color: #f6fcff;
-  padding: 10px;
-  margin: 20px auto;
-  line-height: 1.6;
+  padding: 20px; /* ← ここ統一感あるように調整 */
+  margin: 30px auto;
+  border-radius: 12px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
   width: 90%;
-  max-width: 700px;
+  max-width: 650px;
+  box-sizing: border-box;
+}
+
+
+.news ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.news ul li {
+  margin-bottom: 10px;
+  padding-left: 1.2em; /* ← 少しだけ減らす */
+  position: relative;
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .news ul li::before {
-  content: "\1f363 ";
-  margin-right: 6px;
+  content: "🍣";
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* リンク */
+.news ul li a {
+  color: #003366;
+  text-decoration: underline;
 }
 
 h2 {
@@ -525,71 +550,99 @@ table.link-table tr:hover {
   background-color: #e6f0ff;
 }
 
-/* === お知らせページ用 === */
+/* === お知らせページ（ブログ風リデザイン）=== */
 
+.news {
+  border: 2px outset #ccf;
+  background-color: #fefefe;
+  padding: 20px;
+  margin: 30px auto;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 #999, -1px -1px 0 #fff;
+  width: 90%;
+  max-width: 650px;
+  font-family: 'ＭＳ Ｐゴシック', sans-serif;
+}
+
+.news-list-wrapper {
+  max-width: 760px;     /* ← 他ページと統一 */
+  margin: 40px auto;     /* 上下にも余白を追加 */
+  padding: 0 24px;       /* 横余白を増やすと綺麗に */
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* 各投稿（ブログ記事風に仕切り線で分割） */
 .news-post-link {
   display: block;
   text-decoration: none;
   color: inherit;
+  padding: 20px 0;
+  border-bottom: 2px inset #99ccff; /* ← バイブス線ここ */
+  transition: background-color 0.2s ease;
 }
 
-.news-post {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  padding: 14px;
-  border: 3px ridge #99ccff;
-  background: #f6fcff;
-  border-radius: 12px;
-  align-items: flex-start;
-  box-shadow: 0 4px 10px rgba(204, 204, 255, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
+.news-post-link:last-child {
+  border-bottom: none;
 }
 
-.news-post:hover {
-  transform: scale(1.02);
-  box-shadow: 0 6px 14px rgba(204, 204, 255, 0.5);
-  background: #ffffffee;
+.news-post-link:hover {
+  background-color: #e6f0ff;
+  outline: 1px solid #99ccff;
+  box-shadow: 0 0 6px #66f, inset 0 0 4px #ccf;
+
   cursor: url('asset/cursor/linopink.png'), pointer;
 }
 
+/* 投稿レイアウト：左画像・右テキスト */
+.news-post {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* サムネイル画像 */
 .news-thumb {
-  width: 100px;
+  width: 90px;
   height: auto;
   border-radius: 8px;
-  box-shadow: 0 0 5px #ccc;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
   flex-shrink: 0;
 }
 
+/* テキスト部分 */
 .news-text {
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 6px;
 }
 
-.news-post h2 {
-  font-size: 1.2rem;
-  margin: 0 0 4px;
+.news-title {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  color: #000080;
+  text-shadow: 1px 1px 0 #fff;
   text-align: left;
 }
 
-.news-post small {
+.news-date {
   color: #666;
   font-size: 0.85rem;
-  margin-bottom: 6px;
   text-align: left;
 }
 
-.news-post p {
-  margin: 0;
+.news-preview {
   font-size: 0.95rem;
-  line-height: 1.5;
+  line-height: 1.6;
   color: #333;
+  margin: 0;
+  overflow-wrap: anywhere;
   text-align: left;
 }
 
+/* モバイル対応 */
 @media (max-width: 600px) {
   .news-post {
     flex-direction: column;
@@ -599,23 +652,24 @@ table.link-table tr:hover {
 
   .news-thumb {
     width: 80%;
-    max-width: 250px;
+    max-width: 240px;
   }
 
   .news-text {
     width: 100%;
+    align-items: center;
   }
 
-  .news-post h2,
-  .news-post small,
-  .news-post p {
+  .news-title,
+  .news-date,
+  .news-preview {
     text-align: center;
   }
 }
 
 
 /* === 日本語最適化クラス === */
-.kinsoku, p, li, .char-desc, .catchcopy, .framed-box, .profile-box, .news {
+.kinsoku, p, li, .char-desc, .catchcopy, .framed-box, .profile-box {
   line-break: strict;
   word-break: keep-all;
   overflow-wrap: break-word;
@@ -709,6 +763,23 @@ table.link-table tr:hover {
   min-height: 100%;
 }
 
+@media screen and (max-width: 600px) {
+  .news ul li {
+    font-size: 13px;
+    padding: 8px 12px 8px 34px;
+  }
+
+  .news ul li::before {
+    top: 8px;
+  }
+
+  .news ul li .new-label {
+    display: block;
+    margin-left: 0;
+    margin-top: 4px;
+  }
+}
+
 @media (max-width: 480px) {
   .title {
     font-size: 16px;
@@ -717,4 +788,46 @@ table.link-table tr:hover {
   .catchcopy span {
     font-size: 18px;
   }
+}
+
+/* === 共通ボックス設定 === */
+.box-common {
+  width: 90%;
+  max-width: 650px;
+  margin: 30px auto;
+  box-sizing: border-box;
+}
+
+/* catchcopy にも共通化適用 */
+.catchcopy {
+  composes: box-common;
+  font-size: 18px;
+  padding: 15px;
+  background: linear-gradient(to bottom right, #f8fcff, #d8ecff);
+  border: 2px solid #99ccff;
+  border-radius: 10px;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
+  line-height: 1.6;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* 既存ボックスにも共通化適用 */
+.news,
+.contact,
+.profile-box,
+.framed-box,
+.link-table,
+.video-wrapper {
+  width: 90%;
+  max-width: 650px;
+  margin: 30px auto;
+  box-sizing: border-box;
+}
+
+.page-wrapper {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
 }
