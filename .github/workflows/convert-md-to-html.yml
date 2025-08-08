@@ -5,16 +5,22 @@ on:
     paths:
       - 'news-md/**/*.md'
       - '.github/workflows/convert-md-to-html.yml'
+      - 'tools/convert.js'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -22,13 +28,15 @@ jobs:
       - name: Install dependencies
         run: npm install gray-matter marked
 
-      - name: Convert .md to .html
+      - name: Convert Markdown to HTML
         run: node tools/convert.js
 
-      - name: Commit and push
+      - name: Commit and Push HTML
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add news/*.html files-html.json
-          git commit -m "auto: converted markdown to html"
-          git push
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git status
+          git diff --cached
+          git commit -m "✅ Auto-generate HTML from Markdown" || echo "No changes"
+          git push origin HEAD:${{ github.ref_name }}
