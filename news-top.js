@@ -1,8 +1,6 @@
-// news-top.js
-
 const NEWS_LIST_SELECTOR = ".news ul";
 
-fetch("news/files.json")
+fetch("news/files-html.json")
   .then(res => res.json())
   .then(files => {
     const container = document.querySelector(NEWS_LIST_SELECTOR);
@@ -10,13 +8,13 @@ fetch("news/files.json")
 
     const now = new Date();
     const items = files
-      .filter(file => file.endsWith(".md"))
+      .filter(file => file.endsWith(".html"))
       .map(filename => {
         const dateStr = filename.split("-").slice(0, 3).join("-");
-        const title = filename.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, "");
-        const url = `./news/${filename.replace(".md", ".html")}`;
+        const title = filename.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.html$/, "");
+        const url = `./news/${filename}`;
 
-        // 日付差分
+        // NEW判定（30日以内）
         const postDate = new Date(dateStr);
         const daysAgo = (now - postDate) / (1000 * 60 * 60 * 24);
         const isNew = daysAgo <= 30;
