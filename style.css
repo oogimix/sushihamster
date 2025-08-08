@@ -195,11 +195,22 @@ marquee {
   list-style: none;
   margin: 0;
   padding: 0;
+  max-height: 7.2em; /* だいたい4〜5行分（1.6 * 4.5行） */
+  overflow-y: auto;
+}
+
+.news ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.news ul::-webkit-scrollbar-thumb {
+  background-color: #99ccff;
+  border-radius: 4px;
 }
 
 .news ul li {
   margin-bottom: 10px;
-  padding-left: 1.2em; /* ← 少しだけ減らす */
+  padding-left: 1.2em;
   position: relative;
   font-size: 14px;
   line-height: 1.6;
@@ -928,4 +939,5 @@ table.link-table tr:hover {
   margin: 0 auto;
   padding: 0 24px;
   box-sizing: border-box;
+
 }
