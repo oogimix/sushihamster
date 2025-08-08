@@ -255,12 +255,12 @@ ul {
   box-shadow: 0 0 10px #ccf;
 }
 
-.friend-links {
+.sns-links {
   margin-top: 15px;
   font-size: 14px;
 }
 
-.friend-links a {
+.sns-links a {
   display: inline-block;
   margin: 0 8px;
   text-decoration: none;
