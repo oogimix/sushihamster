@@ -190,18 +190,17 @@ h2 {
   color: #9933cc;
   text-shadow: 1px 1px 2px #cc99ff;
 }
-
 .contact {
   position: relative;
   font-family: 'ＭＳ Ｐゴシック', Osaka, sans-serif;
   font-size: 14px;
   padding: 20px;
   width: 90%;
-  max-width: 700px; /* 最新情報欄に合わせて700pxに拡大 */
+  max-width: 700px;
   margin: 20px auto 30px;
   line-height: 1.5;
   text-align: center;
-  color: #ffffff; /* 文字は白に */
+  color: #ffffff; /* 文字は白 */
   font-weight: bold;
   border-radius: 12px;
   overflow: hidden;
@@ -209,25 +208,22 @@ h2 {
   background: none;
 }
 
-/* 背景画像 */
 .contact::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: url('/asset/img/contact_bg.jpeg') no-repeat center center;
   background-size: cover;
-  opacity: 0.45;  /* 少し透明度上げて明るく */
+  opacity: 0.45;  /* 半透明 */
   z-index: 0;
   border-radius: 12px;
 }
 
-/* 文字を前面に */
 .contact > * {
   position: relative;
   z-index: 1;
 }
 
-/* メールリンク */
 .contact a {
   color: #ff99cc;
   font-weight: bold;
@@ -238,6 +234,7 @@ h2 {
 .contact a:hover {
   color: #ff66aa;
 }
+
 
 /* friend-links を左寄せに揃え＆Y2K風 */
 .friend-links {
