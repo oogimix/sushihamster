@@ -1,7 +1,7 @@
 // ✅ 完全統合版 main.js - SPA + ハッシュルーティング + 最新情報一覧描画 + シェア対応
 (function () {
   const CONTENT_ID = "page-content";
-  const SCRIPT_IDS = ["news-loader-script", "news-nav-script"];
+  const SCRIPT_IDS = ["news-loader-script", "share-script"]; // ← news-nav-script 削除済
   const FILES_JSON = "news/files-html.json";
   const NEWS_LIST_SELECTOR = ".news ul";
 
@@ -42,7 +42,7 @@
           })
           .sort((a, b) => b.date - a.date);
 
-        container.innerHTML = ""; // ←これ重要！前の内容を消す
+        container.innerHTML = ""; // ←これ重要！
 
         sortedFiles.forEach(({ filename, date }) => {
           fetch(`news/${filename}`)
@@ -110,17 +110,52 @@
         } else if (page.startsWith("news/") && page.endsWith(".html")) {
           const filename = page.split("/").pop();
 
-          // ナビゲーションJS読み込み
-          addScript("/news-nav.js", "news-nav-script", () => {
-            if (typeof generateNewsNav === "function") {
-              generateNewsNav(filename);
+          // ✅ ナビゲーション生成（main.jsに統合済み）
+          const nav = document.querySelector(".news-nav");
+          if (nav) {
+            fetch("/news/files-html.json?nocache=" + Date.now())
+              .then(res => {
+                if (!res.ok) throw new Error("ファイル取得エラー");
+                return res.json();
+              })
+              .then(files => {
+                const index = files.indexOf(filename);
+                if (index === -1) return;
+
+                const prev = files[index + 1];
+                const next = files[index - 1];
+
+                const createLink = (file, text) => {
+                  const a = document.createElement("a");
+                  a.href = `#news/${file}`;
+                  a.textContent = text;
+                  return a;
+                };
+
+                nav.innerHTML = "";
+                nav.appendChild(prev ? createLink(prev, "← 前の記事へ") : document.createElement("span"));
+
+                const infoLink = document.createElement("a");
+                infoLink.href = "#information.html";
+                infoLink.textContent = "お知らせ一覧へ戻る";
+                nav.appendChild(infoLink);
+
+                nav.appendChild(next ? createLink(next, "次の記事へ →") : document.createElement("span"));
+              })
+              .catch(err => {
+                console.error("ナビゲーション生成エラー:", err);
+                nav.innerHTML = "<span style='color: red;'>記事ナビの読み込みに失敗しました。</span>";
+              });
+          }
+
+          // ✅ シェアボタンJS読み込み（関数定義保証＆初期化）
+          addScript("/share.js", "share-script", () => {
+            if (typeof initShareButtons === "function") {
+              initShareButtons();
+            } else {
+              console.warn("⚠ initShareButtons not defined after share.js load.");
             }
           });
-
-          // ✅ シェアボタン初期化（関数が定義済みなら）
-          if (typeof initShareButtons === "function") {
-            initShareButtons();
-          }
         }
       })
       .catch(err => {

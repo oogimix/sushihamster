@@ -8,7 +8,7 @@ function initShareButtons() {
   const shareTitle = `${articleTitle} | sushihamsterのホームページ`;
 
   // Twitterでシェア
-  const twitterBtn = document.querySelector(".sns-btn.tw");
+  const twitterBtn = document.querySelector("#twitter-share-btn");
   if (twitterBtn) {
     twitterBtn.addEventListener("click", (e) => {
       e.preventDefault();
