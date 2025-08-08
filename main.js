@@ -6,7 +6,7 @@
 
   // 👇 ここがポイント
   const BBS_PAGE = "hamham_bbs.html"; // SPA内で読むHTML
-  const BBS_EXTERNAL_URL = "https://www.kent-web.com/bbs/clipbbs/clipbbs.cgi"; // スマホはこれを新規タブで開く
+  const BBS_EXTERNAL_URL = "https://sush1h4mst3r.stars.ne.jp/clipbbs/clipbbs.cgi"; // スマホはこれを新規タブで開く
   const MOBILE_BP = 768;
 
   function isMobile() {
