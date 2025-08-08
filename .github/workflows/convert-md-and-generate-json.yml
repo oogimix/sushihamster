@@ -8,6 +8,10 @@ on:
 jobs:
   convert-and-generate:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # ✅ ←これがないと git push が効かない！
+
     steps:
       - uses: actions/checkout@v4
 
