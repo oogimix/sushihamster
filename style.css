@@ -143,16 +143,31 @@ a:hover {
   margin: 30px auto;
   line-height: 1.6;
   text-align: center;
+  font-family: "Hiragino Maru Gothic ProN", "Rounded Mplus 1c", "Arial Rounded MT Bold", "ＭＳ Ｐゴシック", sans-serif;
 }
 
-.catchcopy span {
+/* タイトル部だけはシンプルでそのまま */
+.catch-title {
   font-size: 20px;
   font-weight: bold;
   text-shadow: 1px 1px 2px #66f, 0 0 8px #99f;
-  white-space: normal;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  text-wrap: balance;
+  display: inline-block;
+}
+
+/* 本文だけY2Kバイブスフォント＋光 */
+.catch-text {
+  display: inline-block;
+  font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
+  font-size: 20px;
+  line-height: 1.8;
+  color: #ffffff;
+  background: linear-gradient(to right, #ff66cc, #66ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 0 1px #e10bb6,
+    0 0 2px #cc66ff,
+    0 0 4px #66ccff;
 }
 
 marquee {
@@ -692,6 +707,39 @@ table.link-table tr:hover {
 .news-nav a {
   flex: 1;
   min-width: 100px;
+}
+
+.article-share-button {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.article-share-button a {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: #0782ce;
+  color: rgba(255, 255, 255, 0.819);
+  font-size: 13px;
+  text-decoration: none;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+  font-family: "Hiragino Maru Gothic ProN", "Rounded Mplus 1c", "Arial Rounded MT Bold", "ＭＳ Ｐゴシック", sans-serif;
+  font-weight: bold;
+}
+
+.article-share-button a:hover {
+  background: #0d8ddb;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.25);
+}
+
+.article-share-button .tiny-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  border-radius: 50%;
 }
 
 /* スマホ用レスポンシブ */
