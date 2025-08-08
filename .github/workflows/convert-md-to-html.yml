@@ -1,40 +1,34 @@
-name: Convert Markdown to HTML and Generate Index
+name: Convert Markdown to HTML
 
 on:
   push:
     paths:
-      - 'news-md/*.md'
+      - 'news-md/**/*.md'
+      - '.github/workflows/convert-md-to-html.yml'
 
 jobs:
-  convert-and-generate:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
-      - name: Convert Markdown to HTML
-        run: |
-          mkdir -p news
-          for file in news-md/*.md; do
-            filename=$(basename "$file" .md)
-            marked "$file" > "news/$filename.html"
-          done
+      - name: Install dependencies
+        run: npm install gray-matter marked
 
-      - name: Generate files-html.json
-        run: |
-          node generate-files.js
-          cat news/files-html.json
+      - name: Convert .md to .html
+        run: node tools/convert.js
 
-      - name: Commit and Push Changes
+      - name: Commit and push
         run: |
           git config user.name github-actions
-          git config user.email actions@github.com
-          git add news/*.html news/files-html.json
-          git status # ← デバッグ用
-          git commit -m "auto: Converted md to html and updated index" || echo "No changes to commit"
+          git config user.email github-actions@github.com
+          git add news/*.html files-html.json
+          git commit -m "auto: converted markdown to html"
           git push
