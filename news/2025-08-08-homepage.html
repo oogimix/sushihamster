@@ -7,13 +7,11 @@
   <link rel="stylesheet" href="../style.css" />
 </head>
 <body>
-  <body class="news kinsoku prose" data-filename="2025-08-08-homepage.html">
+  <div class="news kinsoku prose">
 
-    <!-- 記事タイトル -->
     <h2>ホームページ開設！</h2>
     <p class="news-date">2025-08-08</p>
 
-    <!-- アイキャッチ画像＋概要 -->
     <div class="news-feature">
       <img src="/asset/img/image.jpg" alt="スシハム画像" class="news-thumb" style="width: 100%; height: auto; border-radius: 12px; margin-bottom: 16px;">
       <p class="news-preview">
@@ -23,31 +21,37 @@
       </p>
     </div>
 
-    <!-- iframe 埋め込みセクション（任意） -->
     <div class="news-embed" style="margin: 24px 0;">
-      <!-- 例）<iframe src="https://www.youtube.com/embed/動画ID" width="100%" height="315" frameborder="0" allowfullscreen></iframe> -->
+      <!-- YouTube/Spotify などをここに埋め込める -->
     </div>
 
-    <!-- シェアボタン -->
     <div class="share-buttons" style="margin: 24px 0; text-align: center;">
       <a href="#" class="sns-btn tw">Twitterでシェア</a>
       <a href="#" class="sns-btn ig">Instagramストーリーズ</a>
       <a href="#" class="sns-btn yt">YouTubeで見る</a>
     </div>
 
-    <!-- ナビゲーション自動生成 -->
+    <!-- ナビゲーション -->
     <div class="news-nav"
       style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; flex-wrap: wrap; gap: 10px; text-align: center;">
       <span>読み込み中...</span>
     </div>
 
-    <script>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const pathParts = window.location.pathname.split("/");
+      const currentFilename = pathParts[pathParts.length - 1];
+
       fetch("/news/files-html.json")
         .then(res => res.json())
         .then(files => {
-          const current = window.location.pathname.split("/").pop();
-          const index = files.indexOf(current);
-          if (index === -1) return;
+          const index = files.indexOf(currentFilename);
+          if (index === -1) {
+            console.error("現在のファイル名が files-html.json に見つかりません:", currentFilename);
+            return;
+          }
 
           const prev = files[index + 1];
           const next = files[index - 1];
@@ -64,18 +68,13 @@
 
           nav.innerHTML = "";
           nav.appendChild(prev ? createLink(prev, "← 前の記事へ") : document.createElement("span"));
-          nav.appendChild(createLink("/information.html", "お知らせ一覧へ戻る"));
+          nav.appendChild(createLink("information.html", "お知らせ一覧へ戻る"));
           nav.appendChild(next ? createLink(next, "次の記事へ →") : document.createElement("span"));
         })
         .catch(err => {
-          const nav = document.querySelector(".news-nav");
-          if (nav) {
-            nav.innerHTML = "<span>ナビゲーション読み込み失敗</span>";
-            console.error("ナビ取得エラー:", err);
-          }
+          console.error("JSON読み込みエラー:", err);
         });
-    </script>
-
-  </div>
+    });
+  </script>
 </body>
 </html>
