@@ -206,7 +206,6 @@ h2 {
   font-size: 18px;
   padding: 26px 20px;
   height: auto;
-  min-height: 120px; /* 任意で高さ調整したいときに */
   width: 90%;
   max-width: 700px;
   margin: 30px auto;
