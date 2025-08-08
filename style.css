@@ -525,6 +525,44 @@ table.link-table tr:hover {
   background-color: #e6f0ff;
 }
 
+/* === お知らせページ用 === */
+
+.news-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f6fcff;
+      border: 3px ridge #99ccff;
+    }
+
+.news-post {
+      margin-bottom: 30px;
+      padding: 10px;
+      border: 2px dashed #ccf;
+      background: #ffffffcc;
+      border-radius: 10px;
+    }
+
+.news-post h2 {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+
+.news-post small {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .news-wrapper {
+        padding: 10px;
+      }
+
+      .news-post h2 {
+        font-size: 1rem;
+      }
+    }
+
 /* === 日本語最適化クラス === */
 .kinsoku, p, li, .char-desc, .catchcopy, .framed-box, .profile-box, .news {
   line-break: strict;
