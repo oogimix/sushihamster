@@ -2,7 +2,7 @@
 
 const NEWS_LIST_SELECTOR = ".news ul";
 
-fetch("files.json")
+fetch("news/files.json")
   .then(res => res.json())
   .then(files => {
     const container = document.querySelector(NEWS_LIST_SELECTOR);
