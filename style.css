@@ -201,14 +201,12 @@ h2 {
   margin: 20px auto 30px;
   line-height: 1.5;
   text-align: center;
-  color: #ffffff; /* 文字は白 */
+  color: #ffffff;
   font-weight: bold;
   border-radius: 12px;
   overflow: hidden;
   box-sizing: border-box;
-
-  /* 軽いシャドウで読みやすさ確保 */
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
   background: none;
 }
 
@@ -219,10 +217,9 @@ h2 {
   border-radius: 12px;
   z-index: 0;
   pointer-events: none;
-
-  background: url('/asset/img/contact_bg.jpeg') no-repeat center center;
+  background: url('asset/img/contact_bg.jpeg') no-repeat center center;
   background-size: cover;
-  filter: brightness(2);
+  filter: brightness(0.5); /* 背景を暗く */
 }
 
 .contact::after {
@@ -230,7 +227,7 @@ h2 {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   border-radius: 12px;
-  background-color: rgba(0, 0, 0, 0.1); /* ごく薄い黒オーバーレイ */
+  background-color: rgba(0, 0, 0, 0.3); /* オーバーレイ強化 */
   z-index: 0;
   pointer-events: none;
 }
@@ -241,16 +238,16 @@ h2 {
 }
 
 .contact a {
-  color: #ff0044; /* 鮮やかな赤 */
+  color: #ff3377; /* 明るめの赤ピンク */
   font-weight: bold;
   text-decoration: underline;
   transition: all 0.3s ease;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.7);
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
 }
 
 .contact a:hover {
-  color: #cc0033;
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
+  color: #ff66aa;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 1);
 }
 
 
