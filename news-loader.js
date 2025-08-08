@@ -14,6 +14,7 @@ Promise.all(
         const date = text.match(/date:\s*(.+)/)?.[1] ?? '';
         const url = `news/${filename.replace('.md', '.html')}`;
         const preview = text.split('---')[2]?.trim().split('\n')[0] ?? '...';
+
         return `
           <div class="news-post">
             <h2><a href="${url}">${title}</a></h2>
