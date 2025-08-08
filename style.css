@@ -198,7 +198,7 @@ h2 {
   font-family: 'ＭＳ Ｐゴシック', Osaka, sans-serif;
   font-size: 18px;
   color: #004080;
-  background: linear-gradient(to bottom right, #d8eaff, #a3c7ff);
+  background: none;
   border: 2px solid #6699ff;
   padding: 15px 20px;
   border-radius: 10px;
@@ -211,7 +211,7 @@ h2 {
 }
 
 .contact a {
-  color: #004080;
+  color: #ff0066;
   font-weight: bold;
   text-decoration: underline;
   text-shadow:
