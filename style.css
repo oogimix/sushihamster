@@ -524,8 +524,12 @@ table.link-table tr:hover {
     text-decoration: none;
   }
 
-  .catchcopy span {
+.catchcopy span {
     font-size: 18px;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
   }
 
   .char-desc br,
