@@ -33,8 +33,8 @@
             const script = document.createElement("script");
             script.src = "/news-loader.js?" + Date.now();
             script.id = "news-loader-script";
-            script.onload = () => console.log("✅ news-loader.js loaded");
-            script.onerror = () => console.error("❌ news-loader.js failed to load");
+            script.onload = () => console.log("✅ news-loader-html.js loaded");
+            script.onerror = () => console.error("❌ news-loader-html.js failed to load");
             document.body.appendChild(script);
           }
 
