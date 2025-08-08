@@ -13,20 +13,24 @@
   <meta name="apple-mobile-web-app-title" content="sushihamster" />
   <link rel="manifest" href="/site.webmanifest" />
   <script>
-    function loadPage(page) {
-      fetch(page)
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById('page-content').innerHTML = html;
-          window.scrollTo(0, 0);
+function loadPage(page) {
+  fetch(page)
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('page-content').innerHTML = html;
+      window.scrollTo(0, 0);
+      
+      if (page === "information.html") {
+        const oldScript = document.getElementById("news-loader-script");
+        if (oldScript) oldScript.remove(); // ← 前の script を消す
 
-          if (page === "information.html") {
-            const script = document.createElement("script");
-            script.src = "news-loader.js";
-            document.body.appendChild(script);
-          }
-        });
-    }
+        const script = document.createElement("script");
+        script.src = "news-loader.js?" + Date.now(); // ← キャッシュ対策で毎回URL変える
+        script.id = "news-loader-script";
+        document.body.appendChild(script); // ← ページに追加して実行させる
+      }
+    });
+}
 
     document.addEventListener("DOMContentLoaded", () => {
       loadPage("home.html");
