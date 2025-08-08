@@ -1,0 +1,37 @@
+name: Generate files-html.json
+
+on:
+  push:
+    paths:
+      - 'news/*.html'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (if needed)
+        run: npm install
+
+      - name: Generate files-html.json
+        run: node generate-files.js
+
+      - name: Commit and Push JSON
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add news/files-html.json
+          git commit -m "📝 Auto-update files-html.json" || echo "No changes"
+          git push origin HEAD:${{ github.ref_name }}
