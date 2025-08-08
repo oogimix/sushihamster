@@ -1,16 +1,24 @@
-// ✅ 完全統合版 main.js - SPA + ハッシュルーティング + 最新情報一覧描画 + シェア対応
 (function () {
   const CONTENT_ID = "page-content";
-  const SCRIPT_IDS = ["news-loader-script", "share-script"]; // ← news-nav-script 削除済
+  const SCRIPT_IDS = ["news-loader-script", "share-script"];
   const FILES_JSON = "news/files-html.json";
   const NEWS_LIST_SELECTOR = ".news ul";
+
+  // 👇 ここがポイント
+  const BBS_PAGE = "hamham_bbs.html"; // SPA内で読むHTML
+  const BBS_EXTERNAL_URL = "https://www.kent-web.com/bbs/clipbbs/clipbbs.cgi"; // スマホはこれを新規タブで開く
+  const MOBILE_BP = 768;
+
+  function isMobile() {
+    return window.innerWidth < MOBILE_BP;
+  }
 
   function addScript(src, id, callback) {
     const old = document.getElementById(id);
     if (old) old.remove();
 
     const script = document.createElement("script");
-    script.src = src + "?" + Date.now(); // キャッシュバスター
+    script.src = src + "?" + Date.now();
     script.id = id;
     script.onload = callback;
     script.onerror = () => console.error(`❌ ${src} failed to load`);
@@ -42,7 +50,7 @@
           })
           .sort((a, b) => b.date - a.date);
 
-        container.innerHTML = ""; // ←これ重要！
+        container.innerHTML = "";
 
         sortedFiles.forEach(({ filename, date }) => {
           fetch(`news/${filename}`)
@@ -87,6 +95,17 @@
   }
 
   function loadPage(page, pushState = true) {
+    // 📱 直リンク/リロードで #hamham_bbs.html に来た時の保険
+    if (page === BBS_PAGE && isMobile()) {
+      window.open(BBS_EXTERNAL_URL, "_blank", "noopener");
+      const container = document.getElementById(CONTENT_ID);
+      container.innerHTML =
+        `<p>スマホでは掲示板を別タブで開きました。<br>` +
+        `<a href="${BBS_EXTERNAL_URL}" target="_blank" rel="noopener">開けない場合はこちら</a></p>`;
+      if (pushState) history.pushState({ page }, "", `#${page}`);
+      return;
+    }
+
     fetch(page)
       .then(res => {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -110,7 +129,6 @@
         } else if (page.startsWith("news/") && page.endsWith(".html")) {
           const filename = page.split("/").pop();
 
-          // ✅ ナビゲーション生成（main.jsに統合済み）
           const nav = document.querySelector(".news-nav");
           if (nav) {
             fetch("/news/files-html.json?nocache=" + Date.now())
@@ -148,7 +166,6 @@
               });
           }
 
-          // ✅ シェアボタンJS読み込み（関数定義保証＆初期化）
           addScript("/share.js", "share-script", () => {
             if (typeof initShareButtons === "function") {
               initShareButtons();
@@ -164,17 +181,18 @@
       });
   }
 
+  // 👇 ここが iOS 対策：クリック直下で新規タブを開く
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[href="#hamham_bbs.html"]');
+    if (!a) return;
+    if (isMobile()) {
+      e.preventDefault();
+      window.open(BBS_EXTERNAL_URL, "_blank", "noopener");
+    }
+  });
+
   window.loadPage = loadPage;
-
-  window.addEventListener("popstate", () => {
-    loadPageFromHash(false);
-  });
-
-  window.addEventListener("hashchange", () => {
-    loadPageFromHash(true);
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    loadPageFromHash(false);
-  });
+  window.addEventListener("popstate", () => loadPageFromHash(false));
+  window.addEventListener("hashchange", () => loadPageFromHash(true));
+  document.addEventListener("DOMContentLoaded", () => loadPageFromHash(false));
 })();
