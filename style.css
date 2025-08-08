@@ -1,59 +1,51 @@
-/* style.css - 修正版 */
-
-/* 基本のhtml,body設定 */
+/* === 基本設定 === */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-/* body全体 */
 body {
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
   font-size: 16px;
   background-color: #eaffea;
   color: #003366;
   cursor: url('asset/cursor/pastelpink.cur'), auto;
-  position: relative; /* 固定要素用 */
+  position: relative;
   min-height: 100vh;
 }
 
-/* リンク基本 */
+/* === リンク === */
 a {
   color: #0000cc;
   text-decoration: underline;
 }
 
 a:hover {
-  color: #cc66cc; /* ほのかなピンク */
-  text-shadow:
-    0 0 6px #f9a9f9,
-    0 0 12px #f2a9f2;
+  color: #cc66cc;
+  text-shadow: 0 0 6px #f9a9f9, 0 0 12px #f2a9f2;
   cursor: url('asset/cursor/linopink.png'), pointer;
-  text-decoration: underline;
 }
 
-/* タイトル */
+/* === タイトル === */
 .title {
   font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
   font-size: 40px;
   color: #9933cc;
   margin: 30px auto 10px;
-  text-shadow:
-    0 0 5px #ffccff,
-    1px 1px 2px #cc99ff,
-    -1px -1px 2px #ccffff;
+  text-shadow: 0 0 5px #ffccff, 1px 1px 2px #cc99ff, -1px -1px 2px #ccffff;
   letter-spacing: 1px;
   text-align: center;
-  white-space: nowrap;
-  overflow-x: auto;
+  white-space: normal;
+  overflow-x: visible;
   padding: 0 8px;
   box-sizing: border-box;
   max-width: 100vw;
   scroll-behavior: smooth;
+  text-wrap: balance;
 }
 
-/* コンテナ */
+/* === レイアウト === */
 .container {
   display: flex;
   flex-direction: row;
@@ -61,12 +53,11 @@ a:hover {
   margin: auto;
   padding: 10px;
   background-color: #eaffea;
-  min-height: calc(100vh - 110px); /* タイトル+余白程度の高さ分引く */
+  min-height: calc(100vh - 110px);
   box-sizing: border-box;
   align-items: stretch;
 }
 
-/* サイドバー */
 .sidebar {
   width: 180px;
   background-color: rgba(200, 240, 210, 0.7);
@@ -74,7 +65,6 @@ a:hover {
   border-radius: 12px;
   padding: 15px 18px;
   color: #3a5a33;
-  font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
   font-size: 18px;
   line-height: 2.2;
   user-select: none;
@@ -82,7 +72,6 @@ a:hover {
   align-self: stretch;
 }
 
-/* メイン＋カウンターまとめラッパー */
 .content-area {
   flex: 1;
   display: flex;
@@ -92,7 +81,6 @@ a:hover {
   box-sizing: border-box;
 }
 
-/* メイン */
 .main {
   flex: 1;
   padding-left: 10px;
@@ -100,13 +88,7 @@ a:hover {
   background-color: #eaffea;
 }
 
-/* カウンター*/
 .counter {
-  position: static; 
-  bottom: auto;
-  left: auto;
-  transform: none;
-  z-index: auto;
   background-color: rgba(255,255,255,0.9);
   padding: 5px 10px;
   border-radius: 8px;
@@ -114,8 +96,8 @@ a:hover {
   text-align: center;
   width: auto;
   max-width: 90vw;
-  margin-top: 20px; /* メインとの余白 */
-  align-self: center; /* 横中央に */
+  margin-top: 20px;
+  align-self: center;
 }
 
 .counter script,
@@ -133,10 +115,12 @@ a:hover {
   margin: 40px auto 30px;
 }
 
+/* === モバイルナビ === */
 .mobile-nav {
   display: none;
 }
 
+/* === ホーム用 === */
 .top-image {
   border: 4px ridge #ccf;
   padding: 10px;
@@ -165,7 +149,6 @@ a:hover {
   font-size: 20px;
   font-weight: bold;
   text-shadow: 1px 1px 2px #66f, 0 0 8px #99f;
-  word-break: keep-all;
   white-space: nowrap;
 }
 
@@ -190,14 +173,15 @@ marquee {
 }
 
 .news ul li::before {
-  content: "🍣 ";
-  margin-right: 6px; /* 絵文字とテキストの間の余白 */
+  content: "\1f363 ";
+  margin-right: 6px;
 }
 
 h2 {
   text-align: center;
   color: #9933cc;
   text-shadow: 1px 1px 2px #cc99ff;
+  text-wrap: balance;
 }
 
 .contact {
@@ -205,7 +189,6 @@ h2 {
   font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', 'ＭＳ Ｐゴシック', sans-serif;
   font-size: 18px;
   padding: 26px 20px;
-  height: auto;
   width: 90%;
   max-width: 700px;
   margin: 30px auto;
@@ -220,26 +203,24 @@ h2 {
   background: none;
 }
 
-.contact::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 16px;
-  z-index: 0;
-  pointer-events: none;
-  background: url('asset/img/contact_bg.jpeg') no-repeat center center;
-  background-size: cover; /* これで拡大縮小調整 */
-  object-fit: cover; /* 念のため */
-}
-
+.contact::before,
 .contact::after {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.4); /* ← 明るめの半透明オーバーレイ */
   z-index: 0;
   pointer-events: none;
+}
+
+.contact::before {
+  background: url('asset/img/contact_bg.jpeg') no-repeat center center;
+  background-size: cover;
+  object-fit: cover;
+}
+
+.contact::after {
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 .contact > * {
@@ -268,32 +249,17 @@ h2 {
   text-shadow: 0 0 6px #fff, 0 0 10px #ffccff;
 }
 
-/* friend-links を左寄せに揃え＆Y2K風 */
 .friend-links {
   width: 90%;
   max-width: 700px;
   margin: 10px auto 30px;
   font-family: 'Arial Black', Gadget, sans-serif;
-  font-size: 14px; /* 少し小さく */
+  font-size: 14px;
   color: #990099;
-  background: transparent; /* 背景なし */
-  border: none; /* 枠線なし */
-  padding: 0 15px;
-  border-radius: 12px;
-  box-shadow: none; /* 影なし */
-  text-align: left;
   display: flex;
-  gap: 14px; /* 少し狭め */
+  gap: 14px;
   align-items: center;
   justify-content: flex-start;
-}
-
-.friend-links b {
-  margin-right: 12px;
-  font-size: 16px;
-  color: #004080;
-  text-shadow: 1px 1px 2px #336699;
-  font-weight: bold;
 }
 
 .friend-links a {
@@ -313,14 +279,13 @@ h2 {
 .friend-links a:hover {
   color: #003366;
   background: rgba(51,102,204,0.5);
-  box-shadow:
-    0 0 12px #3366cc,
-    0 0 20px #99bbff;
+  box-shadow: 0 0 12px #3366cc, 0 0 20px #99bbff;
   cursor: url('asset/cursor/linopink.png'), pointer;
   text-decoration: underline;
 }
 
-.friend-links .sns-icon {
+.friend-links .sns-icon,
+.sns-icon {
   width: 18px;
   height: 18px;
   vertical-align: middle;
@@ -334,12 +299,7 @@ h2 {
   margin-top: 30px;
 }
 
-ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-/* プロフィールページ用 */
+/* === プロフィール用 === */
 .profile-box {
   background: #ffffffcc;
   border: 2px dashed #cc99ff;
@@ -371,11 +331,6 @@ ul {
   margin-top: 10px;
 }
 
-.friends {
-  text-align: center;
-  margin-top: 40px;
-}
-
 .friend-photo {
   width: 90%;
   max-width: 480px;
@@ -389,30 +344,17 @@ ul {
   font-size: 14px;
 }
 
-.sns-links a {
-  display: inline-block;
-  margin: 0 8px;
-  text-decoration: none;
-  color: #cc00cc;
-}
-
-.sns-icon {
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  margin-right: 4px;
-}
-
-/* 音楽ページ用 */
+/* === 音源ページ用 === */
 .artwork {
   max-width: 300px;
   width: 90%;
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(204, 153, 255, 0.6);
-  margin: 15px auto 30px; /* 上マージンと下マージン */
+  margin: 15px auto 30px;
   display: block;
 }
-/* ギャラリーページ用 */
+
+/* === ギャラリーページ用 === */
 .video-wrapper {
   max-width: 700px;
   margin: 20px auto;
@@ -436,7 +378,7 @@ ul {
   background-color: #000;
 }
 
-/* 掲示板ページ用 */
+/* === 掲示板ページ用 === */
 .framed-box {
   background-color: #fff8ff;
   border: 3px dotted #cc99ff;
@@ -455,9 +397,7 @@ ul {
   font-family: 'Impact', 'Arial Black', sans-serif, "ＭＳ Ｐゴシック";
   font-size: 26px;
   color: #9933cc;
-  text-shadow:
-    0 0 6px #d9b3ff,
-    1px 1px 3px #9c50ff;
+  text-shadow: 0 0 6px #d9b3ff, 1px 1px 3px #9c50ff;
   letter-spacing: 1.5px;
   margin-bottom: 15px;
 }
@@ -485,7 +425,7 @@ ul {
   margin-top: 10px;
 }
 
-/* リンク集ページ用 */
+/* === リンク集ページ用 === */
 table.link-table {
   width: 90%;
   max-width: 700px;
@@ -518,8 +458,30 @@ table.link-table tr:hover {
   background-color: #e6f0ff;
 }
 
+/* === 日本語最適化クラス === */
+.kinsoku, p, li, .char-desc, .catchcopy, .framed-box, .profile-box, .news {
+  line-break: strict;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
 
-/* モバイル対応 */
+.prose {
+  max-width: 36em;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  margin-inline: auto;
+  padding-inline: 12px;
+  word-break: normal;
+}
+
+.nobr {
+  white-space: nowrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* === モバイル対応 === */
 @media (max-width: 768px) {
   .title {
     font-size: 22px;
@@ -559,6 +521,14 @@ table.link-table tr:hover {
   .catchcopy span {
     font-size: 18px;
   }
+
+  .char-desc br,
+  .catchcopy br,
+  .news br,
+  .framed-box br,
+  .profile-box br {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
@@ -570,84 +540,3 @@ table.link-table tr:hover {
     font-size: 18px;
   }
 }
-
-/* === 日本語向け 表示最適化クラス === */
-
-.balance {
-  text-wrap: balance;
-}
-
-.kinsoku {
-  line-break: strict;               /* 禁則処理（句読点など） */
-  word-break: keep-all;            /* 単語の途中で折り返さない（日本語向け） */
-  overflow-wrap: break-word;       /* 長い単語も折る（英語対策） */
-  text-wrap: pretty;               /* 見た目重視で折り返す（対応ブラウザのみ） */
-}
-
-
-.nobr {
-  white-space: nowrap;
-  overflow-wrap: break-word; /* 長すぎる場合は単語途中でも折る */
-  word-break: break-word;    /* Safari対策 */
-}
-
-.prose {
-  max-width: 36em;
-  line-height: 1.7;
-  letter-spacing: 0.02em;
-  margin-inline: auto;
-  padding-inline: 12px;
-  word-break: normal;
-}
-
-.news li {
-  text-wrap: pretty;
-}
-
-/* ====== 共通：見出しはきれいに折る ====== */
-h1, h2, h3, .title {
-  text-wrap: balance;
-}
-
-/* ====== 共通：本文の日本語折返しを安定化 ====== */
-p, li,
-.char-desc, .catchcopy, .framed-box, .profile-box, .news {
-  line-break: strict;        /* 行頭禁則など */
-  word-break: keep-all;      /* 文字単位でバラけにくく */
-  overflow-wrap: break-word; /* 英数字が長い時だけ途中で折る */
-  text-wrap: pretty;         /* 見た目優先（対応ブラウザ） */
-}
-
-/* ====== タイトル周りの“横スクロール問題”を抑止 ====== */
-.title {
-  white-space: normal;       /* ← nowrap をやめる */
-  overflow-x: visible;       /* 横スクロール不要 */
-}
-
-/* ====== スマホ：手動 <br> は非表示（PCは今まで通り見える） ====== */
-@media (max-width: 768px) {
-  .char-desc br,
-  .catchcopy br,
-  .news br,
-  .framed-box br,
-  .profile-box br {
-    display: none;
-  }
-}
-
-/* ====== どうしても1語で見せたい時用（長すぎたら折るセーフティ付） ====== */
-.nobr {
-  white-space: nowrap;
-  overflow-wrap: break-word; /* 画面からはみ出すのを防ぐ */
-  word-break: break-word;    /* Safari用の保険 */
-}
-
-/* （任意）本文の読みやすい幅：全ページに効かせたいなら有効化 */
-.prose {
-  max-width: 36em;
-  line-height: 1.7;
-  letter-spacing: .02em;
-  margin-inline: auto;
-  padding-inline: 12px;
-}
-
