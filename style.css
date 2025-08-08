@@ -578,9 +578,12 @@ table.link-table tr:hover {
 }
 
 .kinsoku {
-  line-break: strict;
-  hanging-punctuation: allow-end;
+  line-break: strict;               /* 禁則処理（句読点など） */
+  word-break: keep-all;            /* 単語の途中で折り返さない（日本語向け） */
+  overflow-wrap: break-word;       /* 長い単語も折る（英語対策） */
+  text-wrap: pretty;               /* 見た目重視で折り返す（対応ブラウザのみ） */
 }
+
 
 .nobr {
   white-space: nowrap;
