@@ -12,18 +12,19 @@ Promise.all(
       .then(text => {
         const title = text.match(/title:\s*(.+)/)?.[1] ?? filename;
         const date = text.match(/date:\s*(.+)/)?.[1] ?? '';
-        const url = `news/${filename.replace('.md', '.html')}`;
+        const url = `/news/${filename.replace('.md', '.html')}`;  // ←ここを絶対パスに！
+
         const preview = text.split('---')[2]?.trim().split('\n')[0] ?? '...';
 
-return `
-  <div class="news-post">
-    <h2>
-      <a href="${url}" onclick="loadPage('${url}'); return false;">${title}</a>
-    </h2>
-    <small>${date}</small>
-    <p>${preview}</p>
-  </div>
-`;
+        return `
+          <div class="news-post">
+            <h2>
+              <a href="${url}" onclick="loadPage('${url}'); return false;">${title}</a>
+            </h2>
+            <small>${date}</small>
+            <p>${preview}</p>
+          </div>
+        `;
       })
   )
 ).then(posts => {
