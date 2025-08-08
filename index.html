@@ -12,51 +12,58 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="sushihamster" />
   <link rel="manifest" href="/site.webmanifest" />
+
   <script>
-function loadPage(page) {
-  fetch(page)
-    .then(res => {
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      return res.text();
-    })
-    .then(html => {
-      const container = document.getElementById('page-content');
-      container.innerHTML = html;
-      window.scrollTo(0, 0);
+    function loadPage(page) {
+      fetch(page)
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          return res.text();
+        })
+        .then(html => {
+          const container = document.getElementById('page-content');
+          container.innerHTML = html;
+          window.scrollTo(0, 0);
 
-      // information用
-      if (page.includes("information.html")) {
-        const old = document.getElementById("news-loader-script");
-        if (old) old.remove();
+          // information.html 用 JS 読み込み
+          if (page.includes("information.html")) {
+            const old = document.getElementById("news-loader-script");
+            if (old) old.remove();
 
-        const script = document.createElement("script");
-        script.src = "/news-loader.js?" + Date.now();
-        script.id = "news-loader-script";
-        script.onload = () => console.log("✅ news-loader.js loaded");
-        script.onerror = () => console.error("❌ news-loader.js failed to load");
-        document.body.appendChild(script);
-      }
+            const script = document.createElement("script");
+            script.src = "/news-loader.js?" + Date.now();
+            script.id = "news-loader-script";
+            script.onload = () => console.log("✅ news-loader.js loaded");
+            script.onerror = () => console.error("❌ news-loader.js failed to load");
+            document.body.appendChild(script);
+          }
 
-      // ←ここ追加！home.htmlが読み込まれた時だけnews-top.jsを後追いで実行
-      if (page.includes("home.html")) {
-        const old = document.getElementById("news-top-script");
-        if (old) old.remove();
+          // home.html 用 JS 読み込み（トップページ）
+          if (page.includes("home.html")) {
+            const old = document.getElementById("news-top-script");
+            if (old) old.remove();
 
-        const script = document.createElement("script");
-        script.src = "/news-top.js?" + Date.now();
-        script.id = "news-top-script";
-        script.onload = () => console.log("✅ news-top.js loaded");
-        script.onerror = () => console.error("❌ news-top.js failed to load");
-        document.body.appendChild(script);
-      }
+            const script = document.createElement("script");
+            script.src = "/news-top.js?" + Date.now();
+            script.id = "news-top-script";
+            script.onload = () => console.log("✅ news-top.js loaded");
+            script.onerror = () => console.error("❌ news-top.js failed to load");
+            document.body.appendChild(script);
+          }
+        })
+        .catch(err => {
+          console.error("ページ読み込みエラー:", err);
+          document.getElementById('page-content').innerHTML = "<p>読み込みに失敗しました。</p>";
+        });
+    }
 
-    })
-    .catch(err => {
-      console.error("ページ読み込みエラー:", err);
-      document.getElementById('page-content').innerHTML = "<p>読み込みに失敗しました。</p>";
+    // 初期表示で home.html を読み込む
+    document.addEventListener("DOMContentLoaded", () => {
+      loadPage("home.html");
     });
-}
+  </script>
 </head>
+
 <body>
   <nav class="mobile-nav">
     <a href="#" onclick="loadPage('home.html')">🏠</a>
