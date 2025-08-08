@@ -191,7 +191,6 @@ h2 {
   text-shadow: 1px 1px 2px #cc99ff;
 }
 
-/* contactをY2K風に派手め装飾 */
 .contact {
   width: 90%;
   max-width: 700px;
@@ -232,26 +231,23 @@ h2 {
   max-width: 700px;
   margin: 10px auto 30px;
   font-family: 'Arial Black', Gadget, sans-serif;
-  font-size: 16px;
+  font-size: 14px; /* 少し小さく */
   color: #990099;
-  background: #f0e6ff;
-  border: 2px groove #cc99ff;
-  padding: 10px 15px;
+  background: transparent; /* 背景なし */
+  border: none; /* 枠線なし */
+  padding: 0 15px;
   border-radius: 12px;
-  box-shadow:
-    0 0 10px #cc99ff,
-    inset 0 0 8px #9966cc;
+  box-shadow: none; /* 影なし */
   text-align: left;
   display: flex;
-  gap: 20px;
+  gap: 14px; /* 少し狭め */
   align-items: center;
-  justify-content: flex-start; /* 左寄せ */
+  justify-content: flex-start;
 }
 
-/* SNSリンクのスタイル */
 .friend-links b {
   margin-right: 12px;
-  font-size: 18px;
+  font-size: 16px;
   color: #cc33cc;
   text-shadow: 1px 1px 2px #990099;
 }
@@ -262,31 +258,26 @@ h2 {
   font-weight: bold;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border: 2px solid #cc99ff;
-  border-radius: 8px;
-  background: linear-gradient(to bottom, #ffd9ff, #cc99ff);
-  box-shadow: 0 0 6px #cc99ff;
-  transition: all 0.3s ease;
+  gap: 4px;
+  padding: 4px 6px;
+  border: none; /* 枠なし */
+  border-radius: 6px;
+  background: transparent; /* 背景なし */
+  box-shadow: none;
+  transition: color 0.3s ease;
 }
 
 .friend-links a:hover {
-  color: #ff66cc;
-  border-color: #ff66cc;
-  background: linear-gradient(to bottom, #ffb3ff, #ff66cc);
-  box-shadow:
-    0 0 12px #ff66cc,
-    0 0 20px #ff99cc;
+  color: #cc66cc;
   cursor: url('asset/cursor/linopink.png'), pointer;
+  text-decoration: underline;
 }
 
-/* アイコン画像のサイズと位置調整 */
 .friend-links .sns-icon {
-  width: 24px;
-  height: 24px;
+  width: 18px; /* 少し小さく */
+  height: 18px;
   vertical-align: middle;
-  filter: drop-shadow(0 0 2px #cc66cc);
+  filter: drop-shadow(0 0 1.5px #cc66cc);
 }
 
 .caution {
