@@ -31,7 +31,7 @@ jobs:
       - name: Convert Markdown to HTML
         run: node tools/convert.js
 
-      - name: Commit and Push HTML
+  - name: Commit and Push HTML
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
