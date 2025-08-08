@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>お知らせ一覧 | sushihamster</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .news-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f6fcff;
+      border: 3px ridge #99ccff;
+    }
+
+    .news-post {
+      margin-bottom: 30px;
+      padding: 10px;
+      border: 2px dashed #ccf;
+      background: #ffffffcc;
+      border-radius: 10px;
+    }
+
+    .news-post h2 {
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+    }
+
+    .news-post small {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .news-wrapper {
+        padding: 10px;
+      }
+
+      .news-post h2 {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="news-wrapper">
+    <h1>📢 お知らせ一覧 📢</h1>
+    <div id="news-list">読み込み中...</div>
+  </div>
+
+  <script src="news-loader.js"></script>
+</body>
+</html>
