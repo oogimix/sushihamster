@@ -1,38 +1,50 @@
-(() => {
-  const container = document.querySelector('.news ul');
+// news-top.js
 
-  fetch('/news/files.json')
-    .then(res => res.json())
-    .then(files => {
-      const sorted = files.sort().reverse();
+const NEWS_LIST_SELECTOR = ".news ul";
 
-      const now = new Date();
-      const oneMonthAgo = new Date();
-      oneMonthAgo.setMonth(now.getMonth() - 1);
+fetch("files.json")
+  .then(res => res.json())
+  .then(files => {
+    const container = document.querySelector(NEWS_LIST_SELECTOR);
+    if (!container) return;
 
-      const listItems = sorted.map(filename => {
-        const dateMatch = filename.match(/^(\d{4}-\d{2}-\d{2})/);
-        const dateStr = dateMatch ? dateMatch[1] : '';
-        const dateObj = new Date(dateStr);
-        const isNew = dateObj >= oneMonthAgo;
+    const now = new Date();
+    const items = files
+      .filter(file => file.endsWith(".md"))
+      .map(filename => {
+        const dateStr = filename.split("-").slice(0, 3).join("-");
+        const title = filename.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, "");
+        const url = `./news/${filename.replace(".md", ".html")}`;
 
-        const title = filename.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
-        const htmlPath = `news/${filename.replace('.md', '.html')}`;
+        // 日付差分
+        const postDate = new Date(dateStr);
+        const daysAgo = (now - postDate) / (1000 * 60 * 60 * 24);
+        const isNew = daysAgo <= 30;
 
-        return `
-          <li>
-            <a href="#" onclick="loadPage('${htmlPath}'); return false;">
-              「${title}」
-            </a>
-            ${isNew ? `<span style="color: red;">New!</span>` : ''}
-          </li>
-        `;
-      });
+        return { title, url, isNew, date: dateStr };
+      })
+      .sort((a, b) => (a.date < b.date ? 1 : -1)); // 新しい順
 
-      container.innerHTML = listItems.join('');
-    })
-    .catch(err => {
-      console.error('最新情報の取得に失敗:', err);
-      container.innerHTML = '<li>情報を取得できませんでした。</li>';
-    });
-})();
+    for (const item of items) {
+      const li = document.createElement("li");
+
+      const link = document.createElement("a");
+      link.href = "#";
+      link.textContent = `「${item.title}」`;
+      link.onclick = () => loadPage(item.url);
+
+      li.appendChild(link);
+
+      if (item.isNew) {
+        const newSpan = document.createElement("span");
+        newSpan.style.color = "red";
+        newSpan.textContent = " New!";
+        li.appendChild(newSpan);
+      }
+
+      container.appendChild(li);
+    }
+  })
+  .catch(err => {
+    console.error("🛑 news-top.js error:", err);
+  });
