@@ -17,11 +17,13 @@
         const isNew = dateObj >= oneMonthAgo;
 
         const title = filename.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
-        const url = `/news/${filename.replace('.md', '.html')}`;
+        const htmlPath = `news/${filename.replace('.md', '.html')}`;
 
         return `
           <li>
-            <a href="${url}" onclick="loadPage('${url}'); return false;">「${title}」</a>
+            <a href="#" onclick="loadPage('${htmlPath}'); return false;">
+              「${title}」
+            </a>
             ${isNew ? `<span style="color: red;">New!</span>` : ''}
           </li>
         `;
