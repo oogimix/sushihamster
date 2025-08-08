@@ -13,13 +13,18 @@
   <meta name="apple-mobile-web-app-title" content="sushihamster" />
   <link rel="manifest" href="/site.webmanifest" />
   <script>
-    // ページ内リンクに反応して中身を切り替え
     function loadPage(page) {
       fetch(page)
         .then(res => res.text())
         .then(html => {
           document.getElementById('page-content').innerHTML = html;
           window.scrollTo(0, 0);
+
+          if (page === "information.html") {
+            const script = document.createElement("script");
+            script.src = "news-loader.js";
+            document.body.appendChild(script);
+          }
         });
     }
 
@@ -29,8 +34,6 @@
   </script>
 </head>
 <body>
-
-  <!-- スマホ用ナビ -->
   <nav class="mobile-nav">
     <a href="#" onclick="loadPage('home.html')">🏠</a>
     <a href="#" onclick="loadPage('information.html')">📢</a>
@@ -41,7 +44,6 @@
     <a href="#" onclick="loadPage('link.html')">📎</a>
   </nav>
 
-  <!-- タイトル（header構造） -->
   <header>
     <div class="title">
       ☆☆ sushihamsterのホームページ ☆☆
@@ -49,7 +51,6 @@
   </header>
 
   <div class="container">
-    <!-- サイドメニュー -->
     <aside class="sidebar">
       <div class="menu-links">
         <b>▼ メニュー</b><br />
@@ -64,19 +65,11 @@
       </div>
     </aside>
 
-    <!-- メイン＋カウンターをまとめるラッパー -->
     <div class="content-area">
-      <!-- メイン表示部 -->
-      <main class="main" id="page-content">
-        <!-- JSで読み込み -->
-      </main>
-
-      <!-- カウンター（常に下部に） -->
+      <main class="main" id="page-content"></main>
       <div class="counter">
-        <!-- FC2カウンター ここから -->
         <script language="javascript" type="text/javascript" src="//counter1.fc2.com/counter.php?id=40497958&main=1"></script>
         <noscript><img src="//counter1.fc2.com/counter_img.php?id=40497958&main=1" /></noscript>
-        <!-- FC2カウンター ここまで -->
       </div>
     </div>
   </div>
@@ -84,6 +77,5 @@
   <footer class="site-footer">
     © 2025 sushihamster. All sushi reserved. 🍣🐹
   </footer>
-
 </body>
 </html>
