@@ -195,33 +195,36 @@ h2 {
   width: 90%;
   max-width: 700px;
   margin: 20px auto;
-  font-family: 'Comic Sans MS', cursive, sans-serif; /* ちょっとポップなフォント */
+  font-family: 'ＭＳ Ｐゴシック', Osaka, sans-serif;
   font-size: 18px;
-  color: #cc33ff;
-  background: linear-gradient(45deg, #ffccff, #ccffff);
-  border: 3px double #ff66cc;
+  color: #004080;
+  background: linear-gradient(to bottom right, #d8eaff, #a3c7ff);
+  border: 2px solid #6699ff;
   padding: 15px 20px;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow:
-    0 0 10px #ff99ff,
-    inset 0 0 8px #ff66cc;
+    0 0 12px #99bbff,
+    inset 0 0 14px #cce0ff;
   text-align: center;
-  text-shadow: 1px 1px 2px #660066;
+  text-shadow: 1px 1px 2px #3a5a99;
+  font-weight: bold;
 }
 
-/* メールリンクの強調 */
 .contact a {
-  color: #ff0066;
+  color: #004080;
   font-weight: bold;
-  text-decoration: underline wavy #ff66cc;
-  text-shadow: 0 0 6px #ff66cc;
+  text-decoration: underline;
+  text-shadow:
+    0 0 5px #99bbff,
+    0 0 10px #6699ff;
+  transition: all 0.3s ease;
 }
 
 .contact a:hover {
-  color: #ff33aa;
+  color: #3366cc;
   text-shadow:
-    0 0 12px #ff33aa,
-    0 0 18px #ff99cc;
+    0 0 10px #3366cc,
+    0 0 18px #99bbff;
   cursor: url('asset/cursor/pastelpink.cur'), pointer;
 }
 
@@ -248,36 +251,40 @@ h2 {
 .friend-links b {
   margin-right: 12px;
   font-size: 16px;
-  color: #cc33cc;
-  text-shadow: 1px 1px 2px #990099;
+  color: #004080;
+  text-shadow: 1px 1px 2px #336699;
+  font-weight: bold;
 }
 
 .friend-links a {
-  color: #990099;
+  color: #004080;
   text-decoration: none;
   font-weight: bold;
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 6px;
-  border: 2px solid #cc99ff;
+  padding: 4px 8px;
   border-radius: 6px;
-  background: linear-gradient(to bottom, #ffd9ff, #cc99ff);
-  box-shadow: none;
-  transition: color 0.3s ease;
+  background: rgba(102,153,255,0.3);
+  box-shadow: 0 0 6px #6699ff;
+  transition: all 0.3s ease;
 }
 
 .friend-links a:hover {
-  color: #cc66cc;
+  color: #003366;
+  background: rgba(51,102,204,0.5);
+  box-shadow:
+    0 0 12px #3366cc,
+    0 0 20px #99bbff;
   cursor: url('asset/cursor/linopink.png'), pointer;
   text-decoration: underline;
 }
 
 .friend-links .sns-icon {
-  width: 18px; /* 少し小さく */
+  width: 18px;
   height: 18px;
   vertical-align: middle;
-  filter: drop-shadow(0 0 1.5px #cc66cc);
+  filter: drop-shadow(0 0 2px #6699ff);
 }
 
 .caution {
