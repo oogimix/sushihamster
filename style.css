@@ -205,8 +205,6 @@ h2 {
   border-radius: 12px;
   overflow: hidden;
   box-sizing: border-box;
-
-  /* 文字の影で見やすく */
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
   background: none;
 }
@@ -215,15 +213,26 @@ h2 {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-
-  /* 背景画像 + 黒の半透明オーバーレイ */
-  background:
-    linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
-    url('/asset/img/contact_bg.jpeg') no-repeat center center;
-  background-size: cover;
-  opacity: 1;  /* 透明度は1に */
-  z-index: 0;
   border-radius: 12px;
+  z-index: 0;
+  pointer-events: none; /* 背景に触れないように */
+
+  /* 画像を明るく */
+  background: url('/asset/img/contact_bg.jpeg') no-repeat center center;
+  background-size: cover;
+  filter: brightness(1.3);
+
+  /* オーバーレイ用の黒透明は別の疑似要素で追加 */
+}
+
+.contact::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 12px;
+  background-color: rgba(0,0,0,0.3); /* 黒の半透明オーバーレイ */
+  z-index: 0;
+  pointer-events: none;
 }
 
 .contact > * {
