@@ -35,8 +35,8 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add news/
           git status
           git diff --cached
           git commit -m "✅ Auto-generate HTML from Markdown" || echo "No changes"
-          git push origin HEAD:${{ github.ref_name }}
+          git push origin HEAD:$GITHUB_REF_NAME
