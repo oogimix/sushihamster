@@ -196,6 +196,8 @@ h2 {
   font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', 'ＭＳ Ｐゴシック', sans-serif;
   font-size: 18px;
   padding: 26px 20px;
+  height: auto;
+  min-height: 120px; /* 任意で高さ調整したいときに */
   width: 90%;
   max-width: 700px;
   margin: 30px auto;
@@ -218,8 +220,8 @@ h2 {
   z-index: 0;
   pointer-events: none;
   background: url('asset/img/contact_bg.jpeg') no-repeat center center;
-  background-size: cover;
-  filter: none; /* ← 暗くしない */
+  background-size: cover; /* これで拡大縮小調整 */
+  object-fit: cover; /* 念のため */
 }
 
 .contact::after {
