@@ -260,9 +260,9 @@ h2 {
   align-items: center;
   gap: 4px;
   padding: 4px 6px;
-  border: none; /* 枠なし */
+  border: 2px solid #cc99ff;
   border-radius: 6px;
-  background: transparent; /* 背景なし */
+  background: linear-gradient(to bottom, #ffd9ff, #cc99ff);
   box-shadow: none;
   transition: color 0.3s ease;
 }
