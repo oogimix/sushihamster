@@ -192,38 +192,58 @@ h2 {
 }
 
 .contact {
+  position: relative;
   font-family: 'ＭＳ Ｐゴシック', Osaka, sans-serif;
-  font-size: 14px;  /* ひとまわり小さく */
-  padding: 12px 15px;
-  background: linear-gradient(to bottom right, #f8fcff, #d8ecff);
-  border: 2px solid #99ccff;
-  border-radius: 10px;
-  box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
+  font-size: 14px;
+  padding: 20px;
   width: 90%;
   max-width: 650px;
   margin: 20px auto 30px;
   line-height: 1.5;
   text-align: center;
-  color: #003366;
-  font-weight: normal;  /* 強調を減らす */
-  text-shadow: 1px 1px 2px #99b, 0 0 6px #bbe;
+  color: #fff;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: none; /* 元の背景は消す */
 }
 
-/* メールリンクはほんのり強調 */
+/* 背景画像を ::before で入れる */
+.contact::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('/asset/img/contact_bg.jpeg') no-repeat center center;
+  background-size: cover;
+  opacity: 0.35;  /* 半透明で文字を読みやすく */
+  z-index: 0;
+  border-radius: 12px;
+}
+
+/* 文字部分を前面に */
+.contact > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* メールリンク */
 .contact a {
-  color: #004080;
+  color: #ffd9e8;
   font-weight: bold;
   text-decoration: underline;
   text-shadow:
-    0 0 5px #99bbff;
+    0 0 5px #ff99cc,
+    0 0 12px #ff66aa;
   transition: all 0.3s ease;
 }
 
 .contact a:hover {
-  color: #002244;
+  color: #ff66aa;
   text-shadow:
-    0 0 10px #6699cc;
-  cursor: url('asset/cursor/pastelpink.cur'), pointer;
+    0 0 12px #ff3388,
+    0 0 18px #ff99cc;
 }
 
 /* friend-links を左寄せに揃え＆Y2K風 */
