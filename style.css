@@ -124,6 +124,15 @@ a:hover {
   margin: 0 auto;
 }
 
+.site-footer {
+  text-align: center;
+  font-size: 13px;
+  color: #ff33cc;
+  text-shadow: 0 0 4px #fff, 0 0 10px #ffccff;
+  font-family: 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
+  margin: 40px auto 30px;
+}
+
 .mobile-nav {
   display: none;
 }
