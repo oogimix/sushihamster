@@ -584,6 +584,8 @@ table.link-table tr:hover {
 
 .nobr {
   white-space: nowrap;
+  overflow-wrap: break-word; /* 長すぎる場合は単語途中でも折る */
+  word-break: break-word;    /* Safari対策 */
 }
 
 .prose {
