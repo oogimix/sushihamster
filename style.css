@@ -193,20 +193,20 @@ h2 {
 
 .contact {
   position: relative;
-  font-family: 'ＭＳ Ｐゴシック', Osaka, sans-serif;
-  font-size: 14px;
-  padding: 20px;
+  font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', 'ＭＳ Ｐゴシック', sans-serif;
+  font-size: 18px;
+  padding: 26px 20px;
   width: 90%;
   max-width: 700px;
-  margin: 20px auto 30px;
-  line-height: 1.5;
+  margin: 30px auto;
+  line-height: 1.8;
   text-align: center;
   color: #ffffff;
   font-weight: bold;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   box-sizing: border-box;
-  text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
   background: none;
 }
 
@@ -214,20 +214,20 @@ h2 {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 12px;
+  border-radius: 16px;
   z-index: 0;
   pointer-events: none;
   background: url('asset/img/contact_bg.jpeg') no-repeat center center;
   background-size: cover;
-  filter: brightness(0.5); /* 背景を暗く */
+  filter: none; /* ← 暗くしない */
 }
 
 .contact::after {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 12px;
-  background-color: rgba(0, 0, 0, 0.3); /* オーバーレイ強化 */
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.4); /* ← 明るめの半透明オーバーレイ */
   z-index: 0;
   pointer-events: none;
 }
@@ -237,19 +237,26 @@ h2 {
   z-index: 1;
 }
 
+.contact p {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #333366;
+  text-shadow: 0 0 2px #fff, 1px 1px 1px #ffccff;
+}
+
 .contact a {
-  color: #ff3377; /* 明るめの赤ピンク */
+  color: #ff2288;
+  font-size: 20px;
   font-weight: bold;
   text-decoration: underline;
   transition: all 0.3s ease;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 0 4px #fff, 0 0 6px #ff99cc;
 }
 
 .contact a:hover {
   color: #ff66aa;
-  text-shadow: 0 0 6px rgba(0, 0, 0, 1);
+  text-shadow: 0 0 6px #fff, 0 0 10px #ffccff;
 }
-
 
 /* friend-links を左寄せに揃え＆Y2K風 */
 .friend-links {
