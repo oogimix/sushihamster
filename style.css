@@ -223,7 +223,7 @@ h2 {
 }
 
 .contact::after {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .contact > * {
@@ -234,8 +234,14 @@ h2 {
 .contact p {
   margin: 0 0 10px;
   font-size: 18px;
-  color: #333366;
-  text-shadow: 0 0 2px #fff, 1px 1px 1px #ffccff;
+  font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', 'Verdana', sans-serif;
+  color: #5500ff;
+
+  text-shadow:
+    -2px -2px 0 #ffccff, /* 2. 反対側にも光彩 */
+    1px 1px 3px #ffffff, /* 3. 下地のピンク */
+    0 0 8px #ff99ff,     /* 4. 拡散ネオン光 */
+    0 0 12px #ffccff;    /* 5. さらに発光強調 */
 }
 
 .contact a {
@@ -250,6 +256,11 @@ h2 {
 .contact a:hover {
   color: #ff66aa;
   text-shadow: 0 0 6px #fff, 0 0 10px #ffccff;
+}
+
+.contact-mail {
+  display: inline-block;
+  margin-top: 8px;
 }
 
 .friend-links {
@@ -533,7 +544,6 @@ table.link-table tr:hover {
   }
 
   .char-desc br,
-  .catchcopy br,
   .news br,
   .framed-box br,
   .profile-box br {
@@ -546,6 +556,14 @@ table.link-table tr:hover {
 .catchcopy span { 
   white-space: normal;
   text-wrap: balance;
+}
+
+  .contact::before {
+    background-size: cover;
+    background-position: center center;
+    min-width: 100%; 
+    min-height: 100%;
+  }
 }
 
 @media (max-width: 480px) {
