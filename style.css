@@ -205,6 +205,9 @@ h2 {
   border-radius: 12px;
   overflow: hidden;
   box-sizing: border-box;
+
+  /* 文字の影で見やすく */
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
   background: none;
 }
 
@@ -212,9 +215,13 @@ h2 {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: url('/asset/img/contact_bg.jpeg') no-repeat center center;
+
+  /* 背景画像 + 黒の半透明オーバーレイ */
+  background:
+    linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+    url('/asset/img/contact_bg.jpeg') no-repeat center center;
   background-size: cover;
-  opacity: 0.45;  /* 半透明 */
+  opacity: 1;  /* 透明度は1に */
   z-index: 0;
   border-radius: 12px;
 }
@@ -225,16 +232,15 @@ h2 {
 }
 
 .contact a {
-  color: #ff99cc;
+  color: #e60073; /* 濃いピンク */
   font-weight: bold;
   text-decoration: underline;
   transition: all 0.3s ease;
 }
 
 .contact a:hover {
-  color: #ff66aa;
+  color: #cc0052; /* 濃いピンク・赤系 */
 }
-
 
 /* friend-links を左寄せに揃え＆Y2K風 */
 .friend-links {
