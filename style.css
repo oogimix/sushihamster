@@ -604,3 +604,50 @@ table.link-table tr:hover {
   text-wrap: pretty;
 }
 
+/* ====== 共通：見出しはきれいに折る ====== */
+h1, h2, h3, .title {
+  text-wrap: balance;
+}
+
+/* ====== 共通：本文の日本語折返しを安定化 ====== */
+p, li,
+.char-desc, .catchcopy, .framed-box, .profile-box, .news {
+  line-break: strict;        /* 行頭禁則など */
+  word-break: keep-all;      /* 文字単位でバラけにくく */
+  overflow-wrap: break-word; /* 英数字が長い時だけ途中で折る */
+  text-wrap: pretty;         /* 見た目優先（対応ブラウザ） */
+}
+
+/* ====== タイトル周りの“横スクロール問題”を抑止 ====== */
+.title {
+  white-space: normal;       /* ← nowrap をやめる */
+  overflow-x: visible;       /* 横スクロール不要 */
+}
+
+/* ====== スマホ：手動 <br> は非表示（PCは今まで通り見える） ====== */
+@media (max-width: 768px) {
+  .char-desc br,
+  .catchcopy br,
+  .news br,
+  .framed-box br,
+  .profile-box br {
+    display: none;
+  }
+}
+
+/* ====== どうしても1語で見せたい時用（長すぎたら折るセーフティ付） ====== */
+.nobr {
+  white-space: nowrap;
+  overflow-wrap: break-word; /* 画面からはみ出すのを防ぐ */
+  word-break: break-word;    /* Safari用の保険 */
+}
+
+/* （任意）本文の読みやすい幅：全ページに効かせたいなら有効化 */
+.prose {
+  max-width: 36em;
+  line-height: 1.7;
+  letter-spacing: .02em;
+  margin-inline: auto;
+  padding-inline: 12px;
+}
+
