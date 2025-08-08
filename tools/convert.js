@@ -16,7 +16,10 @@ function convertAll() {
     const { content, data } = matter.read(fullPath);
 
     const title = data.title || '記事タイトルなし';
-    const date = data.date || '日付未設定';
+    const rawDate = data.date || '日付未設定';
+    const date = rawDate !== '日付未設定'
+      ? new Date(rawDate).toISOString().split("T")[0]
+      : rawDate;
     const image = data.image || '';
     const summary = data.summary || '';
 
