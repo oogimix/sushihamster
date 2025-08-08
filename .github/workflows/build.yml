@@ -1,0 +1,40 @@
+name: Build News Articles
+
+on:
+  push:
+    paths:
+      - 'news-md/**.md'
+      - '.github/workflows/build.yml'
+      - 'generate-json.js'
+      - 'convert-md-to-html.js'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Convert Markdown to HTML
+        run: node convert-md-to-html.js
+
+      - name: Generate files-html.json
+        run: node generate-json.js
+
+      - name: Commit and push generated files
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add news/*.html files-html.json
+          git commit -m "🔄 Auto-generate HTML and update files-html.json" || echo "No changes"
+          git push
