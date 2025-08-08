@@ -1,31 +1,25 @@
-name: Generate files.json on push
+name: Update files-html.json
 
 on:
   push:
     paths:
-      - 'news/**/*.md'
-      - 'generate-files.js'
+      - 'news/*.html'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: リポジトリをチェックアウト
-        uses: actions/checkout@v4
-
-      - name: Node.js をセットアップ
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-
-      - name: generate-files.js を実行
+          node-version: 20
+      - name: Generate files-html.json
         run: node generate-files.js
-
-      - name: files.json をコミットして push
+      - name: Commit and push
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add news/files.json
-          git commit -m "🤖 auto: regenerate files.json"
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add news/files-html.json
+          git commit -m "auto: updated files-html.json" || echo "No changes"
           git push
