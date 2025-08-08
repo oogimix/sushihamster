@@ -4,33 +4,27 @@ on:
   push:
     paths:
       - 'news/*.html'
-      - '.github/workflows/generate-html-files.yml'
   workflow_dispatch:
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Generate files-html.json
         run: |
-          echo '[' > news/files-html.json
-          find news -maxdepth 1 -type f -name '*.html' | \
-            grep -v 'index.html' | \
-            sed 's|^news/||' | \
-            sort | \
-            awk '{ print "\"" $0 "\"," }' >> news/files-html.json
+          echo "[" > news/files-html.json
+          find news -maxdepth 1 -type f -name '*.html' \
+            ! -name 'files-html.json' \
+            -printf '  "%f",\n' | sort -r >> news/files-html.json
           sed -i '$ s/,$//' news/files-html.json
-          echo ']' >> news/files-html.json
+          echo "]" >> news/files-html.json
 
-      - name: Commit and Push
+      - name: Commit and push
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add news/files-html.json
-          git commit -m "Update files-html.json"
+          git commit -m "Auto-generate files-html.json"
           git push
-        continue-on-error: true
