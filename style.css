@@ -570,3 +570,32 @@ table.link-table tr:hover {
     font-size: 18px;
   }
 }
+
+/* === 日本語向け 表示最適化クラス === */
+
+.balance {
+  text-wrap: balance;
+}
+
+.kinsoku {
+  line-break: strict;
+  hanging-punctuation: allow-end;
+}
+
+.nobr {
+  white-space: nowrap;
+}
+
+.prose {
+  max-width: 36em;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  margin-inline: auto;
+  padding-inline: 12px;
+  word-break: normal;
+}
+
+.news li {
+  text-wrap: pretty;
+}
+
