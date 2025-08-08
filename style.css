@@ -191,11 +191,102 @@ h2 {
   text-shadow: 1px 1px 2px #cc99ff;
 }
 
-.contact,
-.caution {
+/* contactをY2K風に派手め装飾 */
+.contact {
   width: 90%;
   max-width: 700px;
   margin: 20px auto;
+  font-family: 'Comic Sans MS', cursive, sans-serif; /* ちょっとポップなフォント */
+  font-size: 18px;
+  color: #cc33ff;
+  background: linear-gradient(45deg, #ffccff, #ccffff);
+  border: 3px double #ff66cc;
+  padding: 15px 20px;
+  border-radius: 20px;
+  box-shadow:
+    0 0 10px #ff99ff,
+    inset 0 0 8px #ff66cc;
+  text-align: center;
+  text-shadow: 1px 1px 2px #660066;
+}
+
+/* メールリンクの強調 */
+.contact a {
+  color: #ff0066;
+  font-weight: bold;
+  text-decoration: underline wavy #ff66cc;
+  text-shadow: 0 0 6px #ff66cc;
+}
+
+.contact a:hover {
+  color: #ff33aa;
+  text-shadow:
+    0 0 12px #ff33aa,
+    0 0 18px #ff99cc;
+  cursor: url('asset/cursor/pastelpink.cur'), pointer;
+}
+
+/* friend-links を左寄せに揃え＆Y2K風 */
+.friend-links {
+  width: 90%;
+  max-width: 700px;
+  margin: 10px auto 30px;
+  font-family: 'Arial Black', Gadget, sans-serif;
+  font-size: 16px;
+  color: #990099;
+  background: #f0e6ff;
+  border: 2px groove #cc99ff;
+  padding: 10px 15px;
+  border-radius: 12px;
+  box-shadow:
+    0 0 10px #cc99ff,
+    inset 0 0 8px #9966cc;
+  text-align: left;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: flex-start; /* 左寄せ */
+}
+
+/* SNSリンクのスタイル */
+.friend-links b {
+  margin-right: 12px;
+  font-size: 18px;
+  color: #cc33cc;
+  text-shadow: 1px 1px 2px #990099;
+}
+
+.friend-links a {
+  color: #990099;
+  text-decoration: none;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 2px solid #cc99ff;
+  border-radius: 8px;
+  background: linear-gradient(to bottom, #ffd9ff, #cc99ff);
+  box-shadow: 0 0 6px #cc99ff;
+  transition: all 0.3s ease;
+}
+
+.friend-links a:hover {
+  color: #ff66cc;
+  border-color: #ff66cc;
+  background: linear-gradient(to bottom, #ffb3ff, #ff66cc);
+  box-shadow:
+    0 0 12px #ff66cc,
+    0 0 20px #ff99cc;
+  cursor: url('asset/cursor/linopink.png'), pointer;
+}
+
+/* アイコン画像のサイズと位置調整 */
+.friend-links .sns-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 2px #cc66cc);
 }
 
 .caution {
