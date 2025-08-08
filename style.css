@@ -192,38 +192,38 @@ h2 {
 }
 
 .contact {
-  width: 90%;
-  max-width: 700px;
-  margin: 20px auto;
   font-family: 'ＭＳ Ｐゴシック', Osaka, sans-serif;
   font-size: 18px;
-  color: #004080;
-  background: none;
-  border: 2px solid #6699ff;
-  padding: 15px 20px;
+  padding: 15px;
+  background: linear-gradient(to bottom right, #f8fcff, #d8ecff);
+  border: 2px solid #99ccff;
   border-radius: 10px;
-  box-shadow:
-    0 0 12px #99bbff,
-    inset 0 0 14px #cce0ff;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
+  width: 90%;
+  max-width: 650px;
+  margin: 20px auto 30px;
+  line-height: 1.6;
   text-align: center;
-  text-shadow: 1px 1px 2px #3a5a99;
+  color: #003366;
   font-weight: bold;
+  text-shadow: 1px 1px 2px #66f, 0 0 8px #99f;
 }
 
+/* メールリンクだけ強調 */
 .contact a {
-  color: #ff0066;
+  color: #003399;
   font-weight: bold;
   text-decoration: underline;
   text-shadow:
-    0 0 5px #99bbff,
-    0 0 10px #6699ff;
+    0 0 6px #6699ff,
+    0 0 12px #99bbff;
   transition: all 0.3s ease;
 }
 
 .contact a:hover {
-  color: #3366cc;
+  color: #000066;
   text-shadow:
-    0 0 10px #3366cc,
+    0 0 12px #3366cc,
     0 0 18px #99bbff;
   cursor: url('asset/cursor/pastelpink.cur'), pointer;
 }
