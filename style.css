@@ -337,6 +337,8 @@ h2 {
   border: 4px ridge #cc99ff;
   border-radius: 12px;
   box-shadow: 0 0 10px #ccf;
+  display: block;
+  margin: 12px auto;
 }
 
 .sns-links {
@@ -529,6 +531,13 @@ table.link-table tr:hover {
   .profile-box br {
     display: none;
   }
+}
+.catchcopy { 
+  overflow-wrap: anywhere;
+}
+.catchcopy span { 
+  white-space: normal;
+  text-wrap: balance;
 }
 
 @media (max-width: 480px) {
