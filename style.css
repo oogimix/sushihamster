@@ -527,41 +527,92 @@ table.link-table tr:hover {
 
 /* === お知らせページ用 === */
 
-.news-wrapper {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f6fcff;
-      border: 3px ridge #99ccff;
-    }
+.news-post-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
 
 .news-post {
-      margin-bottom: 30px;
-      padding: 10px;
-      border: 2px dashed #ccf;
-      background: #ffffffcc;
-      border-radius: 10px;
-    }
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 14px;
+  border: 3px ridge #99ccff;
+  background: #f6fcff;
+  border-radius: 12px;
+  align-items: flex-start;
+  box-shadow: 0 4px 10px rgba(204, 204, 255, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.news-post:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 14px rgba(204, 204, 255, 0.5);
+  background: #ffffffee;
+  cursor: url('asset/cursor/linopink.png'), pointer;
+}
+
+.news-thumb {
+  width: 100px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 5px #ccc;
+  flex-shrink: 0;
+}
+
+.news-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
 .news-post h2 {
-      font-size: 1.2rem;
-      margin-bottom: 5px;
-    }
+  font-size: 1.2rem;
+  margin: 0 0 4px;
+  text-align: left;
+}
 
 .news-post small {
-      color: #666;
-      font-size: 0.9rem;
-    }
+  color: #666;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+  text-align: left;
+}
 
-    @media (max-width: 600px) {
-      .news-wrapper {
-        padding: 10px;
-      }
+.news-post p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #333;
+  text-align: left;
+}
 
-      .news-post h2 {
-        font-size: 1rem;
-      }
-    }
+@media (max-width: 600px) {
+  .news-post {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .news-thumb {
+    width: 80%;
+    max-width: 250px;
+  }
+
+  .news-text {
+    width: 100%;
+  }
+
+  .news-post h2,
+  .news-post small,
+  .news-post p {
+    text-align: center;
+  }
+}
+
 
 /* === 日本語最適化クラス === */
 .kinsoku, p, li, .char-desc, .catchcopy, .framed-box, .profile-box, .news {

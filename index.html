@@ -15,23 +15,32 @@
   <script>
 function loadPage(page) {
   fetch(page)
-    .then(res => res.text())
+    .then(res => {
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      return res.text();
+    })
     .then(html => {
-      document.getElementById('page-content').innerHTML = html;
+      const container = document.getElementById('page-content');
+      container.innerHTML = html;
       window.scrollTo(0, 0);
-      
-      if (page === "information.html") {
-        const oldScript = document.getElementById("news-loader-script");
-        if (oldScript) oldScript.remove(); // ← 前の script を消す
+
+      if (page.includes("information.html")) {
+        const old = document.getElementById("news-loader-script");
+        if (old) old.remove();
 
         const script = document.createElement("script");
-        script.src = "news-loader.js?" + Date.now(); // ← キャッシュ対策で毎回URL変える
+        script.src = "/news-loader.js?" + Date.now();  // ←ここ！！
         script.id = "news-loader-script";
-        document.body.appendChild(script); // ← ページに追加して実行させる
+        script.onload = () => console.log("✅ news-loader.js loaded");
+        script.onerror = () => console.error("❌ news-loader.js failed to load");
+        document.body.appendChild(script);
       }
+    })
+    .catch(err => {
+      console.error("ページ読み込みエラー:", err);
+      document.getElementById('page-content').innerHTML = "<p>読み込みに失敗しました。</p>";
     });
 }
-
     document.addEventListener("DOMContentLoaded", () => {
       loadPage("home.html");
     });
