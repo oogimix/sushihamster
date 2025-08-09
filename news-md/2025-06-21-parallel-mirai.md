@@ -1,7 +1,7 @@
 ---
 title: パラレルミライ　出演
 date: 2025-06-21
-image: /asset/img/parallelmirai.jpg
+image: /asset/img/news/parallelmirai.jpg
 summary: |
   - 🗓 日時：2025年6月21日（土）23:30  
   - 📍 会場：SWIPE 池尻大橋
