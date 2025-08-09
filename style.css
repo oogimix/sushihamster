@@ -15,10 +15,20 @@ body {
   min-height: 100vh;
 }
 
-/* === リンク === */
 a {
   color: #0000cc;
   text-decoration: underline;
+}
+
+p {
+  border-radius: 16px;
+  padding: 12px 16px;
+  color: #663399;
+  font-family: "ＭＳ Ｐゴシック", "Comic Sans MS", cursive, sans-serif;
+  font-size: 1em;
+  line-height: 1.6;
+  text-shadow: 0 0 2px #fff, 0 0 5px #ffccff;
+  margin: 12px 0;
 }
 
 a:hover {
@@ -27,22 +37,37 @@ a:hover {
   cursor: url('asset/cursor/linopink.png'), pointer;
 }
 
-/* === タイトル === */
-.title {
-  font-family: 'Impact', 'Arial Black', 'ＭＳ Ｐゴシック', sans-serif;
-  font-size: 40px;
-  color: #9933cc;
-  margin: 30px auto 10px;
-  text-shadow: 0 0 5px #ffccff, 1px 1px 2px #cc99ff, -1px -1px 2px #ccffff;
-  letter-spacing: 1px;
+h2 {
   text-align: center;
-  white-space: normal;
-  overflow-x: visible;
-  padding: 0 8px;
-  box-sizing: border-box;
-  max-width: 100vw;
-  scroll-behavior: smooth;
+  color: #9933cc;
+  text-shadow: 1px 1px 2px #cc99ff;
   text-wrap: balance;
+  white-space: nowrap;   
+  overflow-wrap: normal; 
+  word-break: normal; 
+  font-size: clamp(20px, 4.8vw, 40px); /* 画面サイズに応じて縮む */
+}
+
+/* === タイトル === */
+
+.title{
+  display:block;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  padding-inline:12px;
+  margin:30px auto 10px;
+  text-align:center;
+  white-space:nowrap;
+  text-wrap:nowrap;
+  overflow-wrap:normal;
+  word-break:normal;
+  font-family:'Impact','Arial Black','ＭＳ Ｐゴシック',sans-serif;
+  color:#9933cc;
+  text-shadow:0 0 5px #ffccff,1px 1px 2px #cc99ff,-1px -1px 2px #ccffff;
+  letter-spacing:1px;
+  line-height:1.2;
+  font-size:clamp(20px,4.8vw,40px);
 }
 
 /* === レイアウト === */
@@ -89,21 +114,13 @@ a:hover {
 }
 
 .counter {
-  background-color: rgba(255,255,255,0.9);
   padding: 5px 10px;
   border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.15);
   text-align: center;
   width: auto;
   max-width: 90vw;
   margin-top: 20px;
   align-self: center;
-}
-
-.counter script,
-.counter img {
-  display: inline-block;
-  margin: 0 auto;
 }
 
 .site-footer {
@@ -146,7 +163,6 @@ a:hover {
   font-family: "Hiragino Maru Gothic ProN", "Rounded Mplus 1c", "Arial Rounded MT Bold", "ＭＳ Ｐゴシック", sans-serif;
 }
 
-/* タイトル部だけはシンプルでそのまま */
 .catch-title {
   font-size: 20px;
   font-weight: bold;
@@ -154,7 +170,6 @@ a:hover {
   display: inline-block;
 }
 
-/* 本文だけY2Kバイブスフォント＋光 */
 .catch-text {
   display: inline-block;
   font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
@@ -181,15 +196,13 @@ marquee {
 .news {
   border: 2px solid #99ccff;
   background-color: #f6fcff;
-  padding: 20px; /* ← ここ統一感あるように調整 */
+  padding: 20px;
   margin: 30px auto;
-  border-radius: 12px;
   box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
   width: 90%;
   max-width: 650px;
   box-sizing: border-box;
 }
-
 
 .news ul {
   list-style: none;
@@ -231,13 +244,6 @@ marquee {
   text-decoration: underline;
 }
 
-h2 {
-  text-align: center;
-  color: #9933cc;
-  text-shadow: 1px 1px 2px #cc99ff;
-  text-wrap: balance;
-}
-
 .contact {
   width: 90%;
   max-width: 650px;
@@ -256,7 +262,6 @@ h2 {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
   background: none;
 }
-
 .contact::before,
 .contact::after {
   content: "";
@@ -314,7 +319,7 @@ h2 {
   margin-top: 8px;
 }
 
-/* コンテナ配置 */
+/* SNSボタン */
 .sns {
   display: flex;
   flex-wrap: wrap;
@@ -406,14 +411,6 @@ h2 {
   }
 }
 
-
-.caution {
-  color: red;
-  font-weight: bold;
-  text-align: center;
-  margin-top: 30px;
-}
-
 /* === プロフィール用 === */
 .profile-box {
   background: #ffffffcc;
@@ -426,7 +423,7 @@ h2 {
 }
 
 .char-img {
-  width: 220px;
+  width: 300px;
   height: auto;
   display: block;
   margin: 10px auto;
@@ -434,17 +431,20 @@ h2 {
 
 .char-name {
   text-align: center;
-  font-size: 20px;
   font-weight: bold;
   color: #0066cc;
+  font-size: clamp(20px, 4.8vw, 40px);
 }
 
 .char-desc {
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.8;
   text-align: center;
   margin-top: 10px;
+  font-family: "UD デジタル 教科書体 N-R", "Rounded Mplus 1c", "Hiragino Maru Gothic ProN", "游ゴシック", sans-serif;
+  color: #444;
 }
+
 
 .friend-photo {
   width: 90%;
@@ -520,21 +520,31 @@ h2 {
   margin-bottom: 15px;
 }
 
+
 .framed-box ul {
-  list-style: none;
   padding-left: 0;
-  margin-bottom: 15px;
+  text-align: center;
 }
 
 .framed-box ul li {
-  font-size: 18px;
-  padding-left: 26px;
+  font-size: 20px; 
   margin-bottom: 10px;
   position: relative;
   font-weight: 600;
   color: #7a3299;
+  display: inline-block; 
 }
 
+@media screen and (max-width: 600px) {
+  .framed-box ul {
+    text-align: left;
+  }
+  .framed-box ul li {
+    font-size: clamp(14px, 4vw, 18px);
+    padding-left: 20px; 
+    display: block; 
+  }
+}
 .framed-box p {
   font-size: 16px;
   font-style: italic;
@@ -543,38 +553,118 @@ h2 {
   margin-top: 10px;
 }
 
-/* === リンク集ページ用 === */
-table.link-table {
-  width: 90%;
-  max-width: 700px;
-  margin: 30px auto;
-  border-collapse: collapse;
-  font-family: "ＭＳ Ｐゴシック", Osaka, sans-serif;
-  background: #f0f8ff;
-  box-shadow: 0 0 10px #99ccff;
-  border-radius: 12px;
-  overflow: hidden;
+.bbs-links ul {
+  list-style: none; /* 頭の点を消す */
+  padding: 0;
+  margin: 0;
+  text-align: center; /* 中央揃え */
+}
+.bbs-links li {
+  display: inline-block; /* 横並び寄せ */
+  margin: 10px;
 }
 
-table.link-table th,
-table.link-table td {
-  border: 1px solid #99ccff;
-  padding: 12px 16px;
-  text-align: left;
-  vertical-align: top;
-}
-
-table.link-table th {
-  background: #ccddff;
-  color: #003366;
+.bbs-links a.bbs-link {
+  font-size: 25px;
+  font-family: "Comic Sans MS", "Rounded Mplus 1c", cursive; /* 丸文字で可愛く */
+  color: #ff66cc; /* ポップなピンク */
   font-weight: bold;
-  font-size: 18px;
-  text-shadow: 0 0 4px #6699cc;
+  text-shadow: 0 0 6px rgba(255, 105, 180, 0.8), 0 0 12px rgba(173, 216, 230, 0.8);
+  padding: 4px 8px;
+  border-radius: 12px;
+  transition: transform 0.2s ease, text-shadow 0.2s ease;
 }
 
-table.link-table tr:hover {
-  background-color: #e6f0ff;
+.bbs-links a.bbs-link:hover {
+  transform: scale(1.05);
+  text-shadow: 0 0 12px rgba(255, 105, 180, 1), 0 0 20px rgba(173, 216, 230, 1);
 }
+
+/* スマホ用 */
+@media screen and (max-width: 600px) {
+  .bbs-links a.bbs-link {
+    font-size: 16px;
+  }
+}
+/* === リンク集ページ用 === */
+/* テーブル中央寄せ & 均等幅 */
+table.link-table {
+  width: 95%;
+  max-width: 700px;
+  margin: 30px auto; /* ←中央寄せ */
+  border-collapse: separate;
+  border-spacing: 0;
+  background: linear-gradient(180deg, #f6fbff, #eef6ff);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 22px rgba(0,0,0,.12),
+              inset 0 1px 0 rgba(255,255,255,.9);
+  border: 2px solid rgba(120,160,255,.35);
+  backdrop-filter: blur(6px) saturate(1.05);
+}
+
+/* ヘッダー */
+table.link-table thead th {
+  background: linear-gradient(180deg, #e6f0ff 0%, #d7e6ff 100%);
+  color: #163d66;
+  font-weight: 800;
+  text-align: center; /* 中央寄せ */
+  padding: 14px 16px;
+  text-shadow: 0 1px 0 #fff;
+  border-bottom: 2px solid rgba(120,160,255,.45);
+}
+
+/* 行のゼブラ */
+table.link-table tbody tr:nth-child(odd) { background: rgba(255,255,255,.55); }
+table.link-table tbody tr:nth-child(even) { background: rgba(255,255,255,.35); }
+
+table.link-table tbody tr:hover {
+  background: rgba(255,255,255,.7);
+  transform: translateY(-1px);
+}
+
+/* セルのタイポ */
+table.link-table th, table.link-table td {
+  padding: 12px 16px;
+  line-height: 1.7;
+  border: 0;
+  color: #1a3350;
+  text-align: center; /* セルも中央寄せ */
+}
+
+/* リンクボタン 幅固定で均等 */
+table.link-table td a {
+  display: inline-block;
+  width: 180px;  /* ←ここで全ボタン幅統一 */
+  text-align: center;
+  padding: 8px 0;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  color: #fff;
+  background: radial-gradient(120% 120% at 28% 0%, rgba(255,255,255,.95), transparent 40%),
+              linear-gradient(180deg, #9cd6ff, #4fb7ff);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9),
+              inset 0 -2px 6px rgba(0,0,0,.18),
+              0 3px 6px rgba(0,0,0,.15);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+table.link-table td a:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,1),
+              inset 0 -3px 8px rgba(0,0,0,.22),
+              0 6px 12px rgba(0,0,0,.18);
+}
+
+/* モバイル調整 */
+@media (max-width: 600px) {
+  table.link-table td a {
+    width: 100%; /* スマホは幅いっぱい */
+    font-size: 15px;
+  }
+}
+
 
 /* === お知らせページ（ブログ風リデザイン）=== */
 
@@ -591,20 +681,20 @@ table.link-table tr:hover {
 }
 
 .news-list-wrapper {
-  max-width: 760px;     /* ← 他ページと統一 */
-  margin: 40px auto;     /* 上下にも余白を追加 */
-  padding: 0 24px;       /* 横余白を増やすと綺麗に */
+  max-width: 760px;   
+  margin: 40px auto;    
+  padding: 0 24px; 
   box-sizing: border-box;
   width: 100%;
 }
 
-/* 各投稿（ブログ記事風に仕切り線で分割） */
+
 .news-post-link {
   display: block;
   text-decoration: none;
   color: inherit;
   padding: 20px 0;
-  border-bottom: 2px inset #99ccff; /* ← バイブス線ここ */
+  border-bottom: 2px inset #99ccff; 
   transition: background-color 0.2s ease;
 }
 
@@ -643,10 +733,11 @@ table.link-table tr:hover {
   flex-direction: column;
   justify-content: center;
   gap: 6px;
+  font-family: 'ＭＳ Ｐゴシック', sans-serif;
 }
 
 .news-title {
-  font-family: 'Courier New', monospace;
+  font-family: 'ＭＳ Ｐゴシック', sans-serif;
   font-size: 16px;
   color: #000080;
   text-shadow: 1px 1px 0 #fff;
@@ -792,12 +883,6 @@ table.link-table tr:hover {
 
 
 /* === 日本語最適化クラス === */
-.kinsoku, p, li, .char-desc, .catchcopy, .framed-box, .profile-box {
-  line-break: strict;
-  word-break: keep-all;
-  overflow-wrap: break-word;
-  text-wrap: pretty;
-}
 
 .prose {
   max-width: 36em;
@@ -816,9 +901,6 @@ table.link-table tr:hover {
 
 /* === モバイル対応 === */
 @media (max-width: 768px) {
-  .title {
-    font-size: 22px;
-  }
 
   .container {
     display: block;
@@ -872,97 +954,25 @@ table.link-table tr:hover {
     display: none;
   }
 }
-.catchcopy { 
-  overflow-wrap: anywhere;
-}
-.catchcopy span { 
-  white-space: normal;
-  text-wrap: balance;
-}
-.contact::before {
-  background-size: cover;
-  background-position: center center;
-  min-width: 100%; 
-  min-height: 100%;
-}
 
-@media screen and (max-width: 600px) {
-  .news ul li {
-    font-size: 13px;
-    max-height: 12em;
-    padding-left: 1.6em;  /* 🍣ぶん左余白追加 */
-    position: relative;
+
+@media (max-width: 768px) {
+  .catchcopy {
+    width: 90%; 
+    max-width: 650px; 
+    padding: 18px;
+    line-height: 1.7;
   }
 
-  .news ul li::before {
-    content: "🍣";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    line-height: 1;
+  /* タイトル部分は中央に */
+  .catchcopy .catch-title {
+    display: block;
+    text-align: center;
+    margin-bottom: 8px;
   }
 
-  .news ul li .new-label {
-    display: inline-block;
-    margin-left: 6px;
-    font-size: 11px;
-    color: red;
+  /* 不自然な改行防止 */
+  .catchcopy br {
+    display: none; /* スマホは改行タグ間引き */
   }
 }
-
-
-@media (max-width: 480px) {
-  .title {
-    font-size: 16px;
-  }
-
-  .catchcopy span {
-    font-size: 18px;
-  }
-}
-
-/* === 共通ボックス設定 === */
-.box-common {
-  width: 90%;
-  max-width: 650px;
-  margin: 30px auto;
-  box-sizing: border-box;
-}
-
-/* catchcopy にも共通化適用 */
-.catchcopy {
-  composes: box-common;
-  font-size: 18px;
-  padding: 15px;
-  background: linear-gradient(to bottom right, #f8fcff, #d8ecff);
-  border: 2px solid #99ccff;
-  border-radius: 10px;
-  box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
-  line-height: 1.6;
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-
-/* 既存ボックスにも共通化適用 */
-.news,
-.contact,
-.profile-box,
-.framed-box,
-.link-table,
-.video-wrapper {
-  width: 90%;
-  max-width: 650px;
-  margin: 30px auto;
-  box-sizing: border-box;
-}
-
-.page-wrapper {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 0 24px;
-  box-sizing: border-box;
-
-}
-
