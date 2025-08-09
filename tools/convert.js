@@ -1,9 +1,8 @@
-// convert.js
-// MD(frontmatter付き) → HTML 変換スクリプト
-// - summary は YAML の複数行文字列(|)でも配列でもOK
-// - <ul> は .no-scroll を付けて出力（ニュース用）
-//
-// 実行: node convert.js
+// tools/convert.js
+// MD(frontmatter付き) → HTML 変換スクリプト（安定版）
+// - summary: 複数行文字列(|)でも配列でもOK
+// - 生成後に <ul> を <ul class="no-scroll"> に置換（renderer不使用で安定）
+// 実行: node tools/convert.js
 
 const fs = require('fs');
 const path = require('path');
@@ -15,23 +14,14 @@ const inputDir = path.join(__dirname, '../news-md');
 const outputDir = path.join(__dirname, '../news');
 const jsonPath  = path.join(__dirname, '../files-html.json');
 
-// ============== marked 設定 & レンダラ ==============
+// ===== marked 基本設定 =====
 marked.setOptions({
   gfm: true,
-  breaks: false, // 行末スペース2個での改行のみ許容（必要なら true）
+  breaks: false, // 行末スペース2つでの改行のみ
 });
 
-// <ul> を .no-scroll にする（ニュース一覧と整合）
-const renderer = new marked.Renderer();
-renderer.list = function (body, ordered, start) {
-  if (ordered) return `<ol>${body}</ol>`;
-  return `<ul class="no-scroll">${body}</ul>`;
-};
-// 必要に応じて他の要素もカスタム可能
-// renderer.link = ...
-
-// ============== ユーティリティ ==============
-/** frontmatterの複数行文字列(|)に付く共通インデントを削る */
+// ===== ユーティリティ =====
+/** 複数行文字列(|)の共通インデントを除去 */
 function dedent(str) {
   const lines = String(str ?? '').replace(/\r\n?/g, '\n').split('\n');
   const indents = lines
@@ -41,30 +31,47 @@ function dedent(str) {
   return lines.map(l => l.slice(min)).join('\n').trim();
 }
 
-/** summary を文字列に正規化（配列にも対応） */
+/** summary を Markdown 文字列に正規化（配列にも対応） */
 function normalizeSummary(raw) {
   if (!raw) return '';
   if (Array.isArray(raw)) {
-    // YAMLで summary: [a, b, c] のように来た場合
+    // YAMLで summary: [a, b, c] や 複数行リストが来たとき
     return raw.map(s => `- ${String(s)}`).join('\n');
   }
-  // 複数行文字列 (|) はデデントしてマークダウンへ
   return dedent(String(raw));
 }
 
-/** ディレクトリ確保 */
+/** 出力HTML内の <ul> に class を付与（既に class がある <ul> は無視） */
+function addUlClass(html) {
+  // <ul> のみを <ul class="no-scroll"> に置換（class属性なしの場合だけ）
+  return String(html).replace(/<ul(?![^>]*\bclass=)([^>]*)>/g, '<ul class="no-scroll"$1>');
+}
+
+/** ディレクトリ作成 */
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
 
-// ============== 変換メイン ==============
+/** 最低限のHTMLエスケープ */
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+const escapeAttr = escapeHtml;
+
+// ===== 変換メイン =====
 function convertAll() {
   ensureDir(outputDir);
 
-  const files = fs
-    .readdirSync(inputDir, { withFileTypes: true })
+  const entries = fs.readdirSync(inputDir, { withFileTypes: true });
+  const files = entries
     .filter(d => d.isFile() && d.name.toLowerCase().endsWith('.md'))
-    .map(d => d.name);
+    .map(d => d.name)
+    .sort();
 
   const htmlFiles = [];
 
@@ -74,19 +81,19 @@ function convertAll() {
     try {
       const { content, data } = matter.read(fullPath);
 
-      const title   = data.title || '記事タイトルなし';
-      const rawDate = data.date  || '日付未設定';
-      const date    =
+      const title = data.title || '記事タイトルなし';
+      const rawDate = data.date || '日付未設定';
+      const date =
         rawDate !== '日付未設定'
           ? new Date(rawDate).toISOString().split('T')[0]
           : rawDate;
 
-      const image   = data.image   || '';
+      const image = data.image || '';
       const summarySrc = normalizeSummary(data.summary);
 
-      // 本文＆サマリーの Markdown → HTML
-      const bodyHTML    = marked.parse(content, { renderer });
-      const summaryHTML = summarySrc ? marked.parse(summarySrc, { renderer }) : '';
+      // Markdown → HTML（rendererは使わない）
+      const bodyHTML    = addUlClass(marked.parse(content));
+      const summaryHTML = summarySrc ? addUlClass(marked.parse(summarySrc)) : '';
 
       const filename = mdFile.replace(/\.md$/i, '.html');
       htmlFiles.push(filename);
@@ -141,6 +148,7 @@ function convertAll() {
 </html>`;
 
       fs.writeFileSync(path.join(outputDir, filename), html, 'utf8');
+      console.log(`✔ Converted: ${mdFile} -> ${filename}`);
     } catch (err) {
       console.error(`❌ Failed to convert: ${mdFile}`, err);
     }
@@ -148,22 +156,11 @@ function convertAll() {
 
   try {
     fs.writeFileSync(jsonPath, JSON.stringify(htmlFiles, null, 2) + '\n', 'utf8');
-    console.log(`✅ Converted ${htmlFiles.length} file(s). Index: ${jsonPath}`);
+    console.log(`✅ Index written: ${jsonPath}`);
   } catch (err) {
     console.error('❌ Failed to write files-html.json', err);
   }
 }
-
-// ============== ちょいユーティリティ ==============
-function escapeHtml(s) {
-  return String(s)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
-function escapeAttr(s) { return escapeHtml(s); }
 
 // 実行
 convertAll();
