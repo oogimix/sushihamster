@@ -2,17 +2,18 @@ name: Convert Markdown to HTML
 
 on:
   push:
+    branches: [ main ]                  # ← デフォルトブランチが main じゃないなら直して
     paths:
-      - 'news-md/**/*.md'
+      - 'news-md/**/*.md'               # md 変更時のみ発火
       - '.github/workflows/convert-md-to-html.yml'
       - 'tools/convert.js'
+  workflow_dispatch: {}                 # ← 手動実行ボタンも付ける
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     permissions:
-      contents: write
+      contents: write                   # ← push に必要
 
     steps:
       - name: Checkout
@@ -20,21 +21,40 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install gray-matter marked
+      - name: Install deps (no package.json OK)
+        run: |
+          npm init -y >/dev/null 2>&1 || true
+          npm i gray-matter marked
 
       - name: Convert Markdown to HTML
         run: node tools/convert.js
 
+      - name: Show outputs (debug)
+        run: |
+          echo "::group::tree"
+          ls -la
+          echo "::endgroup::"
+          echo "::group::news dir"
+          ls -la news || true
+          echo "::endgroup::"
+          echo "::group::git status"
+          git status --porcelain
+          echo "::endgroup::"
+
       - name: Commit and Push HTML
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add news/
-          git commit -m "✅ Auto-generate HTML from Markdown" || echo "No changes"
-          git push origin HEAD:main
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add news/ files-html.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: auto-generate news HTML [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
