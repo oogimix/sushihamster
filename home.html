@@ -1,43 +1,79 @@
-   <div class="top-image">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sushihamster - Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="top-image">
     <img src="asset/img/image.jpg" style="width: 100%; height: auto;" alt="スシハム画像">
   </div>
 
   <div class="catchcopy kinsoku prose">
-  <span class="catch-title">🍣 sushihamster 🐹</span><br>
-  <span class="catch-text">
-    この星も、ミラーボールも、レコードも、お鮨も、ハムスターも、<br>
-    あなたも、わたしも、みんな愛しく回り続ける。<br>
-    目まぐるしい現世を一緒に謳歌しよう☆<br>
-    きらめく日々の渦中で出会った宇宙に一つのチャーミングなユニット。
-  </span>
-  <marquee behavior="scroll" direction="left" scrollamount="6">
-   💞💫🪐 Let's SUSHIHAM! 🍣🪩🐹 Turn it up! 🔁💿💞
-  </marquee>
-</div>
+    <span class="catch-title">🍣 sushihamster 🐹</span><br>
+    <span class="catch-text">
+      この星も、ミラーボールも、レコードも、お鮨も、ハムスターも、<br>
+      あなたも、わたしも、みんな愛しく回り続ける。<br>
+      目まぐるしい現世を一緒に謳歌しよう☆<br>
+      きらめく日々の渦中で出会った宇宙に一つのチャーミングなユニット。
+    </span>
+    <marquee behavior="scroll" direction="left" scrollamount="6">
+      💞💫🪐 Let's SUSHIHAM! 🍣🪩🐹 Turn it up! 🔁💿💞
+    </marquee>
+  </div>
 
   <h2 class="balance kinsoku">★ 最新情報 ★</h2>
   <div class="news kinsoku prose">
     <ul>
+      <!-- JSで記事一覧をここに読み込む -->
     </ul>
   </div>
 
   <div class="contact">
-   <p>イベント・メディア出演、制作・コラボなどのお問い合わせ💌</p>
-   <span id="email-link"></span>
-　</div>
+    <p>イベント・メディア出演、制作・コラボなどのお問い合わせ💌</p>
+    <a id="contact-link"
+       data-u="sush1h4mst3r"
+       data-d="gmail.com"
+       aria-label="メールで問い合わせ">
+      sush1h4mst3r💞gmail.com
+    </a>
+    <noscript>（メール：sush1h4mst3r[at]gmail.com）</noscript>
+  </div>
 
-<div class="sns">
-  <a class="sns-btn ig" href="https://www.instagram.com/sush1h4mst3r/" target="_blank" rel="noopener">
-    <img src="asset/img/icon_ig.jpg"" class="sns-icon" alt="">Instagram
-  </a>
-  <a class="sns-btn tw" href="https://twitter.com/sush1h4mst3r" target="_blank" rel="noopener">
-    <img src="asset/img/icon_twitter.jpg"" class="sns-icon" alt="">Twitter
-  </a>
-  <a class="sns-btn yt" href="https://www.youtube.com/channel/UC5rW29U6e7Qq02Xp8hhMmow" target="_blank" rel="noopener">
-    <img src="asset/img/icon_yt.jpg" class="sns-icon" alt="">YouTube
-  </a>
-</div>
+  <div class="sns">
+    <a class="sns-btn ig" href="https://www.instagram.com/sush1h4mst3r/" target="_blank" rel="noopener">
+      <img src="asset/img/icon_ig.jpg" class="sns-icon" alt="">Instagram
+    </a>
+    <a class="sns-btn tw" href="https://twitter.com/sush1h4mst3r" target="_blank" rel="noopener">
+      <img src="asset/img/icon_twitter.jpg" class="sns-icon" alt="">Twitter
+    </a>
+    <a class="sns-btn yt" href="https://www.youtube.com/channel/UC5rW29U6e7Qq02Xp8hhMmow" target="_blank" rel="noopener">
+      <img src="asset/img/icon_yt.jpg" class="sns-icon" alt="">YouTube
+    </a>
+  </div>
 
   <div class="caution kinsoku prose">
     <marquee>🪅キリ番を踏んだら掲示板に報告しよう🪅</marquee>
   </div>
+
+  <script>
+document.getElementById("contact-link").addEventListener("click", function (e) {
+  e.stopPropagation(); // SPAのリンク処理を止める
+  e.preventDefault();  // 既定動作（遷移）を止める
+
+  const email = this.dataset.u + "@" + this.dataset.d;
+
+  const params = new URLSearchParams({
+    subject: "【sushihamster】お問い合わせ"
+  });
+
+  // mailto発火
+  window.location.href = `mailto:${email}?${params.toString()}`;
+});
+</script>
+
+</body>
+</html>

@@ -42,6 +42,25 @@
     return `${y}-${m}-${dd}`;
   };
 
+  // ========= contactリンク初期化（最小変更・そのページだけ）=========
+  function initContactLink() {
+    const link = document.getElementById('contact-link');
+    if (!link) return;           // そのページに無ければ何もしない
+    if (link.__mailtoInit) return;
+    link.__mailtoInit = true;
+
+    const email = `${link.dataset.u}@${link.dataset.d}`;
+    const params = new URLSearchParams({ subject: '【sushihamster】お問い合わせ' });
+    link.href = `mailto:${email}?${params.toString()}`;
+    link.rel = 'noopener';
+
+    // SPAに拾われないよう伝播だけ止める（ネイティブ遷移はさせる）
+    link.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // e.preventDefault() は呼ばない → ブラウザのネイティブ遷移でメーラー起動
+    });
+  }
+
   // ========= 一覧描画（home / information 共通）=========
   async function renderNewsList() {
     const container = document.querySelector(NEWS_LIST_SELECTOR);
@@ -71,8 +90,8 @@
           // タイトル
           const title = safeText(doc.querySelector("h2")) || filename;
 
-          // 日付（ファイル名 → .news-date → <title>）←必ず出す
-          let dateText = fmtDate(date); // まずファイル名由来
+          // 日付（ファイル名 → .news-date → <title>）
+          let dateText = fmtDate(date);
           const inDoc = safeText(doc.querySelector(".news-date"));
           if (inDoc) dateText = inDoc;
           const t = safeText(doc.querySelector("title"));
@@ -83,7 +102,7 @@
           const imgEl = doc.querySelector(".news-feature img, .news-thumb");
           const thumb = imgEl?.getAttribute("src") || "";
 
-          // 概要（.news-embed があればそれを優先、無ければ .news-preview）
+          // 概要（.news-embed 優先、無ければ .news-preview）
           let summary = "";
           const embedEl = doc.querySelector(".news-embed");
           const previewEl = embedEl ? null : doc.querySelector(".news-preview");
@@ -197,6 +216,10 @@
       .then(html => {
         const container = document.getElementById(CONTENT_ID);
         container.innerHTML = html;
+
+        // ← 追加：このページの contact リンクだけ初期化
+        initContactLink();
+
         window.scrollTo(0, 0);
         if (pushState) history.pushState({ page }, "", `#${page}`);
 
