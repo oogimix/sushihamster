@@ -753,6 +753,15 @@ table.link-table tr:hover {
   border-radius: 50%;
 }
 
+.news ul.no-scroll{
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.news ul.no-scroll li::before {
+  content: none !important; /* 🍣を消す */
+}
+
 /* スマホ用レスポンシブ */
 @media (max-width: 600px) {
   .container {
@@ -774,6 +783,11 @@ table.link-table tr:hover {
   .news-nav a {
     width: 100%;
   }
+  
+  .news ul.no-scroll li{
+    max-height: none !important;
+  }
+}
 }
 
 

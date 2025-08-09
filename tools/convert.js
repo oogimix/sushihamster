@@ -1,11 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
-const marked = require('marked');
+const { marked } = require('marked'); // ← markedの名前付きimport推奨
 
 const inputDir = path.join(__dirname, '../news-md');
 const outputDir = path.join(__dirname, '../news');
 const jsonPath = path.join(__dirname, '../files-html.json');
+
+// ▼ ここを追加：<ul> の出力をカスタム
+const renderer = new marked.Renderer();
+renderer.list = function (body, ordered, start) {
+  if (ordered) return `<ol>${body}</ol>`;
+  return `<ul class="no-scroll">${body}</ul>`;
+};
+// 必要なら他のレンダリングもここで拡張できる
+// renderer.listitem = ...
 
 function convertAll() {
   const files = fs.readdirSync(inputDir).filter(f => f.endsWith('.md'));
@@ -18,13 +27,14 @@ function convertAll() {
     const title = data.title || '記事タイトルなし';
     const rawDate = data.date || '日付未設定';
     const date = rawDate !== '日付未設定'
-      ? new Date(rawDate).toISOString().split("T")[0]
+      ? new Date(rawDate).toISOString().split('T')[0]
       : rawDate;
     const image = data.image || '';
     const summary = data.summary || '';
 
-    const bodyHTML = marked.parse(content);
-    const summaryHTML = marked.parse(summary);
+    // ▼ カスタムrendererを使ってパース
+    const bodyHTML = marked.parse(content, { renderer });
+    const summaryHTML = marked.parse(summary, { renderer });
 
     const filename = file.replace(/\.md$/, '.html');
     htmlFiles.push(filename);
