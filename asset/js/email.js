@@ -8,20 +8,21 @@
     const a = document.createElement("a");
     a.href = `mailto:${email}`;
     a.textContent = email;
+    a.style.color = "deeppink"; // ← 任意の色指定
     el.appendChild(a);
     el.dataset.bound = "1";
     return true;
   }
 
-  // 1) DOM完成時に試す
+  // 1回試す
   if (!mount()) {
-    // 2) SPAで後から出てきたら自動でマウント
+    // 出るまで監視
     const mo = new MutationObserver(() => {
       if (mount()) mo.disconnect();
     });
-    mo.observe(document, { childList: true, subtree: true });
+    mo.observe(document.body, { childList: true, subtree: true });
   }
 
-  // 3) 手動でも呼べるように（SPAのページ切替後に明示的に実行可）
+  // SPA用：外部から再呼び出し可能に
   window.initEmail = (selector) => mount(selector);
 })();
