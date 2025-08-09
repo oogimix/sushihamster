@@ -1,10 +1,11 @@
-// main.js
+// main.js (final)
 (function () {
   // ========= 設定 =========
   const CONTENT_ID = "page-content";
   const SCRIPT_IDS = ["news-loader-script", "share-script"];
   const FILES_JSON = "news/files-html.json";
-  const NEWS_LIST_SELECTOR = ".news ul";
+  // information.html は #news-list（div）、旧構成は .news ul にも対応
+  const NEWS_LIST_SELECTOR = "#news-list, .news ul";
 
   // BBS（スマホは外部タブで開く）
   const BBS_PAGE = "hamham_bbs.html";
@@ -13,7 +14,9 @@
 
   // ========= ヘルパ =========
   const isMobile = () => window.innerWidth < MOBILE_BP;
-
+  const safeText = el => (el?.textContent || "").trim();
+  const firstMatch = (re, s) => (s || "").match(re)?.[0] || "";
+  const truncate = (s, n = 140) => (s || "").length > n ? s.slice(0, n - 1) + "…" : (s || "");
   const addScript = (src, id, onload) => {
     const old = document.getElementById(id);
     if (old) old.remove();
@@ -24,32 +27,29 @@
     s.onerror = () => console.error(`❌ ${src} failed to load`);
     document.body.appendChild(s);
   };
-
   const clearExtraScripts = () => {
     SCRIPT_IDS.forEach(id => document.getElementById(id)?.remove());
   };
-
-  const truncate = (s, n = 140) =>
-    (s || "").length > n ? s.slice(0, n - 1) + "…" : (s || "");
-
   const dateFromFilename = (filename) => {
     const m = filename.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    return m ? new Date(`${m[1]}-${m[2]}-${m[3]}`) : new Date(0);
+    return m ? new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00`) : new Date(0);
+  };
+  const fmtDate = (d) => {
+    if (!(d instanceof Date) || isNaN(d)) return "";
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${dd}`;
   };
 
-  const safeText = el => (el?.textContent || "").trim();
-  const firstMatch = (re, s) => {
-    const m = (s || "").match(re);
-    return m ? m[0] : "";
-  };
-
-  // ========= 最新情報一覧（サムネ＋日付＋概要 を同時表示）=========
+  // ========= 一覧描画（home / information 共通）=========
   async function renderNewsList() {
     const container = document.querySelector(NEWS_LIST_SELECTOR);
     if (!container) {
-      console.warn("📭 .news ul not found, skip rendering.");
+      console.warn("📭 NEWS_LIST_SELECTOR not found:", NEWS_LIST_SELECTOR);
       return;
     }
+    container.textContent = "読み込み中...";
 
     try {
       const files = await (await fetch(FILES_JSON + "?" + Date.now())).json();
@@ -59,6 +59,7 @@
         .map(filename => ({ filename, date: dateFromFilename(filename) }))
         .sort((a, b) => b.date - a.date);
 
+      const isUL = container.tagName.toLowerCase() === "ul";
       container.innerHTML = "";
 
       for (const { filename, date } of sorted) {
@@ -70,49 +71,41 @@
           // タイトル
           const title = safeText(doc.querySelector("h2")) || filename;
 
-          // ---- 日付（.news-date → <title> 先頭日付 → ファイル名）----
-          let dateText = safeText(doc.querySelector(".news-date"));
-          if (!dateText) {
-            const t = safeText(doc.querySelector("title"));
-            const fromTitle = firstMatch(/\d{4}[\/-]\d{2}[\/-]\d{2}/, t);
-            if (fromTitle) {
-              dateText = fromTitle.replace(/\//g, "-");
-            } else {
-              const m = filename.match(/^(\d{4})-(\d{2})-(\d{2})/);
-              if (m) dateText = `${m[1]}-${m[2]}-${m[3]}`;
-            }
-          }
+          // 日付（ファイル名 → .news-date → <title>）←必ず出す
+          let dateText = fmtDate(date); // まずファイル名由来
+          const inDoc = safeText(doc.querySelector(".news-date"));
+          if (inDoc) dateText = inDoc;
+          const t = safeText(doc.querySelector("title"));
+          const fromTitle = firstMatch(/\d{4}[\/-]\d{2}[\/-]\d{2}/, t);
+          if (fromTitle) dateText = fromTitle.replace(/\//g, "-");
 
           // サムネ
           const imgEl = doc.querySelector(".news-feature img, .news-thumb");
           const thumb = imgEl?.getAttribute("src") || "";
 
-          // ---- 概要（summary優先 → 本文先頭段落 → プレーンテキスト）----
+          // 概要（.news-embed があればそれを優先、無ければ .news-preview）
           let summary = "";
-          const summaryRoot =
-            doc.querySelector(".news-embed") || doc.querySelector(".news-preview");
+          const embedEl = doc.querySelector(".news-embed");
+          const previewEl = embedEl ? null : doc.querySelector(".news-preview");
 
-          if (summaryRoot) {
-            const list = summaryRoot.querySelector("ul, ol");
+          const pickSummary = (root) => {
+            if (!root) return "";
+            const list = root.querySelector("ul, ol");
             if (list) {
               const items = Array.from(list.querySelectorAll("li"))
                 .map(li => safeText(li))
                 .filter(Boolean)
                 .slice(0, 3);
-              summary = items.join(" / ");
-            } else {
-              summary = safeText(summaryRoot.querySelector("p")) || safeText(summaryRoot);
+              return items.join(" / ");
             }
-          }
-          summary = truncate(summary, 140);
+            return safeText(root.querySelector("p")) || safeText(root);
+          };
 
-          // New! 判定（30日以内）
-          const daysAgo = (Date.now() - date.getTime()) / 86400000;
-          const isNew = daysAgo <= 30;
+          summary = truncate(pickSummary(embedEl) || pickSummary(previewEl), 140);
 
-          // === DOM構築（既存CSSに合わせる）===
+          // --- DOM構築 ---
           const a = document.createElement("a");
-          a.href = `#${url}`;
+          a.href = `#news/${filename}`;
           a.className = "news-post-link";
 
           const post = document.createElement("div");
@@ -148,7 +141,9 @@
             text.appendChild(prev);
           }
 
-          if (isNew) {
+          // New!（30日以内）
+          const daysAgo = (Date.now() - date.getTime()) / 86400000;
+          if (daysAgo <= 30) {
             const badge = document.createElement("span");
             badge.className = "new-label";
             badge.textContent = "New!";
@@ -159,16 +154,22 @@
           post.appendChild(text);
           a.appendChild(post);
 
-          const li = document.createElement("li");
-          li.appendChild(a);
-          container.appendChild(li);
+          const wrapper = document.createElement(isUL ? "li" : "div");
+          if (!isUL) wrapper.className = "news-item";
+          wrapper.appendChild(a);
+          container.appendChild(wrapper);
         } catch (e) {
-          console.error(`🛑 記事の取得に失敗: ${url}`, e);
+          console.error("🛑 記事取得失敗:", url, e);
         }
       }
-    } catch (err) {
-      console.error("🛑 最新情報の読み込み失敗:", err);
-      container.innerHTML = "<li>読み込みに失敗しました。</li>";
+
+      if (!container.children.length) {
+        container.textContent = "記事が見つかりませんでした。";
+      }
+    } catch (e) {
+      console.error("🛑 files-html.json 取得失敗:", e);
+      const c = document.querySelector(NEWS_LIST_SELECTOR);
+      if (c) c.textContent = "読み込みに失敗しました。";
     }
   }
 
@@ -192,49 +193,47 @@
     }
 
     fetch(page)
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.text();
-      })
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); })
       .then(html => {
         const container = document.getElementById(CONTENT_ID);
         container.innerHTML = html;
         window.scrollTo(0, 0);
-
         if (pushState) history.pushState({ page }, "", `#${page}`);
 
         clearExtraScripts();
 
-        if (page.includes("information.html")) {
-          // 情報一覧ページ
-          addScript("/news-loader-html.js", "news-loader-script");
-        } else if (page.includes("home.html")) {
-          // トップは最新情報の簡易リスト
+        if (page.includes("information.html") || page.includes("home.html")) {
+          // 一覧を描画
           renderNewsList();
         } else if (page.startsWith("news/") && page.endsWith(".html")) {
-          // 記事ページ：前後ナビとシェアボタン
+          // ===== 記事ページ：前後ナビ + シェア =====
           const filename = page.split("/").pop();
-          const nav = document.querySelector(".news-nav");
-          if (nav) {
-            fetch("/news/files-html.json?nocache=" + Date.now())
-              .then(r => {
-                if (!r.ok) throw new Error("files-html.json 取得失敗");
-                return r.json();
-              })
-              .then(files => {
-                const idx = files.indexOf(filename);
-                if (idx === -1) return;
-                const prev = files[idx + 1];
-                const next = files[idx - 1];
 
-                const mk = (file, text) => {
-                  const a = document.createElement("a");
-                  a.href = `#news/${file}`;
-                  a.textContent = text;
-                  return a;
-                };
+          // .news-nav が無ければ作成
+          let nav = document.querySelector(".news-nav");
+          if (!nav) {
+            nav = document.createElement("div");
+            nav.className = "news-nav";
+            const host = document.querySelector(".news") || container;
+            host.appendChild(nav);
+          }
 
-                nav.innerHTML = "";
+          // 前後ナビ生成（files-html.json の順序に従う）
+          fetch("news/files-html.json?nocache=" + Date.now())
+            .then(r => { if (!r.ok) throw new Error("files-html.json 取得失敗"); return r.json(); })
+            .then(files => {
+              const idx = files.indexOf(filename);
+              const mk = (file, text) => {
+                const a = document.createElement("a");
+                a.href = `#news/${file}`;
+                a.textContent = text;
+                return a;
+              };
+
+              nav.innerHTML = "";
+              if (idx !== -1) {
+                const prev = files[idx + 1]; // 配列後方 = 前の記事
+                const next = files[idx - 1]; // 配列前方 = 次の記事
                 nav.appendChild(prev ? mk(prev, "← 前の記事へ") : document.createElement("span"));
 
                 const back = document.createElement("a");
@@ -243,33 +242,26 @@
                 nav.appendChild(back);
 
                 nav.appendChild(next ? mk(next, "次の記事へ →") : document.createElement("span"));
-              })
-              .catch(err => {
-                console.error("ナビ生成エラー:", err);
-                nav.innerHTML = "<span style='color:red;'>記事ナビの読み込みに失敗しました。</span>";
-              });
-          }
+              } else {
+                nav.textContent = "ナビゲーションを生成できませんでした。";
+              }
+            })
+            .catch(e => {
+              console.error("ナビ生成エラー:", e);
+              nav.innerHTML = "<span style='color:red;'>記事ナビの読み込みに失敗しました。</span>";
+            });
 
+          // シェアボタン（存在すれば初期化）
           addScript("/share.js", "share-script", () => {
             if (typeof initShareButtons === "function") initShareButtons();
           });
         }
       })
-      .catch(err => {
-        console.error("ページ読み込みエラー:", err);
+      .catch(e => {
+        console.error("ページ読み込みエラー:", e);
         document.getElementById(CONTENT_ID).innerHTML = "<p>読み込みに失敗しました。</p>";
       });
   }
-
-  // iOS対策：クリック直下で外部タブを開く
-  document.addEventListener("click", (e) => {
-    const a = e.target.closest('a[href="#hamham_bbs.html"]');
-    if (!a) return;
-    if (isMobile()) {
-      e.preventDefault();
-      window.open(BBS_EXTERNAL_URL, "_blank", "noopener");
-    }
-  });
 
   // ========= ルーター =========
   window.loadPage = loadPage;

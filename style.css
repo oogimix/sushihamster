@@ -67,7 +67,7 @@ h2 {
   text-shadow:0 0 5px #ffccff,1px 1px 2px #cc99ff,-1px -1px 2px #ccffff;
   letter-spacing:1px;
   line-height:1.2;
-  font-size:clamp(20px,4.8vw,40px);
+  font-size:clamp(15px,4.8vw,40px);
 }
 
 /* === レイアウト === */
@@ -200,7 +200,7 @@ marquee {
   margin: 30px auto;
   box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
   width: 90%;
-  max-width: 650px;
+  max-width: 700px;
   box-sizing: border-box;
 }
 
@@ -243,6 +243,7 @@ marquee {
   color: #003366;
   text-decoration: underline;
 }
+
 
 .contact {
   width: 90%;
@@ -897,7 +898,6 @@ table.link-table td a:hover {
     max-height: none !important;
   }
 }
-}
 
 
 /* === 日本語最適化クラス === */
@@ -978,7 +978,7 @@ table.link-table td a:hover {
   .catchcopy {
     width: 90%; 
     max-width: 650px; 
-    padding: 18px;
+    padding: 16px;
     line-height: 1.7;
   }
 
@@ -989,10 +989,35 @@ table.link-table td a:hover {
     margin-bottom: 8px;
   }
 
-  /* 不自然な改行防止 */
   .catchcopy br {
-    display: none; /* スマホは改行タグ間引き */
+    display: none;
   }
 }
 
+.news.prose {
+  max-width: 650px; 
+  width: 90%;
+}
 
+@media (max-width: 768px) {
+  .news {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .news.prose {
+    max-width: none !important;
+  }
+ 
+  .news-list-wrapper {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+.news-title .new-label{
+  color: #e60033;        /* 赤（お好みで） */
+  font-weight: 700;
+  margin-left: .25em;
+  text-decoration: none; /* リンクの下線を継がない */
+}
