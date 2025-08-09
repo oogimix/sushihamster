@@ -458,17 +458,20 @@ marquee {
 
 .sns-links {
   display: flex;
-  flex-direction: column; /* 上下並び */
-  align-items: center;    /* 中央寄せ */
-  justify-content: center;
-  text-align: center;
-  margin-top: 20px;
+  flex-direction: column; 
+  align-items: center; 
+  gap: 8px;
+}
+
+.sns-row {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
 }
 
 .sns-links a {
   display: inline-flex;
   align-items: center;
-  margin: 4px 8px;
   text-decoration: none;
 }
 
@@ -476,9 +479,7 @@ marquee {
   width: 20px;
   height: 20px;
   margin-right: 4px;
-  vertical-align: middle;
 }
-
 /* === 音源ページ用 === */
 .artwork {
   max-width: 300px;
@@ -993,4 +994,5 @@ table.link-table td a:hover {
     display: none; /* スマホは改行タグ間引き */
   }
 }
+
 
