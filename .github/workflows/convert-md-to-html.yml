@@ -35,6 +35,15 @@ jobs:
       - name: Convert Markdown to HTML
         run: node tools/convert.js
 
+      - name: Place .nojekyll (disable Jekyll on Pages)
+        run: |
+          touch .nojekyll
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .nojekyll
+          git commit -m "chore: add .nojekyll for GitHub Pages" || echo "No changes"
+
+
       - name: Show outputs (debug)
         run: |
           echo "::group::tree"
