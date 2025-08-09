@@ -37,6 +37,12 @@
     return m ? new Date(`${m[1]}-${m[2]}-${m[3]}`) : new Date(0);
   };
 
+  const safeText = el => (el?.textContent || "").trim();
+  const firstMatch = (re, s) => {
+    const m = (s || "").match(re);
+    return m ? m[0] : "";
+  };
+
   // ========= 最新情報一覧（サムネ＋日付＋概要 を同時表示）=========
   async function renderNewsList() {
     const container = document.querySelector(NEWS_LIST_SELECTOR);
@@ -61,32 +67,41 @@
           const html = await (await fetch(url + "?" + Date.now())).text();
           const doc = new DOMParser().parseFromString(html, "text/html");
 
-          const title = (doc.querySelector("h2")?.textContent || filename).trim();
+          // タイトル
+          const title = safeText(doc.querySelector("h2")) || filename;
 
-          // 日付：.news-date > ファイル名
-          const dateText =
-            (doc.querySelector(".news-date")?.textContent || "").trim() ||
-            (isFinite(date) ? date.toISOString().slice(0, 10) : "");
+          // ---- 日付（.news-date → <title> 先頭日付 → ファイル名）----
+          let dateText = safeText(doc.querySelector(".news-date"));
+          if (!dateText) {
+            const t = safeText(doc.querySelector("title"));
+            const fromTitle = firstMatch(/\d{4}[\/-]\d{2}[\/-]\d{2}/, t);
+            if (fromTitle) {
+              dateText = fromTitle.replace(/\//g, "-");
+            } else {
+              const m = filename.match(/^(\d{4})-(\d{2})-(\d{2})/);
+              if (m) dateText = `${m[1]}-${m[2]}-${m[3]}`;
+            }
+          }
 
           // サムネ
           const imgEl = doc.querySelector(".news-feature img, .news-thumb");
           const thumb = imgEl?.getAttribute("src") || "";
 
-          // 概要：summary(ul/ol) > news-preview の p > news-preview 全文
+          // ---- 概要（summary優先 → 本文先頭段落 → プレーンテキスト）----
           let summary = "";
-          const summaryRoot = doc.querySelector(".news-embed") || doc.querySelector(".news-preview");
+          const summaryRoot =
+            doc.querySelector(".news-embed") || doc.querySelector(".news-preview");
+
           if (summaryRoot) {
             const list = summaryRoot.querySelector("ul, ol");
             if (list) {
               const items = Array.from(list.querySelectorAll("li"))
-                .map(li => li.textContent.trim())
+                .map(li => safeText(li))
                 .filter(Boolean)
                 .slice(0, 3);
               summary = items.join(" / ");
             } else {
-              summary =
-                summaryRoot.querySelector("p")?.textContent?.trim() ||
-                summaryRoot.textContent.trim();
+              summary = safeText(summaryRoot.querySelector("p")) || safeText(summaryRoot);
             }
           }
           summary = truncate(summary, 140);
