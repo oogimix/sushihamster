@@ -208,7 +208,7 @@ marquee {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 7.2em; /* だいたい4〜5行分（1.6 * 4.5行） */
+  max-height: 15em; /* だいたい4〜5行分（1.6 * 4.5行） */
   overflow-y: auto;
 }
 
