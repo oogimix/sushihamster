@@ -1,13 +1,11 @@
-// main.js (final)
+// main.js (final, body抽出＆i18n対応版)
 (function () {
   // ========= 設定 =========
   const CONTENT_ID = "page-content";
   const SCRIPT_IDS = ["news-loader-script", "share-script"];
   const FILES_JSON = "news/files-html.json";
-  // information.html は #news-list（div）、旧構成は .news ul にも対応
   const NEWS_LIST_SELECTOR = "#news-list, .news ul";
 
-  // BBS（スマホは外部タブで開く）
   const BBS_PAGE = "hamham_bbs.html";
   const BBS_EXTERNAL_URL = "https://sush1h4mst3r.stars.ne.jp/clipbbs/clipbbs.cgi";
   const MOBILE_BP = 768;
@@ -42,10 +40,10 @@
     return `${y}-${m}-${dd}`;
   };
 
-  // ========= contactリンク初期化（最小変更・そのページだけ）=========
+  // ========= contactリンク初期化 =========
   function initContactLink() {
     const link = document.getElementById('contact-link');
-    if (!link) return;           // そのページに無ければ何もしない
+    if (!link) return;
     if (link.__mailtoInit) return;
     link.__mailtoInit = true;
 
@@ -53,26 +51,19 @@
     const params = new URLSearchParams({ subject: '【sushihamster】お問い合わせ' });
     link.href = `mailto:${email}?${params.toString()}`;
     link.rel = 'noopener';
-
-    // SPAに拾われないよう伝播だけ止める（ネイティブ遷移はさせる）
     link.addEventListener('click', (e) => {
       e.stopPropagation();
-      // e.preventDefault() は呼ばない → ブラウザのネイティブ遷移でメーラー起動
     });
   }
 
-  // ========= 一覧描画（home / information 共通）=========
+  // ========= 一覧描画 =========
   async function renderNewsList() {
     const container = document.querySelector(NEWS_LIST_SELECTOR);
-    if (!container) {
-      console.warn("📭 NEWS_LIST_SELECTOR not found:", NEWS_LIST_SELECTOR);
-      return;
-    }
+    if (!container) return;
     container.textContent = "読み込み中...";
 
     try {
       const files = await (await fetch(FILES_JSON + "?" + Date.now())).json();
-
       const sorted = files
         .filter(f => f.endsWith(".html"))
         .map(filename => ({ filename, date: dateFromFilename(filename) }))
@@ -87,10 +78,7 @@
           const html = await (await fetch(url + "?" + Date.now())).text();
           const doc = new DOMParser().parseFromString(html, "text/html");
 
-          // タイトル
           const title = safeText(doc.querySelector("h2")) || filename;
-
-          // 日付（ファイル名 → .news-date → <title>）
           let dateText = fmtDate(date);
           const inDoc = safeText(doc.querySelector(".news-date"));
           if (inDoc) dateText = inDoc;
@@ -98,31 +86,26 @@
           const fromTitle = firstMatch(/\d{4}[\/-]\d{2}[\/-]\d{2}/, t);
           if (fromTitle) dateText = fromTitle.replace(/\//g, "-");
 
-          // サムネ
           const imgEl = doc.querySelector(".news-feature img, .news-thumb");
           const thumb = imgEl?.getAttribute("src") || "";
 
-          // 概要（.news-embed 優先、無ければ .news-preview）
           let summary = "";
           const embedEl = doc.querySelector(".news-embed");
           const previewEl = embedEl ? null : doc.querySelector(".news-preview");
-
           const pickSummary = (root) => {
             if (!root) return "";
             const list = root.querySelector("ul, ol");
             if (list) {
-              const items = Array.from(list.querySelectorAll("li"))
+              return Array.from(list.querySelectorAll("li"))
                 .map(li => safeText(li))
                 .filter(Boolean)
-                .slice(0, 3);
-              return items.join(" / ");
+                .slice(0, 3)
+                .join(" / ");
             }
             return safeText(root.querySelector("p")) || safeText(root);
           };
-
           summary = truncate(pickSummary(embedEl) || pickSummary(previewEl), 140);
 
-          // --- DOM構築 ---
           const a = document.createElement("a");
           a.href = `#news/${filename}`;
           a.className = "news-post-link";
@@ -160,7 +143,6 @@
             text.appendChild(prev);
           }
 
-          // New!（30日以内）
           const daysAgo = (Date.now() - date.getTime()) / 86400000;
           if (daysAgo <= 30) {
             const badge = document.createElement("span");
@@ -187,12 +169,11 @@
       }
     } catch (e) {
       console.error("🛑 files-html.json 取得失敗:", e);
-      const c = document.querySelector(NEWS_LIST_SELECTOR);
-      if (c) c.textContent = "読み込みに失敗しました。";
+      container.textContent = "読み込みに失敗しました。";
     }
   }
 
-  // ========= ページ読み込み（SPA）=========
+  // ========= ページ読み込み =========
   function loadPageFromHash(push = false) {
     const hash = location.hash.slice(1);
     const page = hash || "home.html";
@@ -200,7 +181,6 @@
   }
 
   function loadPage(page, pushState = true) {
-    // スマホでBBSは外部タブ
     if (page === BBS_PAGE && isMobile()) {
       window.open(BBS_EXTERNAL_URL, "_blank", "noopener");
       const container = document.getElementById(CONTENT_ID);
@@ -211,14 +191,24 @@
       return;
     }
 
-    fetch(page)
+    fetch(`${page}?v=${Date.now()}`, { cache: "no-store" })
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); })
       .then(html => {
-        const container = document.getElementById(CONTENT_ID);
-        container.innerHTML = html;
+  const container = document.getElementById(CONTENT_ID);
 
-        // ← 追加：このページの contact リンクだけ初期化
-        initContactLink();
+  // ★フルHTMLでもbody中だけ抽出
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const fragment = doc.body ? doc.body.innerHTML : html;
+  container.innerHTML = fragment;
+
+  // ★辞書読み込み完了を待ってから home断片へ適用
+  if (window.__i18nReady) {
+    window.__i18nReady.then(() => window.applyI18n && applyI18n(container));
+  } else if (window.applyI18n) {
+    applyI18n(container);
+  }
+
+  initContactLink();
 
         window.scrollTo(0, 0);
         if (pushState) history.pushState({ page }, "", `#${page}`);
@@ -226,13 +216,10 @@
         clearExtraScripts();
 
         if (page.includes("information.html") || page.includes("home.html")) {
-          // 一覧を描画
           renderNewsList();
         } else if (page.startsWith("news/") && page.endsWith(".html")) {
-          // ===== 記事ページ：前後ナビ + シェア =====
           const filename = page.split("/").pop();
 
-          // .news-nav が無ければ作成
           let nav = document.querySelector(".news-nav");
           if (!nav) {
             nav = document.createElement("div");
@@ -241,7 +228,6 @@
             host.appendChild(nav);
           }
 
-          // 前後ナビ生成（files-html.json の順序に従う）
           fetch("news/files-html.json?nocache=" + Date.now())
             .then(r => { if (!r.ok) throw new Error("files-html.json 取得失敗"); return r.json(); })
             .then(files => {
@@ -255,8 +241,8 @@
 
               nav.innerHTML = "";
               if (idx !== -1) {
-                const prev = files[idx + 1]; // 配列後方 = 前の記事
-                const next = files[idx - 1]; // 配列前方 = 次の記事
+                const prev = files[idx + 1];
+                const next = files[idx - 1];
                 nav.appendChild(prev ? mk(prev, "← 前の記事へ") : document.createElement("span"));
 
                 const back = document.createElement("a");
@@ -274,7 +260,6 @@
               nav.innerHTML = "<span style='color:red;'>記事ナビの読み込みに失敗しました。</span>";
             });
 
-          // シェアボタン（存在すれば初期化）
           addScript("/share.js", "share-script", () => {
             if (typeof initShareButtons === "function") initShareButtons();
           });

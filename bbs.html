@@ -3,42 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BBS集</title>
+  <!-- タイトル -->
+  <title data-i18n="bbs.title">BBS集</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h2>📋 BBS集 📋</h2>
+    <!-- 見出し -->
+    <h2 data-i18n="bbs.header">📋 BBS集 📋</h2>
   </header>
 
   <main class="main" style="max-width:700px; margin: 20px auto;">
 
    <section class="framed-box">
-    <h2>掲示板利用のルール</h2>
+    <h2 data-i18n="bbs.rules.title">掲示板利用のルール</h2>
     <ul>
-      <li>🔑&nbsp;むやみに個人情報を載せないでね</li>
-      <li>💔&nbsp;出会い目的での利用は遠慮してね</li>
-      <li>✨&nbsp;荒らし行為禁止！大切に使ってね</li>
-      <li>🌈&nbsp;誰かが傷ついたり不快になったりすることは投稿しないでね</li>
+      <li>🔑&nbsp;<span data-i18n="bbs.rules.r1">むやみに個人情報を載せないでね</span></li>
+      <li>💔&nbsp;<span data-i18n="bbs.rules.r2">出会い目的での利用は遠慮してね</span></li>
+      <li>✨&nbsp;<span data-i18n="bbs.rules.r3">荒らし行為禁止！大切に使ってね</span></li>
+      <li>🌈&nbsp;<span data-i18n="bbs.rules.r4">誰かが傷ついたり不快になったりすることは投稿しないでね</span></li>
     </ul>
-  <p>みんなで仲良く楽しく交流しよう♪よろしくお願いします🐹</p>
-</section>
-
+    <p data-i18n="bbs.rules.footer">みんなで仲良く楽しく交流しよう♪よろしくお願いします🐹</p>
+   </section>
 
    <section class="bbs-links">
-  <ul>
-    <li>
-      <a href="#hamham_bbs.html" target="_self" rel="noopener noreferrer" class="bbs-link">
-        📝 掲示板はこちら
-      </a>
-    </li>
-    <li>
-      <a href="https://sush1h4mst3r.stars.ne.jp/potiboard5/potiboard.php" target="_blank" rel="noopener noreferrer" class="bbs-link">
-        🎨 お絵かき掲示板はこちら（新しいタブで開きます）
-      </a>
-    </li>
-  </ul>
-</section>
+    <ul>
+      <li>
+        <a href="#hamham_bbs.html" target="_self" rel="noopener noreferrer" class="bbs-link">
+          📝 <span data-i18n="bbs.links.board">掲示板はこちら</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://sush1h4mst3r.stars.ne.jp/potiboard5/potiboard.php" target="_blank" rel="noopener noreferrer" class="bbs-link">
+          🎨 <span data-i18n="bbs.links.oekaki">お絵かき掲示板はこちら</span>
+          <span data-i18n="bbs.links.newtab_note">（新しいタブで開きます）</span>
+        </a>
+      </li>
+    </ul>
+   </section>
 
   </main>
 </body>

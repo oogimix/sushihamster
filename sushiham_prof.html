@@ -1,59 +1,46 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>プロフィール</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <h2 class="balance kinsoku">🍣 プロフィール 🐹</h2>
+<h2 class="balance kinsoku" data-i18n="profile.title">🍣 プロフィール 🐹</h2>
 
-  <div class="profile-box kinsoku prose">
-    <img src="asset/img/sushihamster.png" class="char-img" alt="スシハムスター">
-    <div class="char-name">sushihamster</div>
-    <div class="char-desc">
-      アクアブルーのハムスター。<br>
-      つやつやぷるぷるもちもちボディでDJしたり踊ったりするよ。<br>
-      チャームポイントはヘッドホン。
-    </div>
-  </div>
-
-  <div class="profile-box kinsoku prose">
-    <img src="asset/img/sushifairy.png" class="char-img" alt="スシフェアリー">
-    <div class="char-name">sushifairy</div>
-    <div class="char-desc">
-      お鮨の妖精。<br>
-      ふわふわのシャリがみんなのハートもふわふわにしてくれるよ。<br>
-      チャームポイントはわさびのしっぽ。
-    </div>
-  </div>
-
-  <div class="profile-box friends kinsoku prose">
-    <img src="asset/img/IMG_7997.jpg" class="friend-photo" alt="oogimixとLinopink">
-    <div class="char-name">oogimix ＆ Linopink</div>
-    <div class="char-desc">
-      sushihamster&sushifairyとは別の次元にいる仲間。<br>
-      音楽の力で繋がっているよ。
-    </div>
-    <div class="sns-links">
-  <div class="sns-row">
-    <b>oogimix：</b>
-    <a href="https://twitter.com/oogimix" target="_blank"><img src="asset/img/icon_twitter.jpg" class="sns-icon">Twitter</a>
-    <a href="https://www.instagram.com/oogimix_/" target="_blank"><img src="asset/img/icon_ig.jpg" class="sns-icon">Instagram</a>
-  </div>
-  <div class="sns-row">
-    <b>Linopink：</b>
-    <a href="https://twitter.com/_llno_" target="_blank"><img src="asset/img/icon_twitter.jpg" class="sns-icon">Twitter</a>
-    <a href="https://www.instagram.com/___loveonly___/" target="_blank"><img src="asset/img/icon_ig.jpg" class="sns-icon">Instagram</a>
+<div class="profile-box kinsoku prose">
+  <img src="asset/img/sushihamster.png" class="char-img"
+       alt="スシハムスター" data-i18n-attr="alt|profile.hamster.alt">
+  <div class="char-name" data-i18n="profile.hamster.name">sushihamster</div>
+  <div class="char-desc" data-i18n="profile.hamster.desc" data-i18n-html>
+    アクアブルーのハムスター。<br>
+    つやつやぷるぷるもちもちボディでDJしたり踊ったりするよ。<br>
+    チャームポイントはヘッドホン。
   </div>
 </div>
+
+<div class="profile-box kinsoku prose">
+  <img src="asset/img/sushifairy.png" class="char-img"
+       alt="スシフェアリー" data-i18n-attr="alt|profile.fairy.alt">
+  <div class="char-name" data-i18n="profile.fairy.name">sushifairy</div>
+  <div class="char-desc" data-i18n="profile.fairy.desc" data-i18n-html>
+    お鮨の妖精。<br>
+    ふわふわのシャリがみんなのハートもふわふわにしてくれるよ。<br>
+    チャームポイントはわさびのしっぽ。
   </div>
-  </body>
-</html>
+</div>
 
+<div class="profile-box friends kinsoku prose">
+  <img src="asset/img/IMG_7997.jpg" class="friend-photo"
+       alt="oogimixとLinopink" data-i18n-attr="alt|profile.friends.alt">
+  <div class="char-name" data-i18n="profile.friends.name">oogimix ＆ Linopink</div>
+  <div class="char-desc" data-i18n="profile.friends.desc" data-i18n-html>
+    sushihamster&sushifairyとは別の次元にいる仲間。<br>
+    音楽の力で繋がっているよ。
+  </div>
 
-
-
-
-
+  <div class="sns-links">
+    <div class="sns-row">
+      <b>oogimix：</b>
+      <a href="https://twitter.com/oogimix" target="_blank"><img src="asset/img/icon_twitter.jpg" class="sns-icon">Twitter</a>
+      <a href="https://www.instagram.com/oogimix_/" target="_blank"><img src="asset/img/icon_ig.jpg" class="sns-icon">Instagram</a>
+    </div>
+    <div class="sns-row">
+      <b>Linopink：</b>
+      <a href="https://twitter.com/_llno_" target="_blank"><img src="asset/img/icon_twitter.jpg" class="sns-icon">Twitter</a>
+      <a href="https://www.instagram.com/___loveonly___/" target="_blank"><img src="asset/img/icon_ig.jpg" class="sns-icon">Instagram</a>
+    </div>
+  </div>
+</div>

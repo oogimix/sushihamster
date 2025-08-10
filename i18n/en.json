@@ -1,0 +1,133 @@
+{
+  "site": {
+    "title": "sushihamster Official Website",
+    "banner": "★☆ Welcome to sushihamster ☆★",
+    "footer": "© 2025 sushihamster. All sushi reserved. 🍣🐹",
+    "og_title": "sushihamster Official Website",
+    "og_desc": "sushihamster Official Website 🐹🍣 Bringing you the latest updates and event info!"
+  },
+  "menu": { "title": "▼ Menu" },
+  "nav": {
+    "home": "Home",
+    "profile": "Profile",
+    "info": "News",
+    "music": "Music",
+    "gallery": "Gallery",
+    "bbs": "BBS",
+    "links": "Links"
+  },
+  "home": {
+    "hero_alt": "Sushiham image",
+    "catch_html": "This planet, the mirror ball, the records, the sushi, and the hamsters—<br>you and I, we all keep spinning with love.<br>Let’s revel in this dizzy present together. ☆<br>A one-of-a-kind charming unit we met amid sparkling days.",
+    "slogan_html": "💞💫🪐 Let's SUSHIHAM! 🍣🪩🐹 Turn it up! 🔁💿💞",
+    "kiriban": "🪅If you hit a milestone number, report it on the BBS!🪅"
+  },
+  "news": {
+    "latest": "Latest News",
+    "read_more": "Read more"
+  },
+  "contact": {
+    "prompt": "For bookings, media, production, or collabs 💌",
+    "tooltip": "Contact via email",
+    "email_label": "📩 Contact: sush1h4mst3r@gmail.com"
+  },
+  "form": {
+    "name_label": "Your Name",
+    "name_placeholder": "Enter your name"
+  },
+  "sns": {
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "youtube": "YouTube"
+  },
+  "profile": {
+    "title": "🍣 Profile 🐹",
+    "hamster": {
+      "alt": "Sushi Hamster",
+      "name": "sushihamster",
+      "desc": "An aqua-blue hamster.<br>With a glossy, bouncy, mochi-like body, it DJs and dances.<br>Its charm point is the headphones."
+    },
+    "fairy": {
+      "alt": "Sushi Fairy",
+      "name": "sushifairy",
+      "desc": "A sushi fairy.<br>The fluffy rice makes everyone's heart feel fluffy too.<br>Its charm point is its wasabi tail."
+    },
+    "friends": {
+      "alt": "oogimix and Linopink",
+      "name": "oogimix & Linopink",
+      "desc": "Friends from another dimension from sushihamster & sushifairy.<br>Connected through the power of music."
+    }
+  },
+  "information": {
+    "title": "Information",
+    "header": "📢 Information 📢",
+    "loading": "Loading..."
+  },
+  "music": {
+    "title": "Music",
+    "header": "🎵 Music 🎵",
+    "lp_heading": "1st LP \"sushihamster\" in production!",
+    "lp_art_alt": "1st LP artwork",
+    "lp_status": "We are currently working hard on our debut album! Please stay tuned ☆",
+    "note": "※ Please wait a little longer until the tracks are released ♪"
+  },
+  "gallery": {
+    "title": "Gallery",
+    "header": "🎥 Gallery 🎥"
+  },
+  "bbs": {
+    "title": "BBS",
+    "header": "📋 BBS 📋",
+    "rules": {
+      "title": "Rules for Using the Boards",
+      "r1": "Please don’t post personal information carelessly.",
+      "r2": "Please don’t use the boards for dating purposes.",
+      "r3": "No trolling — please treat this space with care!",
+      "r4": "Do not post anything that could hurt or make others uncomfortable.",
+      "footer": "Let’s keep it friendly and fun. Thank you! 🐹"
+    },
+    "links": {
+      "board": "Go to the board",
+      "oekaki": "Go to the drawing board",
+      "newtab_note": "(opens in a new tab)"
+    }
+  },
+  "links": {
+    "title": "Links",
+    "header": "🌐 Links 🌐",
+    "table": {
+      "site": "Site Name",
+      "desc": "Description"
+    },
+    "items": {
+      "uobei": {
+        "name": "Uobei",
+        "desc": "Affordable and delicious conveyor belt sushi chain. Also great for takeout."
+      },
+      "hammyhome": {
+        "name": "HammyHome",
+        "desc": "A browser game where you can virtually raise a hamster."
+      },
+      "hampsterdance": {
+        "name": "THE HAMPSTER DANCE",
+        "desc": "The world's oldest internet meme 🐹 since 1997."
+      },
+      "chatgpt": {
+        "name": "ChatGPT",
+        "desc": "OpenAI's conversational AI for Q&A, creative writing, learning, and more."
+      },
+      "nintendo": {
+        "name": "Nintendo Official Site",
+        "desc": "The world of Nintendo. Packed with the latest games and product info."
+      },
+      "bandcamp": {
+        "name": "oogimix on Bandcamp",
+        "desc": "Download and stream tracks by oogimix."
+      },
+      "soundcloud": {
+        "name": "oogimix on SoundCloud",
+        "desc": "Play oogimix's tracks and DJ mixes."
+      }
+    }
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "site": {
+    "title": "sushihamsterのホームページ",
+    "banner": "★☆ sushihamsterのホームページ ☆★",
+    "footer": "© 2025 sushihamster. All sushi reserved. 🍣🐹",
+    "og_title": "sushihamsterのホームページ",
+    "og_desc": "sushihamsterのホームページ🐹🍣最新情報、出演情報など随時更新中！"
+  },
+  "menu": { "title": "▼ メニュー" },
+  "nav": {
+    "home": "ホーム",
+    "profile": "プロフィール",
+    "info": "お知らせ",
+    "music": "ミュージック",
+    "gallery": "ギャラリー",
+    "bbs": "BBS集",
+    "links": "リンク集"
+  },
+  "home": {
+    "hero_alt": "スシハム画像",
+    "catch_html": "この星も、ミラーボールも、レコードも、お鮨も、ハムスターも、<br>あなたも、わたしも、みんな愛しく回り続ける。<br>目まぐるしい現世を一緒に謳歌しよう☆<br>きらめく日々の渦中で出会った宇宙に一つのチャーミングなユニット。",
+    "slogan_html": "💞💫🪐 Let's SUSHIHAM! 🍣🪩🐹 Turn it up! 🔁💿💞",
+    "kiriban": "🪅キリ番を踏んだら掲示板に報告しよう🪅"
+  },
+  "news": {
+    "latest": "最新情報",
+    "read_more": "続きを読む"
+  },
+  "contact": {
+    "prompt": "イベント・メディア出演、制作・コラボなどのお問い合わせ💌",
+    "tooltip": "メールでお問い合わせ",
+    "email_label": "📩 お問い合わせ：sush1h4mst3r@gmail.com"
+  },
+  "form": {
+    "name_label": "お名前",
+    "name_placeholder": "お名前を入力"
+  },
+  "sns": {
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "youtube": "YouTube"
+  },
+  "profile": {
+    "title": "🍣 プロフィール 🐹",
+    "hamster": {
+      "alt": "スシハムスター",
+      "name": "sushihamster",
+      "desc": "アクアブルーのハムスター。<br>つやつやぷるぷるもちもちボディでDJしたり踊ったりするよ。<br>チャームポイントはヘッドホン。"
+    },
+    "fairy": {
+      "alt": "スシフェアリー",
+      "name": "sushifairy",
+      "desc": "お鮨の妖精。<br>ふわふわのシャリがみんなのハートもふわふわにしてくれるよ。<br>チャームポイントはわさびのしっぽ。"
+    },
+    "friends": {
+      "alt": "oogimixとLinopink",
+      "name": "oogimix ＆ Linopink",
+      "desc": "sushihamster&sushifairyとは別の次元にいる仲間。<br>音楽の力で繋がっているよ。"
+    }
+  },
+  "information": {
+    "title": "お知らせ",
+    "header": "📢 お知らせ 📢",
+    "loading": "読み込み中..."
+  },
+  "music": {
+    "title": "ミュージック",
+    "header": "🎵 ミュージック 🎵",
+    "lp_heading": "1st LP \"sushihamster\"制作中！",
+    "lp_art_alt": "1st LP アートワーク",
+    "lp_status": "現在、初アルバムを鋭意制作中!完成までしばらくお待ちください☆",
+    "note": "※ 音源の公開までもうしばらくお待ちください♪"
+  },
+  "gallery": {
+    "title": "ギャラリー",
+    "header": "🎥 ギャラリー 🎥"
+  },
+  "bbs": {
+    "title": "BBS集",
+    "header": "📋 BBS集 📋",
+    "rules": {
+      "title": "掲示板利用のルール",
+      "r1": "むやみに個人情報を載せないでね",
+      "r2": "出会い目的での利用は遠慮してね",
+      "r3": "荒らし行為禁止！大切に使ってね",
+      "r4": "誰かが傷ついたり不快になったりすることは投稿しないでね",
+      "footer": "みんなで仲良く楽しく交流しよう♪よろしくお願いします🐹"
+    },
+    "links": {
+      "board": "掲示板はこちら",
+      "oekaki": "お絵かき掲示板はこちら",
+      "newtab_note": "（新しいタブで開きます）"
+    }
+  },
+  "links": {
+    "title": "リンク集",
+    "header": "🌐 リンク集 🌐",
+    "table": {
+      "site": "サイト名",
+      "desc": "紹介文"
+    },
+    "items": {
+      "uobei": {
+        "name": "魚べい",
+        "desc": "リーズナブルで美味しい回転寿司チェーン。テイクアウトも充実。"
+      },
+      "hammyhome": {
+        "name": "HammyHome",
+        "desc": "バーチャルでハムスターを飼育できるブラウザゲーム。"
+      },
+      "hampsterdance": {
+        "name": "THE HAMPSTER DANCE",
+        "desc": "世界最古のインターネットミーム🐹since.1997"
+      },
+      "chatgpt": {
+        "name": "ChatGPT",
+        "desc": "OpenAIの対話型AI。質問・創作・学習など多用途に使える。"
+      },
+      "nintendo": {
+        "name": "任天堂公式サイト",
+        "desc": "世界のニンテンドー。最新ゲーム・製品情報が満載。"
+      },
+      "bandcamp": {
+        "name": "oogimixのBandcamp",
+        "desc": "oogimixの楽曲をダウンロード・ストリーミングできる。"
+      },
+      "soundcloud": {
+        "name": "oogimixのSoundCloud",
+        "desc": "oogimixの楽曲やDJミックスを再生できる。"
+      }
+    }
+  }
+}

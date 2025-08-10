@@ -1,0 +1,133 @@
+{
+  "site": {
+    "title": "sushihamster 공식 홈페이지",
+    "banner": "★☆ sushihamster에 오신 것을 환영합니다 ☆★",
+    "footer": "© 2025 sushihamster. 모든 스시의 권리를 보유합니다. 🍣🐹",
+    "og_title": "sushihamster 공식 홈페이지",
+    "og_desc": "sushihamster 공식 홈페이지 🐹🍣 최신 소식과 출연 정보를 전해드립니다!"
+  },
+  "menu": { "title": "▼ 메뉴" },
+  "nav": {
+    "home": "홈",
+    "profile": "프로필",
+    "info": "뉴스",
+    "music": "뮤직",
+    "gallery": "갤러리",
+    "bbs": "BBS",
+    "links": "링크"
+  },
+  "home": {
+    "hero_alt": "스시햄 이미지",
+    "catch_html": "이 별도, 미러볼도, 레코드도, 스시도, 햄스터도—<br>당신과 나, 우리 모두는 사랑스럽게 계속 회전해요.<br>복잡한 이 시대를 함께 만끽해요. ☆<br>반짝이는 나날 속에서 만난 단 하나의 차밍한 유닛.",
+    "slogan_html": "💞💫🪐 Let's SUSHIHAM! 🍣🪩🐹 Turn it up! 🔁💿💞",
+    "kiriban": "🪅키리번(기념 번호)을 밟으면 게시판에 보고해요!🪅"
+  },
+  "news": {
+    "latest": "최신 소식",
+    "read_more": "자세히 보기"
+  },
+  "contact": {
+    "prompt": "이벤트·미디어 출연, 제작·콜라보 문의 💌",
+    "tooltip": "이메일로 문의하기",
+    "email_label": "📩 문의: sush1h4mst3r@gmail.com"
+  },
+  "form": {
+    "name_label": "이름",
+    "name_placeholder": "이름을 입력하세요"
+  },
+  "sns": {
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "youtube": "YouTube"
+  },
+  "profile": {
+    "title": "🍣 프로필 🐹",
+    "hamster": {
+      "alt": "스시햄스터",
+      "name": "sushihamster",
+      "desc": "아쿠아 블루 색상의 햄스터.<br>반짝반짝 탱탱하고 말랑한 몸으로 DJ도 하고 춤도 춰요.<br>매력 포인트는 헤드폰입니다."
+    },
+    "fairy": {
+      "alt": "스시요정",
+      "name": "sushifairy",
+      "desc": "초밥 요정.<br>폭신폭신한 밥알이 모두의 마음도 폭신하게 만들어 줘요.<br>매력 포인트는 와사비 꼬리입니다."
+    },
+    "friends": {
+      "alt": "oogimix와 Linopink",
+      "name": "oogimix ＆ Linopink",
+      "desc": "sushihamster와 sushifairy와는 다른 차원에 있는 친구들.<br>음악의 힘으로 연결되어 있어요."
+    }
+  },
+  "information": {
+    "title": "공지사항",
+    "header": "📢 공지사항 📢",
+    "loading": "불러오는 중..."
+  },
+  "music": {
+    "title": "뮤직",
+    "header": "🎵 뮤직 🎵",
+    "lp_heading": "1st LP \"sushihamster\" 제작 중!",
+    "lp_art_alt": "1st LP 아트워크",
+    "lp_status": "현재 첫 앨범을 열심히 제작 중입니다! 완성까지 조금만 기다려 주세요 ☆",
+    "note": "※ 음원 공개까지 조금만 더 기다려 주세요 ♪"
+  },
+  "gallery": {
+    "title": "갤러리",
+    "header": "🎥 갤러리 🎥"
+  },
+  "bbs": {
+    "title": "게시판 모음",
+    "header": "📋 게시판 모음 📋",
+    "rules": {
+      "title": "게시판 이용 규칙",
+      "r1": "개인정보를 함부로 올리지 말아 주세요.",
+      "r2": "만남 목적의 이용은 삼가 주세요.",
+      "r3": "어그로/훼방 금지! 소중히 사용해요.",
+      "r4": "누군가가 상처받거나 불쾌해질 수 있는 글은 올리지 말아 주세요.",
+      "footer": "모두 함께 즐겁고 따뜻하게 교류해요. 잘 부탁해요 🐹"
+    },
+    "links": {
+      "board": "게시판으로 가기",
+      "oekaki": "그림 게시판으로 가기",
+      "newtab_note": "(새 탭에서 열립니다)"
+    }
+  },
+   "links": {
+    "title": "링크 모음",
+    "header": "🌐 링크 모음 🌐",
+    "table": {
+      "site": "사이트명",
+      "desc": "소개"
+    },
+    "items": {
+      "uobei": {
+        "name": "우오베이",
+        "desc": "저렴하고 맛있는 회전초밥 체인. 포장 메뉴도 다양."
+      },
+      "hammyhome": {
+        "name": "HammyHome",
+        "desc": "가상으로 햄스터를 키울 수 있는 브라우저 게임."
+      },
+      "hampsterdance": {
+        "name": "THE HAMPSTER DANCE",
+        "desc": "세계에서 가장 오래된 인터넷 밈 🐹 1997년부터."
+      },
+      "chatgpt": {
+        "name": "ChatGPT",
+        "desc": "OpenAI의 대화형 AI. 질문, 창작, 학습 등 다양한 용도로 사용 가능."
+      },
+      "nintendo": {
+        "name": "닌텐도 공식 사이트",
+        "desc": "세계의 닌텐도. 최신 게임과 제품 정보가 가득."
+      },
+      "bandcamp": {
+        "name": "oogimix Bandcamp",
+        "desc": "oogimix의 음악을 다운로드 및 스트리밍 가능."
+      },
+      "soundcloud": {
+        "name": "oogimix SoundCloud",
+        "desc": "oogimix의 곡과 DJ 믹스를 재생 가능."
+      }
+    }
+  }
+}
