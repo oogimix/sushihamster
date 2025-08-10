@@ -1044,6 +1044,7 @@ table.link-table td a:hover {
 .lang-switch button:hover {
   animation: swayHover 4s ease-in-out infinite;
   transform: scale(1.15) rotate(0deg);
+  cursor: url('asset/cursor/linopink.png'), pointer;
 }
 
 .lang-switch button img {
@@ -1096,3 +1097,4 @@ table.link-table td a:hover {
   100% { transform: scale(1.15) rotate(0deg); }
 
 }
+
