@@ -45,7 +45,7 @@ h2 {
   white-space: nowrap;   
   overflow-wrap: normal; 
   word-break: normal; 
-  font-size: clamp(20px, 4.8vw, 40px); /* 画面サイズに応じて縮む */
+  font-size: clamp(10px, 4.8vw, 40px); /* 画面サイズに応じて縮む */
 }
 
 /* === タイトル === */
@@ -1029,7 +1029,6 @@ table.link-table td a:hover {
   margin: 12px 0;
 }
 
-/* 常時ゆらゆら揺れつつ光る */
 .lang-switch button {
   background: none;
   border: none;
@@ -1042,22 +1041,20 @@ table.link-table td a:hover {
   transition: transform 0.3s ease;
 }
 
-/* ホバー時にscaleとrotateを両立 */
 .lang-switch button:hover {
   animation: swayHover 4s ease-in-out infinite;
   transform: scale(1.15) rotate(0deg);
+  cursor: url('asset/cursor/linopink.png'), pointer;
 }
 
-/* 明るくした国旗 */
 .lang-switch button img {
   width: 100%;
   height: 100%;
   display: block;
   border-radius: 0;
-  filter: brightness(1.12) contrast(1.05);
+  filter: brightness(1.1) contrast(1.05);
 }
 
-/* 光エフェクト（範囲はアイコン内） */
 .lang-switch button::after {
   content: "";
   position: absolute;
@@ -1098,4 +1095,38 @@ table.link-table td a:hover {
   50%  { transform: scale(1.15) rotate(0deg); }
   75%  { transform: scale(1.15) rotate(-10deg); }
   100% { transform: scale(1.15) rotate(0deg); }
+
 }
+
+.framed-box h2 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  font-size: clamp(18px, 5.2vw, 26px);
+}
+
+/* 念のためスマホ強化 */
+@media (max-width: 600px) {
+  .framed-box {
+    padding: 18px 16px;  /* 余白を少しだけ縮めて収まり良く */
+  }
+  .framed-box h2 {
+    font-size: clamp(16px, 5.6vw, 24px);
+  }
+}
+.news h2 {
+  white-space: normal;        /* 折り返し許可 */
+  overflow-wrap: anywhere;    /* スペース無くても折れる */
+  word-break: break-word;     /* 互換用 */
+  hyphens: auto;
+  line-height: 1.25;
+  font-size: clamp(16px, 6vw, 32px);
+}
+
+html, body { overflow-x: hidden; }
+
+
+
