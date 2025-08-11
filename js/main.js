@@ -1,4 +1,4 @@
-// main.js (final, body抽出＆i18n対応版)
+// main.js (final, BBSは同一タブ遷移版 / body抽出＆i18n対応)
 (function () {
   // ========= 設定 =========
   const CONTENT_ID = "page-content";
@@ -181,34 +181,30 @@
   }
 
   function loadPage(page, pushState = true) {
-    if (page === BBS_PAGE && isMobile()) {
-      window.open(BBS_EXTERNAL_URL, "_blank", "noopener");
-      const container = document.getElementById(CONTENT_ID);
-      container.innerHTML =
-        `<p>スマホでは掲示板を別タブで開きました。<br>` +
-        `<a href="${BBS_EXTERNAL_URL}" target="_blank" rel="noopener">開けない場合はこちら</a></p>`;
-      if (pushState) history.pushState({ page }, "", `#${page}`);
+    // ★ BBS は常に同一タブで外部URLへ遷移
+    if (page === BBS_PAGE) {
+      location.href = BBS_EXTERNAL_URL;
       return;
     }
 
     fetch(`${page}?v=${Date.now()}`, { cache: "no-store" })
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); })
       .then(html => {
-  const container = document.getElementById(CONTENT_ID);
+        const container = document.getElementById(CONTENT_ID);
 
-  // ★フルHTMLでもbody中だけ抽出
-  const doc = new DOMParser().parseFromString(html, "text/html");
-  const fragment = doc.body ? doc.body.innerHTML : html;
-  container.innerHTML = fragment;
+        // ★ フルHTMLでも body 中だけ抽出して差し込み
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const fragment = doc.body ? doc.body.innerHTML : html;
+        container.innerHTML = fragment;
 
-  // ★辞書読み込み完了を待ってから home断片へ適用
-  if (window.__i18nReady) {
-    window.__i18nReady.then(() => window.applyI18n && applyI18n(container));
-  } else if (window.applyI18n) {
-    applyI18n(container);
-  }
+        // ★ i18n: __i18nReady を待ってから適用
+        if (window.__i18nReady) {
+          window.__i18nReady.then(() => window.applyI18n && applyI18n(container));
+        } else if (window.applyI18n) {
+          applyI18n(container);
+        }
 
-  initContactLink();
+        initContactLink();
 
         window.scrollTo(0, 0);
         if (pushState) history.pushState({ page }, "", `#${page}`);
