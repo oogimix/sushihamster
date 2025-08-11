@@ -45,7 +45,7 @@ h2 {
   white-space: nowrap;   
   overflow-wrap: normal; 
   word-break: normal; 
-  font-size: clamp(15px, 4.8vw, 40px); /* 画面サイズに応じて縮む */
+  font-size: clamp(10px, 4.8vw, 40px); /* 画面サイズに応じて縮む */
 }
 
 /* === タイトル === */
@@ -1097,5 +1097,6 @@ table.link-table td a:hover {
   100% { transform: scale(1.15) rotate(0deg); }
 
 }
+
 
 
