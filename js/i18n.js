@@ -1,19 +1,49 @@
-// js/i18n.js
+// js/i18n.js (zh を単一辞書で運用する完全版)
 (function () {
   const DEFAULT = "ja";
-  const SUPPORTED = ["ja", "en", "ko"];
+  const SUPPORTED = ["ja", "en", "ko", "zh"]; // ← zh 追加
 
   let dict = {};
-  // ← これで「辞書準備OK」を他から待てる
+  let currentLang = DEFAULT;
+
+  // 「辞書準備OK」を待てる Promise を公開
   let resolveReady;
   window.__i18nReady = new Promise(res => (resolveReady = res));
 
+  // 入力言語コード正規化:
+  // - zh / zh-* はすべて "zh" に寄せる（繁体のみで運用）
+  // - "_" を "-" に揃え、小文字化
+  function normalizeLang(input) {
+    if (!input) return "";
+    const raw = String(input).replace("_", "-").toLowerCase().trim();
+
+    // ショートハンド（過去互換）や地域別 zh-* を全部 zh に集約
+    const short = { tc: "zh", tw: "zh", hk: "zh", sc: "zh", cn: "zh", sg: "zh" };
+    if (short[raw]) return short[raw];
+    if (raw.startsWith("zh")) return "zh";
+    return raw;
+  }
+
   function detectLang() {
     const p = new URLSearchParams(location.search);
-    const url = (p.get("lang") || "").toLowerCase();
-    const saved = (localStorage.getItem("lang") || "").toLowerCase();
-    const nav = (navigator.language || "").slice(0, 2).toLowerCase();
-    return [url, saved, nav, DEFAULT].find(l => SUPPORTED.includes(l)) || DEFAULT;
+    const url   = normalizeLang(p.get("lang") || "");
+    const saved = normalizeLang(localStorage.getItem("lang") || "");
+    const nav   = normalizeLang((navigator.language || "").replace("_", "-"));
+
+    // navigator.languages も一応見る（最初にサポート言語があれば採用）
+    const navList = Array.isArray(navigator.languages)
+      ? navigator.languages.map(l => normalizeLang(l))
+      : [];
+
+    const candidates = [
+      url,
+      saved,
+      ...navList,
+      nav,
+      DEFAULT
+    ];
+
+    return candidates.find(l => SUPPORTED.includes(l)) || DEFAULT;
   }
 
   function get(obj, path) {
@@ -21,12 +51,16 @@
   }
 
   async function loadDict(lang) {
-    // 相対パス（ローカル/サブディレクトリでも404になりにくい）
-    const res = await fetch(`i18n/${lang}.json`, { cache: "no-store" });
+    // もし zh-* が来ても zh に寄せる（公開APIからの直接指定対策）
+    const useLang = normalizeLang(lang);
+    const res = await fetch(`i18n/${useLang}.json`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     dict = await res.json();
-    document.documentElement.setAttribute("lang", lang);
-    localStorage.setItem("lang", lang);
+
+    currentLang = useLang;
+    document.documentElement.setAttribute("lang", currentLang);
+    localStorage.setItem("lang", currentLang);
+
     if (resolveReady) { resolveReady(); resolveReady = null; }
   }
 
@@ -61,11 +95,15 @@
 
   // 公開API（ボタンから呼ぶ用）
   window.changeLang = async (lang) => {
+    const useLang = normalizeLang(lang);
     const url = new URL(location.href);
-    url.searchParams.set("lang", lang);
+    url.searchParams.set("lang", useLang);
     history.replaceState(null, "", url);
-    await setLang(lang);
+    await setLang(useLang);
   };
+
+  // 現在の言語を取得したいとき用（任意）
+  window.getCurrentLang = () => currentLang;
 
   // 初期化：辞書ロード完了後に index 側へ適用
   (async () => {
