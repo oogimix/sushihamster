@@ -1046,6 +1046,13 @@ table.link-table td a:hover {
   transition: transform 0.3s ease;
 }
 
+@media (max-width: 600px) {
+  .lang-switch button {
+    width: 35px;
+    height: 35px;
+  }
+}
+
 .lang-switch button:hover {
   animation: swayHover 4s ease-in-out infinite;
   transform: scale(1.15) rotate(0deg);
