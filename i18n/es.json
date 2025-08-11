@@ -1,0 +1,133 @@
+{
+  "site": {
+    "title": "Página oficial de sushihamster",
+    "banner": "★☆ Página oficial de sushihamster ☆★",
+    "footer": "© 2025 sushihamster. All sushi reserved. 🍣🐹",
+    "og_title": "Página oficial de sushihamster",
+    "og_desc": "Página oficial de sushihamster 🐹🍣 ¡Noticias y eventos siempre actualizados!"
+  },
+  "menu": { "title": "▼ Menú" },
+  "nav": {
+    "home": "Inicio",
+    "profile": "Perfil",
+    "info": "Noticias",
+    "music": "Música",
+    "gallery": "Galería",
+    "bbs": "Foros",
+    "links": "Enlaces"
+  },
+  "home": {
+    "hero_alt": "Imagen de Sushiham",
+    "catch_html": "Este planeta, la bola de espejos, los discos, el sushi, el hámster,<br>tú y yo — todos girando con cariño.<br>Vamos a celebrar juntos este mundo acelerado☆<br>Una pareja única en el universo, que se encontró en días llenos de brillo.",
+    "slogan_html": "💞💫🪐 ¡Let's SUSHIHAM! 🍣🪩🐹 ¡Turn it up! 🔁💿💞",
+    "kiriban": "🪅Si alcanzas el número especial del contador, repórtalo en el foro🪅"
+  },
+  "news": {
+    "latest": "Últimas noticias",
+    "read_more": "Leer más"
+  },
+  "contact": {
+    "prompt": "Contacto para eventos, medios, producción y colaboraciones 💌",
+    "tooltip": "Contactar por correo electrónico",
+    "email_label": "📩 Contacto: sush1h4mst3r@gmail.com"
+  },
+  "form": {
+    "name_label": "Nombre",
+    "name_placeholder": "Introduce tu nombre"
+  },
+  "sns": {
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "youtube": "YouTube"
+  },
+  "profile": {
+    "title": "🍣 Perfil 🐹",
+    "hamster": {
+      "alt": "Sushi Hámster",
+      "name": "sushihamster",
+      "desc": "Un hámster azul aqua.<br>Con un cuerpo brillante, suave y esponjoso, actúa como DJ y baila.<br>Su punto encantador son los auriculares."
+    },
+    "fairy": {
+      "alt": "Hada del Sushi",
+      "name": "sushifairy",
+      "desc": "El hada del sushi.<br>El arroz esponjoso también hace que el corazón de todos se sienta suave.<br>Su encanto es la cola de wasabi."
+    },
+    "friends": {
+      "alt": "oogimix y Linopink",
+      "name": "oogimix ＆ Linopink",
+      "desc": "Amigos en otra dimensión distinta a sushihamster & sushifairy.<br>Conectados por el poder de la música."
+    }
+  },
+  "information": {
+    "title": "Noticias",
+    "header": "📢 Noticias 📢",
+    "loading": "Cargando..."
+  },
+  "music": {
+    "title": "Música",
+    "header": "🎵 Música 🎵",
+    "lp_heading": "¡1er LP \"sushihamster\" en producción!",
+    "lp_art_alt": "Arte del 1er LP",
+    "lp_status": "¡Estamos trabajando con todo en el primer álbum! Por favor, espera un poco más☆",
+    "note": "※ La música estará disponible pronto ♪"
+  },
+  "gallery": {
+    "title": "Galería",
+    "header": "🎥 Galería 🎥"
+  },
+  "bbs": {
+    "title": "Foros",
+    "header": "📋 Foros 📋",
+    "rules": {
+      "title": "Reglas de uso del foro",
+      "r1": "No publiques información personal innecesariamente",
+      "r2": "Prohibido usar con fines de citas o encuentros",
+      "r3": "¡Prohibido el vandalismo o trolling! Úsalo con respeto",
+      "r4": "No publiques nada que pueda herir o incomodar a otros",
+      "footer": "¡Vamos a interactuar de forma amable y divertida♪ Gracias 🐹"
+    },
+    "links": {
+      "board": "Ir al foro",
+      "oekaki": "Ir al foro de dibujos",
+      "newtab_note": "(se abrirá en una nueva pestaña)"
+    }
+  },
+  "links": {
+    "title": "Enlaces",
+    "header": "🌐 Enlaces 🌐",
+    "table": {
+      "site": "Nombre del sitio",
+      "desc": "Descripción"
+    },
+    "items": {
+      "uobei": {
+        "name": "Uobei",
+        "desc": "Cadena de sushi de cinta transportadora, deliciosa y asequible. Excelente para llevar."
+      },
+      "hammyhome": {
+        "name": "HammyHome",
+        "desc": "Juego de navegador para criar un hámster virtual."
+      },
+      "hampsterdance": {
+        "name": "THE HAMPSTER DANCE",
+        "desc": "Uno de los memes más antiguos de Internet 🐹 desde 1997."
+      },
+      "chatgpt": {
+        "name": "ChatGPT",
+        "desc": "IA conversacional de OpenAI. Ideal para preguntas, creación y aprendizaje."
+      },
+      "nintendo": {
+        "name": "Sitio oficial de Nintendo",
+        "desc": "Nintendo en todo el mundo. Noticias y productos actualizados."
+      },
+      "bandcamp": {
+        "name": "Bandcamp de oogimix",
+        "desc": "Descarga y streaming de la música de oogimix."
+      },
+      "soundcloud": {
+        "name": "SoundCloud de oogimix",
+        "desc": "Escucha las canciones y mezclas de DJ de oogimix."
+      }
+    }
+  }
+}

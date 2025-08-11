@@ -1,7 +1,8 @@
-// js/i18n.js (zh を単一辞書で運用する完全版)
+// js/i18n.js (zh単一・fr/pt-BR/es追加 対応版)
 (function () {
   const DEFAULT = "ja";
-  const SUPPORTED = ["ja", "en", "ko", "zh"]; // ← zh 追加
+  // 追加: fr, pt-br, es
+  const SUPPORTED = ["ja", "en", "ko", "zh", "fr", "pt-br", "es"];
 
   let dict = {};
   let currentLang = DEFAULT;
@@ -10,17 +11,33 @@
   let resolveReady;
   window.__i18nReady = new Promise(res => (resolveReady = res));
 
-  // 入力言語コード正規化:
-  // - zh / zh-* はすべて "zh" に寄せる（繁体のみで運用）
-  // - "_" を "-" に揃え、小文字化
+  // 入力言語コード正規化
+  // - zh / zh-* は "zh" に集約（サイトでは繁体のみ運用）
+  // - pt / pt-* は "pt-br" に寄せる（ブラジル優先）
+  // - es / es-* は "es" に寄せる（中立寄り）
+  // - fr / fr-* は "fr"
   function normalizeLang(input) {
     if (!input) return "";
     const raw = String(input).replace("_", "-").toLowerCase().trim();
 
-    // ショートハンド（過去互換）や地域別 zh-* を全部 zh に集約
-    const short = { tc: "zh", tw: "zh", hk: "zh", sc: "zh", cn: "zh", sg: "zh" };
+    // 過去ショートハンドや地域別 → 代表コードへ
+    const short = {
+      // Chinese
+      tc: "zh", tw: "zh", hk: "zh", sc: "zh", cn: "zh", sg: "zh",
+      // Portuguese
+      br: "pt-br", "pt-br": "pt-br", pt: "pt-br",
+      // Spanish
+      la: "es", mx: "es", ar: "es", cl: "es", es: "es",
+      // French
+      fr: "fr", ca: "fr" // fr-CAは fr に寄せる（必要なら分岐可）
+    };
     if (short[raw]) return short[raw];
+
     if (raw.startsWith("zh")) return "zh";
+    if (raw.startsWith("pt")) return "pt-br";
+    if (raw.startsWith("es")) return "es";
+    if (raw.startsWith("fr")) return "fr";
+
     return raw;
   }
 
@@ -29,20 +46,11 @@
     const url   = normalizeLang(p.get("lang") || "");
     const saved = normalizeLang(localStorage.getItem("lang") || "");
     const nav   = normalizeLang((navigator.language || "").replace("_", "-"));
-
-    // navigator.languages も一応見る（最初にサポート言語があれば採用）
     const navList = Array.isArray(navigator.languages)
       ? navigator.languages.map(l => normalizeLang(l))
       : [];
 
-    const candidates = [
-      url,
-      saved,
-      ...navList,
-      nav,
-      DEFAULT
-    ];
-
+    const candidates = [url, saved, ...navList, nav, DEFAULT];
     return candidates.find(l => SUPPORTED.includes(l)) || DEFAULT;
   }
 
@@ -51,13 +59,13 @@
   }
 
   async function loadDict(lang) {
-    // もし zh-* が来ても zh に寄せる（公開APIからの直接指定対策）
     const useLang = normalizeLang(lang);
     const res = await fetch(`i18n/${useLang}.json`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     dict = await res.json();
 
     currentLang = useLang;
+    // lang属性は見た目のコードをそのまま使う（pt-br 等）
     document.documentElement.setAttribute("lang", currentLang);
     localStorage.setItem("lang", currentLang);
 
@@ -73,7 +81,7 @@
     if (el.hasAttribute("data-i18n-html")) el.innerHTML = val;
     else el.textContent = val;
 
-    const attrMap = el.getAttribute("data-i18n-attr"); // 例: "placeholder|form.name_placeholder, title|contact.tooltip"
+    const attrMap = el.getAttribute("data-i18n-attr");
     if (attrMap) {
       attrMap.split(",").forEach(pair => {
         const [attr, k = key] = pair.split("|").map(s => s.trim());
@@ -102,10 +110,10 @@
     await setLang(useLang);
   };
 
-  // 現在の言語を取得したいとき用（任意）
+  // 現在の言語を取得
   window.getCurrentLang = () => currentLang;
 
-  // 初期化：辞書ロード完了後に index 側へ適用
+  // 初期化
   (async () => {
     const lang = detectLang();
     try { await setLang(lang); }
