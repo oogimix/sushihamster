@@ -1125,15 +1125,13 @@ table.link-table td a:hover {
 .news, .news .prose { container-type: inline-size; }
 
 /* 記事タイトル：改行なしで親幅に合わせて縮小 */
-.news h2 {
-  -webkit-text-size-adjust: none;
-  text-size-adjust: none;
+.news h2{
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
 
-
+  /* 折り返しなしで縮小（vw だけで十分） */
   white-space: nowrap;
   line-height: 1.2;
-  text-align: center;
-  font-size: clamp(16px, 5vw, 32px);  /* 収まり悪ければ 4.5vw まで下げてOK */
+  font-size: clamp(16px, 4.2vw, 32px);
   max-width: 100%;
-  overflow: visible; 
 }
