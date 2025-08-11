@@ -1,5 +1,4 @@
 /* === 基本設定 === */
-
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -1103,6 +1102,26 @@ table.link-table td a:hover {
   100% { transform: scale(1.15) rotate(0deg); }
 
 }
+/* BBSの枠内見出しだけ“ちゃんと折り返す” */
+.framed-box h2 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  font-size: clamp(18px, 5.2vw, 26px); 
+}
+
+@media (max-width: 600px) {
+  .framed-box {
+    padding: 18px 16px;
+  }
+  .framed-box h2 {
+    font-size: clamp(16px, 5.6vw, 24px);
+  }
+}
+
 
 
 
