@@ -1,4 +1,10 @@
 /* === 基本設定 === */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 html, body {
   height: 100%;
   margin: 0;
@@ -1098,20 +1104,5 @@ table.link-table td a:hover {
 
 }
 
-.news { container-type: inline-size; }
-
-/* 記事見出し：改行なしで親幅に合わせて縮む */
-.news h2 {
-  white-space: nowrap;
-  line-height: 1.2;
-  font-size: clamp(16px, 8cqi, 32px); /* 親幅の8%を基準にスケール */
-  overflow: hidden; /* 念のため */
-  text-overflow: clip;
-}
-
-/* cqi未対応ブラウザのフォールバック（1行でVW基準） */
-@supports not (font-size: 1cqi) {
-  .news h2 { font-size: clamp(16px, 6vw, 32px); }
-}
 
 
