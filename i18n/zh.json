@@ -1,39 +1,39 @@
 {
   "site": {
-    "title": "sushihamster 官方網站",
-    "banner": "★☆ sushihamster 官方網站 ☆★",
+    "title": "sushihamster 官方网站",
+    "banner": "★☆ sushihamster 官方网站 ☆★",
     "footer": "© 2025 sushihamster. All sushi reserved. 🍣🐹",
-    "og_title": "sushihamster 官方網站",
-    "og_desc": "sushihamster 官方網站🐹🍣 最新消息、演出資訊隨時更新中！"
+    "og_title": "sushihamster 官方网站",
+    "og_desc": "sushihamster 官方网站🐹🍣 最新信息、演出资讯持续更新中！"
   },
-  "menu": { "title": "▼ 功能選單" },
+  "menu": { "title": "▼ 功能菜单" },
   "nav": {
-    "home": "首頁",
-    "profile": "個人檔案",
-    "info": "最新消息",
-    "music": "音樂",
-    "gallery": "相簿",
-    "bbs": "留言板集",
-    "links": "連結集"
+    "home": "主页",
+    "profile": "个人资料",
+    "info": "通知",
+    "music": "音乐",
+    "gallery": "相册",
+    "bbs": "留言板合集",
+    "links": "友情链接"
   },
   "home": {
-    "hero_alt": "壽司倉鼠圖片",
-    "catch_html": "這顆星球、鏡球、唱片、壽司、倉鼠，<br>你、我、大家都可愛地持續旋轉著。<br>讓我們一起享受這目不暇給的現世☆<br>在閃耀的日子之中相遇的，宇宙唯一的迷人組合。",
+    "hero_alt": "寿司仓鼠图片",
+    "catch_html": "这颗星球、镜球、唱片、寿司、仓鼠，<br>你、我，大家都在可爱地旋转着。<br>一起把这目不暇接的现世尽情歌颂吧☆<br>在闪耀的日子里相遇的、宇宙独一无二的迷人组合。",
     "slogan_html": "💞💫🪐 Let's SUSHIHAM! 🍣🪩🐹 Turn it up! 🔁💿💞",
-    "kiriban": "🪅踩到特別訪問號就到留言板報告吧🪅"
+    "kiriban": "🪅踩到特别访问号就到留言板报到吧🪅"
   },
   "news": {
-    "latest": "最新消息",
-    "read_more": "閱讀更多"
+    "latest": "最新信息",
+    "read_more": "阅读全文"
   },
   "contact": {
-    "prompt": "活動、媒體演出、製作或合作等洽詢💌",
-    "tooltip": "透過電子郵件聯絡我們",
-    "email_label": "📩 聯絡信箱：sush1h4mst3r@gmail.com"
+    "prompt": "活动、媒体出演、制作与合作等咨询💌",
+    "tooltip": "通过邮件联系我们",
+    "email_label": "📩 联系邮箱：sush1h4mst3r@gmail.com"
   },
   "form": {
     "name_label": "姓名",
-    "name_placeholder": "請輸入您的姓名"
+    "name_placeholder": "请输入您的姓名"
   },
   "sns": {
     "instagram": "Instagram",
@@ -41,92 +41,92 @@
     "youtube": "YouTube"
   },
   "profile": {
-    "title": "🍣 個人檔案 🐹",
+    "title": "🍣 个人资料 🐹",
     "hamster": {
-      "alt": "壽司倉鼠",
+      "alt": "寿司仓鼠",
       "name": "sushihamster",
-      "desc": "水藍色的倉鼠。<br>用閃亮Q彈的身體當DJ或跳舞。<br>魅力點是耳機。"
+      "desc": "水蓝色的仓鼠。<br>用亮晶晶、Q弹的身体打碟或跳舞。<br>魅力点是耳机。"
     },
     "fairy": {
-      "alt": "壽司精靈",
+      "alt": "寿司精灵",
       "name": "sushifairy",
-      "desc": "壽司的精靈。<br>鬆軟的米飯讓大家的心也跟著鬆軟起來。<br>魅力點是芥末尾巴。"
+      "desc": "寿司的精灵。<br>松软的米饭也会把大家的心变得松软。<br>魅力点是芥末小尾巴。"
     },
     "friends": {
       "alt": "oogimix 和 Linopink",
       "name": "oogimix ＆ Linopink",
-      "desc": "與壽司倉鼠＆壽司精靈在不同次元的夥伴。<br>透過音樂的力量相連。"
+      "desc": "与寿司仓鼠＆寿司精灵处在不同次元的伙伴。<br>靠音乐的力量相连。"
     }
   },
   "information": {
-    "title": "最新消息",
-    "header": "📢 最新消息 📢",
-    "loading": "讀取中..."
+    "title": "通知",
+    "header": "📢 通知 📢",
+    "loading": "加载中..."
   },
   "music": {
-    "title": "音樂",
-    "header": "🎵 音樂 🎵",
-    "lp_heading": "1st LP《sushihamster》製作中！",
-    "lp_art_alt": "首張專輯封面",
-    "lp_status": "目前正全力製作首張專輯！完成前請耐心等候☆",
-    "note": "※ 音源公開前請再稍等片刻♪"
+    "title": "音乐",
+    "header": "🎵 音乐 🎵",
+    "lp_heading": "1st LP《sushihamster》制作中！",
+    "lp_art_alt": "首张专辑封面",
+    "lp_status": "目前正全力制作首张专辑！完成前请耐心等待☆",
+    "note": "※ 音源公开前请再稍候♪"
   },
   "gallery": {
-    "title": "相簿",
-    "header": "🎥 相簿 🎥"
+    "title": "相册",
+    "header": "🎥 相册 🎥"
   },
   "bbs": {
-    "title": "留言板集",
-    "header": "📋 留言板集 📋",
+    "title": "留言板合集",
+    "header": "📋 留言板合集 📋",
     "rules": {
-      "title": "留言板使用規則",
-      "r1": "請勿隨意公開個人資訊",
-      "r2": "禁止以交友為目的使用",
-      "r3": "禁止惡意破壞行為！請珍惜使用",
-      "r4": "不要發布會傷害或令他人不快的內容",
-      "footer": "大家一起友善快樂地交流♪請多指教🐹"
+      "title": "留言板使用规则",
+      "r1": "请勿随意公开个人信息",
+      "r2": "禁止以交友为目的的使用",
+      "r3": "禁止恶意捣乱！请文明使用",
+      "r4": "不要发布会伤害或令他人不适的内容",
+      "footer": "大家一起友善快乐地交流♪请多关照🐹"
     },
     "links": {
-      "board": "點此進入留言板",
-      "oekaki": "點此進入繪圖留言板",
-      "newtab_note": "（將在新分頁開啟）"
+      "board": "点击进入留言板",
+      "oekaki": "点击进入绘图留言板",
+      "newtab_note": "（将在新标签页打开）"
     }
   },
   "links": {
-    "title": "連結集",
-    "header": "🌐 連結集 🌐",
+    "title": "友情链接",
+    "header": "🌐 友情链接 🌐",
     "table": {
-      "site": "網站名稱",
-      "desc": "簡介"
+      "site": "网站名称",
+      "desc": "简介"
     },
     "items": {
       "uobei": {
-        "name": "魚べい",
-        "desc": "平價又美味的迴轉壽司連鎖店。外帶服務也很齊全。"
+        "name": "鱼べい",
+        "desc": "平价又美味的回转寿司连锁。外带也很齐全。"
       },
       "hammyhome": {
         "name": "HammyHome",
-        "desc": "可在瀏覽器上虛擬飼養倉鼠的遊戲。"
+        "desc": "可以在浏览器里虚拟饲养仓鼠的游戏。"
       },
       "hampsterdance": {
         "name": "THE HAMPSTER DANCE",
-        "desc": "世界最古老的網路迷因🐹 自1997年起"
+        "desc": "世界最早的网络迷因🐹 自1997年起"
       },
       "chatgpt": {
         "name": "ChatGPT",
-        "desc": "OpenAI 的對話型 AI。可用於提問、創作、學習等多種用途。"
+        "desc": "OpenAI 的对话式 AI。可用于提问、创作、学习等多种用途。"
       },
       "nintendo": {
-        "name": "任天堂官方網站",
-        "desc": "來自世界的任天堂。滿載最新遊戲與產品資訊。"
+        "name": "任天堂官方网站",
+        "desc": "来自全球的任天堂。满载最新游戏与产品资讯。"
       },
       "bandcamp": {
         "name": "oogimix 的 Bandcamp",
-        "desc": "可下載與串流播放 oogimix 的音樂作品。"
+        "desc": "可下载与串流播放 oogimix 的音乐作品。"
       },
       "soundcloud": {
         "name": "oogimix 的 SoundCloud",
-        "desc": "可播放 oogimix 的音樂與 DJ 混音。"
+        "desc": "可播放 oogimix 的音乐与 DJ 混音。"
       }
     }
   }
