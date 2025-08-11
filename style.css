@@ -1117,6 +1117,16 @@ table.link-table td a:hover {
     font-size: clamp(16px, 5.6vw, 24px);
   }
 }
+.news h2 {
+  white-space: normal;        /* 折り返し許可 */
+  overflow-wrap: anywhere;    /* スペース無くても折れる */
+  word-break: break-word;     /* 互換用 */
+  hyphens: auto;
+  line-height: 1.25;
+  font-size: clamp(16px, 6vw, 32px);
+}
+
+html, body { overflow-x: hidden; }
 
 
 
