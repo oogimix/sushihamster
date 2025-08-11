@@ -1098,5 +1098,25 @@ table.link-table td a:hover {
 
 }
 
+.framed-box h2 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  font-size: clamp(18px, 5.2vw, 26px);
+}
+
+/* 念のためスマホ強化 */
+@media (max-width: 600px) {
+  .framed-box {
+    padding: 18px 16px;  /* 余白を少しだけ縮めて収まり良く */
+  }
+  .framed-box h2 {
+    font-size: clamp(16px, 5.6vw, 24px);
+  }
+}
+
 
 
