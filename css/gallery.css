@@ -5,17 +5,33 @@
   --card-shadow-hover: 0 10px 28px rgba(0,0,0,.14);
 }
 
-.gallery-section { padding: 16px; }
-.gallery-title { margin: 0 0 16px; font-size: clamp(20px, 3.8vw, 28px); }
+/* 見出しも本文幅に合わせて中央寄せ */
+.gallery-title{
+  margin: 0 auto 16px;
+  font-size: clamp(20px, 3.8vw, 28px);
+  max-width: 760px;      /* 他ページの見た目幅に合わせる */
+  padding: 0 16px;
+  box-sizing: border-box;
+}
 
-/* Masonry: 列幅の目安を指定して自動列数 */
-.masonry {
-  column-width: 320px;
-  column-gap: 16px;
+/* Masonry: 列幅の目安を指定して自動列数（中央寄せ版） */
+#page-content #gallery.masonry{
+  /* 列幅＆隙間 */
+  --col-w: 320px;
+  --gap: 16px;
+
+  column-width: var(--col-w);
+  column-gap: var(--gap);
+
+  /* まずは2列の見た目幅にピタッと合わせて中央寄せ */
+  max-width: calc(2 * var(--col-w) + 1 * var(--gap));
+  margin: 0 auto;        /* 中央寄せ */
+  padding: 0 16px;       /* コンテンツ左右余白 */
+  box-sizing: border-box;
 }
 
 /* カード共通 */
-.card {
+.card{
   break-inside: avoid;
   margin: 0 0 16px;
   display: block;
@@ -24,84 +40,109 @@
   box-shadow: var(--card-shadow);
   transform: translateZ(0);
   transition: transform .22s ease, box-shadow .22s ease, opacity .28s ease;
-  opacity: 0; /* 後述のIOで .is-in を付与してフェードイン */
+  opacity: 0;  /* IOで .is-in を付与してフェードイン */
   will-change: transform;
 }
-.card.is-in { opacity: 1; transform: none; }
+.card.is-in{ opacity:1; transform:none; }
 
 .card img,
-.card iframe {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: var(--card-radius);
-  background: #f3f3f3;
+.card iframe{
+  width:100%;
+  height:auto;
+  display:block;
+  border-radius:var(--card-radius);
+  background:#f3f3f3;
 }
 
 /* ===== 動画カード（サムネもプレイヤーも16:9固定） ===== */
-.card.video { position: relative; }
+.card.video{ position:relative; }
 
 /* サムネイルは16:9を維持してcover */
-.video-thumb {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  display: block;
-  border-radius: var(--card-radius);
+.video-thumb{
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  display:block;
+  border-radius:var(--card-radius);
 }
 
 /* 再生ボタンオーバーレイ */
-.play-overlay {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(to top, rgba(0,0,0,.25), transparent 50%);
-  transition: opacity .2s ease;
-  opacity: .85;
+.play-overlay{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(to top, rgba(0,0,0,.25), transparent 50%);
+  transition:opacity .2s ease;
+  opacity:.85;
 }
-.play-button {
-  width: 68px; height: 48px; border: 0; border-radius: 8px;
-  background: rgba(0,0,0,.6);
-  transition: transform .2s ease, background .2s ease;
+.play-button{
+  width:68px; height:48px; border:0; border-radius:8px;
+  background:rgba(0,0,0,.6);
+  transition:transform .2s ease, background .2s ease;
 }
-.play-button .triangle {
-  margin-left: 4px; width: 0; height: 0;
-  border-left: 18px solid #fff;
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
+.play-button .triangle{
+  margin-left:4px; width:0; height:0;
+  border-left:18px solid #fff;
+  border-top:12px solid transparent;
+  border-bottom:12px solid transparent;
 }
 
 /* 再生時のプレイヤー枠（16:9固定） */
-.video-box {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--card-radius);
-  overflow: hidden;
+.video-box{
+  position:relative; width:100%; aspect-ratio:16/9;
+  border-radius:var(--card-radius); overflow:hidden;
 }
-.video-box iframe {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  border: 0; display: block;
+.video-box iframe{
+  position:absolute; inset:0; width:100%; height:100%; border:0; display:block;
 }
 
 /* ===== Hover / Elevation ===== */
-@media (hover: hover) {
-  .card:hover {
+@media (hover:hover){
+  .card:hover{
     transform: translateY(-2px) scale(1.02);
     box-shadow: var(--card-shadow-hover);
   }
-  .card.video .play-overlay { opacity: .95; }
-  .card.video .play-button { transform: scale(1.06); }
+  .card.video .play-overlay{ opacity:.95; }
+  .card.video .play-button{ transform: scale(1.06); }
 }
 
 /* ===== スマホ微調整 ===== */
-@media (max-width: 480px) {
-  .masonry { column-gap: 8px; }
-  .card { margin-bottom: 8px; }
+@media (max-width:480px){
+  #page-content #gallery.masonry{ column-gap:8px; }
+  .card{ margin-bottom:8px; }
 }
 
 /* ===== 低モーション配慮 ===== */
-@media (prefers-reduced-motion: reduce) {
-  .card { transition: none; }
-  .play-overlay, .play-button { transition: none; }
+@media (prefers-reduced-motion: reduce){
+  .card{ transition:none; }
+  .play-overlay, .play-button{ transition:none; }
+}
+
+/* 2列・中央寄せ：他ページの本文幅(760px)に合わせる */
+#page-content #gallery.masonry{
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 800px;        /* ← 他ページと同じ幅に固定（サムネはここで大きくなる） */
+  margin: 0 auto;          /* 中央寄せ */
+  padding: 0 16px;
+
+  /* 列は固定して、列幅は自動計算に任せる */
+  column-count: 2;
+  column-gap: 16px;
+  column-width: auto !important;  /* 以前の column-width 指定を無効化 */
+}
+
+/* スマホは1列 */
+@media (max-width: 850px){
+  #page-content #gallery.masonry{
+    max-width: 100%;
+    column-count: 1;
+    padding: 0 12px;
+  }
+  /* 画面広い時は3列に拡張（container: max-width 1100px と整合） */
+@media (min-width: 1100px){
+  #page-content #gallery.masonry{
+    max-width: calc(3 * var(--col-w) + 2 * var(--gap)); /* ≒ 992px */
+  }
+}
+
 }
