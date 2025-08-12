@@ -1,49 +1,9 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- タイトル -->
-  <title data-i18n="gallery.title">ギャラリー</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .video-wrapper {
-      max-width: 700px;
-      margin: 20px auto;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 0 15px rgba(153, 51, 204, 0.4);
-    }
-    iframe {
-      width: 100%;
-      height: 400px;
-      border: none;
-      display: block;
-    }
-  </style>
-</head>
-<body>
+<section class="gallery-section" data-page="gallery">
+  <header class="page-header">
+  
+   <h2 data-i18n="gallery.header">🎥 ギャラリー 🎥</h2>
+  </header>
 
-<header>
-  <!-- ヘッダー見出し -->
-  <h2 data-i18n="gallery.header">🎥 ギャラリー 🎥</h2>
-</header>
-
-<main>
-  <div class="video-wrapper">
-    <iframe src="https://www.youtube.com/embed/gfs2Hi1BCKU" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-  </div>
-
-  <div class="video-wrapper">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/WEC57i_iKUU?si=8KalgvL6iG7u8tMm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </div>
-
-  <div class="video-wrapper">
-    <iframe src="https://www.youtube.com/embed/dqTXIbdbpMU" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-  </div>
-
-  <!-- Instagram埋め込みなど他コンテンツもここに追加可 -->
-</main>
-
-</body>
-</html>
+  <!-- 画像masonry本体 -->
+  <div class="masonry" id="gallery" aria-live="polite"></div>
+</section>

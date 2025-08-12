@@ -1,8 +1,8 @@
-// main.js (final, BBSは同一タブ遷移版 / body抽出＆i18n対応)
+// main.js (final, BBSは同一タブ遷移版 / body抽出＆i18n対応 + Gallery安定化)
 (function () {
   // ========= 設定 =========
   const CONTENT_ID = "page-content";
-  const SCRIPT_IDS = ["news-loader-script", "share-script"];
+  const SCRIPT_IDS = ["news-loader-script", "share-script", "gallery-runtime"];
   const FILES_JSON = "news/files-html.json";
   const NEWS_LIST_SELECTOR = "#news-list, .news ul";
 
@@ -39,6 +39,57 @@
     const dd = String(d.getDate()).padStart(2, "0");
     return `${y}-${m}-${dd}`;
   };
+
+  // ========= ギャラリー初期化フック =========
+  // #gallery が DOM に現れるのを待ってから、gallery.js を script タグで注入
+  async function onPageLoadedHook(pagePath) {
+    const isGalleryPage =
+      (pagePath && /(?:^|\/|^)gallery\.html$/i.test(pagePath)) ||
+      /#gallery\.html(?:$|[?#])/i.test(location.hash);
+    if (!isGalleryPage) return;
+
+    const container = document.getElementById(CONTENT_ID);
+    if (!container) return;
+
+    // 既存のランタイムは必ず除去（再遷移時の二重実行を防ぐ）
+    document.getElementById("gallery-runtime")?.remove();
+
+    // #gallery 出現待ち（i18n等の後段差し替えにも対応）
+    const waitForGallery = () =>
+      new Promise((resolve) => {
+        const now = container.querySelector("#gallery");
+        if (now) return resolve(now);
+
+        const obs = new MutationObserver(() => {
+          const el = container.querySelector("#gallery");
+          if (el) {
+            obs.disconnect();
+            resolve(el);
+          }
+        });
+        obs.observe(container, { childList: true, subtree: true });
+
+        // 念のためのタイムアウト
+        setTimeout(() => {
+          obs.disconnect();
+          resolve(container.querySelector("#gallery") || null);
+        }, 3000);
+      });
+
+    const galleryEl = await waitForGallery();
+    if (!galleryEl) {
+      console.warn("[gallery] #gallery not found after wait");
+      return;
+    }
+
+    // gallery.js を確実にロード
+    const s = document.createElement("script");
+    s.src = "js/gallery.js?v=" + Date.now();
+    s.id = "gallery-runtime";
+    s.onload = () => console.log("[gallery] runtime loaded");
+    s.onerror = (e) => console.error("[gallery] runtime load failed", e);
+    document.body.appendChild(s);
+  }
 
   // ========= contactリンク初期化 =========
   function initContactLink() {
@@ -260,6 +311,9 @@
             if (typeof initShareButtons === "function") initShareButtons();
           });
         }
+
+        // ▼ ギャラリー初期化フック（#gallery出現を待ってから実行）
+        onPageLoadedHook(page);
       })
       .catch(e => {
         console.error("ページ読み込みエラー:", e);
