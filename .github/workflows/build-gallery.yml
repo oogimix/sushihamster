@@ -1,22 +1,24 @@
 name: Build Gallery
 on:
   push:
-    branches: [ main ]             # ← デフォルトブランチが main 以外なら変更してね
-    paths:
-      - 'asset/gallery/original/**'
-      - 'tools/build-gallery.mjs'
-      - '.github/workflows/build-gallery.yml'
-  workflow_dispatch:                # 手動実行も可能
+    branches: [ main ]   # ← 既定ブランチが main 以外なら変えてOK
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write               # ← 生成物をコミットするのに必要
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+
+      - name: Show tree (before)
+        run: |
+          echo "== tree (top) ==" && ls -la
+          echo "== tree asset/gallery ==" && ls -la asset/gallery || true
+          echo "== tree asset/gallery/original ==" && ls -la asset/gallery/original || true
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -27,8 +29,16 @@ jobs:
         run: |
           npm i --no-audit --no-fund sharp fast-glob image-size
 
-      - name: Build thumbs & images.json
+      - name: Build thumbs & images.json (robust)
         run: node tools/build-gallery.mjs
+
+      - name: Show tree (after)
+        run: |
+          echo "== after build ==" && ls -la asset/gallery || true
+          echo "== thumbs ==" && ls -la asset/gallery/thumb || true
+          echo "== images.json ==" && wc -c asset/gallery/images.json || true
+          echo "----"
+          cat asset/gallery/images.json || true
 
       - name: Configure git
         run: |
