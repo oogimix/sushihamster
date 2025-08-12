@@ -43,5 +43,14 @@
       "medium": "asset/gallery/original/05.png",
       "full": "asset/gallery/original/05.png"
     }
+  },
+  {
+    "id": "06",
+    "alt": "06",
+    "src": {
+      "thumb": "asset/gallery/original/06.png",
+      "medium": "asset/gallery/original/06.png",
+      "full": "asset/gallery/original/06.png"
+    }
   }
 ]
