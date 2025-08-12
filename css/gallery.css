@@ -144,5 +144,10 @@
     max-width: calc(3 * var(--col-w) + 2 * var(--gap)); /* ≒ 992px */
   }
 }
+}
 
+a:hover {
+  color: #cc66cc;
+  text-shadow: 0 0 6px #f9a9f9, 0 0 12px #f2a9f2;
+  cursor: url('asset/cursor/linopink.png'), pointer;
 }
