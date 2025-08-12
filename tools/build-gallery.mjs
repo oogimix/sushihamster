@@ -1,5 +1,4 @@
-// tools/build-gallery.mjs  (sharp版: サムネ/中/大をWebPで生成)
-// 依存: sharp, fast-glob, image-size
+// Robust gallery builder: sharp失敗・0枚でも空配列を書き出し、最悪はno-thumbsでフォールバック
 import fg from 'fast-glob';
 import sharp from 'sharp';
 import { promisify } from 'node:util';
@@ -7,47 +6,83 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import sizeOfCb from 'image-size';
 const sizeOf = promisify(sizeOfCb);
 
-// すべて「asset/」（単数）に統一
-const SRC = 'asset/gallery/original';
+const SRC = 'asset/gallery/original';     // 単数 asset！
 const OUT_THUMB_DIR = 'asset/gallery/thumb';
 const OUT_JSON = 'asset/gallery/images.json';
+const GLOB = `${SRC}/**/*.{jpg,jpeg,png,webp,gif,JPG,JPEG,PNG,WEBP,GIF}`;
 
-// 生成する出力サイズ（必要なら調整OK）
+// 出力サイズ（必要に応じて調整OK）
 const sizes = [
-  { key: 'thumb',  w: 480 },   // ギャラリーに並べる軽量版
-  { key: 'medium', w: 960 },   // 少し大きい表示用
-  { key: 'full',   w: 1600 },  // フル相当（過度に大きい原稿はここまでに縮小）
+  { key: 'thumb',  w: 480 },
+  { key: 'medium', w: 960 },
+  { key: 'full',   w: 1600 },
 ];
 
-await mkdir(OUT_THUMB_DIR, { recursive: true });
+async function writeJSON(list, note) {
+  await writeFile(OUT_JSON, JSON.stringify(list, null, 2), 'utf8');
+  console.log(`Wrote: ${OUT_JSON} with ${list.length} items ${note ? `(${note})` : ''}`);
+}
 
-// original配下の画像を拾う（大文字拡張子もOK）
-const files = await fg(`${SRC}/**/*.{jpg,jpeg,png,webp,gif,JPG,JPEG,PNG,WEBP,GIF}`, { dot:false });
-const list = [];
+async function main() {
+  await mkdir(OUT_THUMB_DIR, { recursive: true });
 
-for (const f of files) {
+  const files = await fg(GLOB, { dot: false });
+  console.log('Found originals:', files.length);
+
+  // 画像が0でも空配列を必ず書く（ブランク化を防止）
+  if (!files.length) {
+    await writeJSON([], 'no originals');
+    return;
+  }
+
+  const list = [];
+
   try {
-    const { width, height } = await sizeOf(f);
-    const base = f.split('/').pop().replace(/\.[^.]+$/, ''); // 拡張子除去
-    const entry = { id: base, w: width, h: height, alt: base, src: {} };
+    // 通常ルート: sharpでwebpサムネ生成
+    for (const f of files) {
+      try {
+        const { width, height } = await sizeOf(f);
+        const base = f.split('/').pop().replace(/\.[^.]+$/, '');
+        const entry = { id: base, w: width, h: height, alt: base, src: {} };
 
-    // 各サイズを生成（元が小さい時は拡大しない）
-    for (const s of sizes) {
-      const out = `${OUT_THUMB_DIR}/${base}-${s.key}.webp`;
-      await sharp(f)
-        .rotate() // EXIF回転を正規化
-        .resize({ width: s.w, withoutEnlargement: true })
-        .webp({ quality: 78 })   // 画質はお好みで（70-82くらいが無難）
-        .toFile(out);
-      entry.src[s.key] = out;
+        for (const s of sizes) {
+          const out = `${OUT_THUMB_DIR}/${base}-${s.key}.webp`;
+          await sharp(f)
+            .rotate()
+            .resize({ width: s.w, withoutEnlargement: true })
+            .webp({ quality: 78 })
+            .toFile(out);
+          entry.src[s.key] = out;
+        }
+
+        list.push(entry);
+      } catch (e) {
+        console.error('Per-file build error:', f, e?.message || e);
+      }
     }
 
-    list.push(entry);
+    // sharpが全部こけた等でlistが空ならフォールバックへ
+    if (!list.length) throw new Error('sharp build produced 0 items');
+    await writeJSON(list, 'sharp thumbs');
   } catch (e) {
-    console.error('Build error for', f, e);
+    console.warn('Sharp route failed, fallback to no-thumbs:', e?.message || e);
+
+    // フォールバック：originalそのままをすべてのサイズに流用
+    const fallback = files.map(f => {
+      const base = f.split('/').pop().replace(/\.[^.]+$/, '');
+      return {
+        id: base,
+        alt: base,
+        src: { thumb: f, medium: f, full: f }
+      };
+    });
+    await writeJSON(fallback, 'fallback no-thumbs');
   }
 }
 
-// JSONを書き出し
-await writeFile(OUT_JSON, JSON.stringify(list, null, 2), 'utf8');
-console.log(`Wrote: ${OUT_JSON} with ${list.length} items`);
+main().catch(async (e) => {
+  console.error('Fatal builder error:', e);
+  // それでも壊れたら最低限の空配列を出力（前回の内容を消しっぱなしにしない）
+  try { await writeJSON([], 'fatal'); } catch {}
+  process.exit(1);
+});
