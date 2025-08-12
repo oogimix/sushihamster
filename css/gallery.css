@@ -86,14 +86,6 @@
   border-bottom:12px solid transparent;
 }
 
-@media (hover:hover) and (pointer:fine){
-  .card.video .play-overlay,
-  .card.video .play-button,
-  .card.video .video-thumb{
-    cursor: url('asset/cursor/linopink.png'), pointer;
-  }
-}
-
 /* 再生時のプレイヤー枠（16:9固定） */
 .video-box{
   position:relative; width:100%; aspect-ratio:16/9;
