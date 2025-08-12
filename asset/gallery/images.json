@@ -1,43 +1,11 @@
 [
   {
     "src": {
-      "thumb": "asset/gallery/thumb/07-thumb.webp",
-      "medium": "asset/gallery/thumb/07-medium.webp",
-      "full": "asset/gallery/thumb/07-full.webp"
+      "thumb": "asset/gallery/thumb/01-thumb.webp",
+      "medium": "asset/gallery/thumb/01-medium.webp",
+      "full": "asset/gallery/thumb/01-full.webp"
     },
-    "title": "07"
-  },
-  {
-    "src": {
-      "thumb": "asset/gallery/thumb/06-thumb.webp",
-      "medium": "asset/gallery/thumb/06-medium.webp",
-      "full": "asset/gallery/thumb/06-full.webp"
-    },
-    "title": "06"
-  },
-  {
-    "src": {
-      "thumb": "asset/gallery/thumb/05-thumb.webp",
-      "medium": "asset/gallery/thumb/05-medium.webp",
-      "full": "asset/gallery/thumb/05-full.webp"
-    },
-    "title": "05"
-  },
-  {
-    "src": {
-      "thumb": "asset/gallery/thumb/04-thumb.webp",
-      "medium": "asset/gallery/thumb/04-medium.webp",
-      "full": "asset/gallery/thumb/04-full.webp"
-    },
-    "title": "04"
-  },
-  {
-    "src": {
-      "thumb": "asset/gallery/thumb/03-thumb.webp",
-      "medium": "asset/gallery/thumb/03-medium.webp",
-      "full": "asset/gallery/thumb/03-full.webp"
-    },
-    "title": "03"
+    "title": "01"
   },
   {
     "src": {
@@ -49,10 +17,42 @@
   },
   {
     "src": {
-      "thumb": "asset/gallery/thumb/01-thumb.webp",
-      "medium": "asset/gallery/thumb/01-medium.webp",
-      "full": "asset/gallery/thumb/01-full.webp"
+      "thumb": "asset/gallery/thumb/03-thumb.webp",
+      "medium": "asset/gallery/thumb/03-medium.webp",
+      "full": "asset/gallery/thumb/03-full.webp"
     },
-    "title": "01"
+    "title": "03"
+  },
+  {
+    "src": {
+      "thumb": "asset/gallery/thumb/04-thumb.webp",
+      "medium": "asset/gallery/thumb/04-medium.webp",
+      "full": "asset/gallery/thumb/04-full.webp"
+    },
+    "title": "04"
+  },
+  {
+    "src": {
+      "thumb": "asset/gallery/thumb/05-thumb.webp",
+      "medium": "asset/gallery/thumb/05-medium.webp",
+      "full": "asset/gallery/thumb/05-full.webp"
+    },
+    "title": "05"
+  },
+  {
+    "src": {
+      "thumb": "asset/gallery/thumb/06-thumb.webp",
+      "medium": "asset/gallery/thumb/06-medium.webp",
+      "full": "asset/gallery/thumb/06-full.webp"
+    },
+    "title": "06"
+  },
+  {
+    "src": {
+      "thumb": "asset/gallery/thumb/07-thumb.webp",
+      "medium": "asset/gallery/thumb/07-medium.webp",
+      "full": "asset/gallery/thumb/07-full.webp"
+    },
+    "title": "07"
   }
 ]
