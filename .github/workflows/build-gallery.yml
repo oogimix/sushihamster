@@ -1,29 +1,47 @@
-name: Build Gallery (no thumbs)
+name: Build Gallery
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]             # ← デフォルトブランチが main 以外なら変更してね
     paths:
       - 'asset/gallery/original/**'
       - 'tools/build-gallery.mjs'
       - '.github/workflows/build-gallery.yml'
-  workflow_dispatch:
+  workflow_dispatch:                # 手動実行も可能
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write               # ← 生成物をコミットするのに必要
     steps:
       - uses: actions/checkout@v4
-      - name: Make sure folders exist
+        with:
+          persist-credentials: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
         run: |
-          mkdir -p asset/gallery
-      - name: Run builder
+          npm i --no-audit --no-fund sharp fast-glob image-size
+
+      - name: Build thumbs & images.json
         run: node tools/build-gallery.mjs
-      - name: Commit & push result
+
+      - name: Configure git
         run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add asset/gallery/images.json
-          git commit -m "chore(gallery): auto-build images.json (no thumbs)" || echo "No changes"
+
+      - name: Commit & push result
+        run: |
+          git add asset/gallery/images.json asset/gallery/thumb || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore(gallery): auto-build images.json & thumbs"
           git push
