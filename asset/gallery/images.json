@@ -1,6 +1,14 @@
 [
   {
     "src": {
+      "thumb": "asset/gallery/thumb/00-thumb.webp",
+      "medium": "asset/gallery/thumb/00-medium.webp",
+      "full": "asset/gallery/thumb/00-full.webp"
+    },
+    "title": "00"
+  },
+  {
+    "src": {
       "thumb": "asset/gallery/thumb/01-thumb.webp",
       "medium": "asset/gallery/thumb/01-medium.webp",
       "full": "asset/gallery/thumb/01-full.webp"
@@ -54,5 +62,13 @@
       "full": "asset/gallery/thumb/07-full.webp"
     },
     "title": "07"
+  },
+  {
+    "src": {
+      "thumb": "asset/gallery/thumb/08-thumb.webp",
+      "medium": "asset/gallery/thumb/08-medium.webp",
+      "full": "asset/gallery/thumb/08-full.webp"
+    },
+    "title": "08"
   }
 ]
