@@ -18,7 +18,7 @@ await fs.ensureDir(THUMB_DIR);
 
 const files = (await fs.readdir(ORIG_DIR))
   .filter(f => /\.(jpe?g|png|webp|gif)$/i.test(f))
-  .sort((a, b) => fs.statSync(path.join(ORIG_DIR, b)).mtimeMs - fs.statSync(path.join(ORIG_DIR, a)).mtimeMs);
+  .sort((a, b) => fs.statSync(path.join(ORIG_DIR, b)).mtimeMs - fs.statSync(path.join(ORIG_DIR, b)).mtimeMs);
 
 let items = [];
 
