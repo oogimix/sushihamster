@@ -1,6 +1,14 @@
 [
   {
     "src": {
+      "thumb": "asset/gallery/thumb/07-thumb.webp",
+      "medium": "asset/gallery/thumb/07-medium.webp",
+      "full": "asset/gallery/thumb/07-full.webp"
+    },
+    "title": "07"
+  },
+  {
+    "src": {
       "thumb": "asset/gallery/thumb/06-thumb.webp",
       "medium": "asset/gallery/thumb/06-medium.webp",
       "full": "asset/gallery/thumb/06-full.webp"
