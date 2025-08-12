@@ -1121,10 +1121,12 @@ table.link-table td a:hover {
 }
 
 .release-info h2 {
-  font-size: clamp(1.2rem, 4vw, 2rem); /* 画面幅に応じて縮小 */
-  line-height: 1.3;
-  text-align: center;
-  word-break: break-word; /* 単語途中でも折り返し可能 */
-  overflow-wrap: anywhere; /* どこでも折り返し可能 */
-  margin: 0 0 1em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: auto;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  font-size: clamp(18px, 5.2vw, 26px);
 }
+
