@@ -11,26 +11,36 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # ← images.json をコミットするのに必要
+      contents: write  # ← これ必須
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install deps
-        run: npm i sharp fast-glob image-size
+        run: |
+          npm i --no-audit --no-fund sharp fast-glob image-size
 
       - name: Build thumbs & images.json
         run: node tools/build-gallery.mjs
 
+      - name: Configure git
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Commit & push result
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add asset/gallery/images.json asset/gallery/thumb/**
-          git commit -m "chore(gallery): auto-build images.json & thumbs" || echo "No changes"
+          git add asset/gallery/images.json asset/gallery/thumb || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore(gallery): auto-build images.json & thumbs"
           git push
