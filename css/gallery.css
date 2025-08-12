@@ -57,6 +57,15 @@
 /* ===== 動画カード（サムネもプレイヤーも16:9固定） ===== */
 .card.video{ position:relative; }
 
+@media (hover: hover) and (pointer: fine) {
+  .card.video .play-overlay,
+  .card.video .play-button,
+  .card.video .video-thumb {
+    cursor: url('../asset/cursor/linopink.png'), pointer;
+  }
+}
+
+
 /* サムネイルは16:9を維持してcover */
 .video-thumb{
   width:100%;
@@ -121,7 +130,7 @@
 #page-content #gallery.masonry{
   box-sizing: border-box;
   width: 100%;
-  max-width: 800px;        /* ← 他ページと同じ幅に固定（サムネはここで大きくなる） */
+  max-width: 780px;        /* ← 他ページと同じ幅に固定（サムネはここで大きくなる） */
   margin: 0 auto;          /* 中央寄せ */
   padding: 0 16px;
 
