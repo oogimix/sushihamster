@@ -1119,3 +1119,12 @@ table.link-table td a:hover {
   max-width: 100%;
 
 }
+
+.release-info h2 {
+  font-size: clamp(1.2rem, 4vw, 2rem); /* 画面幅に応じて縮小 */
+  line-height: 1.3;
+  text-align: center;
+  word-break: break-word; /* 単語途中でも折り返し可能 */
+  overflow-wrap: anywhere; /* どこでも折り返し可能 */
+  margin: 0 0 1em;
+}
