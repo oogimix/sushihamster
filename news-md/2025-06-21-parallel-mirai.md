@@ -14,5 +14,3 @@ summary: |
     - Kion
     - sushihamster
 ---
-
-テキストを挿入
