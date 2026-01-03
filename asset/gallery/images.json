@@ -1,17 +1,5 @@
 [
   {
-    "id": "00",
-    "title": "00",
-    "w": 1108,
-    "h": 1477,
-    "ts": 1767332532186.9412,
-    "src": {
-      "thumb": "asset/gallery/thumb/00-thumb.webp",
-      "medium": "asset/gallery/thumb/00-medium.webp",
-      "full": "asset/gallery/thumb/00-full.webp"
-    }
-  },
-  {
     "id": "01",
     "title": "01",
     "w": 1044,
