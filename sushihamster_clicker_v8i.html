@@ -2446,6 +2446,7 @@ function doRebirth() {
     if (/Instagram/i.test(ua))                       return 'instagram';
     if (/Twitter|XCom/i.test(ua))                    return 'twitter';
     if (/FBAN|FBAV|FB_IAB|FBIOS/i.test(ua))          return 'facebook';
+    if (/Discord/i.test(ua))                          return 'discord';
     if (/wv\)|; wv|WebView/i.test(ua) && /Android/i.test(ua)) return 'android_webview';
     return null;
   }
@@ -2461,6 +2462,7 @@ function doRebirth() {
       instagram:{ icon:'📸', app:'Instagram', step:'右下の「…」→「Safariで開く」', hint:'Instagramアプリ内から操作してね' },
       twitter:  { icon:'🐦', app:'X / Twitter', step:'右上の「…」→「ブラウザで開く」', hint:'Xアプリ内から操作してね' },
       facebook: { icon:'📘', app:'Facebook', step:'右下の「…」→「Safariで開く」', hint:'Facebookアプリ内から操作してね' },
+      discord:  { icon:'🎮', app:'Discord', step:'右上の「⋮」→「ブラウザで開く」', hint:'Discordアプリ内から操作してね' },
       android_webview: { icon:'🤖', app:'アプリ内ブラウザ', step:'「ブラウザで開く」ボタンを探してね', hint:'Chrome等の外部ブラウザで開くとセーブされるよ' },
     };
     const info = instructions[inApp] || instructions['android_webview'];
