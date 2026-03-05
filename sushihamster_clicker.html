@@ -486,9 +486,9 @@ body.phase-enlighten {
 }
 /* ══ PANORAMA SYSTEM ══ */
 .panorama-wrap {
-  width:100%; flex-shrink:0; overflow:hidden;
+  width:100%; overflow:hidden;
   border-radius:16px; position:relative;
-  height:80px;
+  flex:1; min-height:80px;
   border:2px solid rgba(255,255,255,0.35);
   background:rgba(200,240,255,0.2);
   transition:background 1.2s ease, border-color 1.2s ease;
@@ -2471,11 +2471,13 @@ function doRebirth() {
     };
     const info = instructions[inApp] || instructions['android_webview'];
 
+    const bodyMsg = inApp === 'discord'
+      ? `このままだとセーブデータが消えることがあるよ😢<br>ブラウザで開くとデータが安全に保存されるよ！`
+      : `このままだとセーブデータが消えることがあるよ😢<br>Safariで開くと：<br>✅ データが安全に保存される<br>✅ ホーム画面にアプリとして追加できる`;
     banner.innerHTML = `
       <div class="inapp-title">${info.icon} ${info.app}で開いてるよ！</div>
       <div class="inapp-body">
-        このままだとセーブデータが消えることがあるよ😢<br>
-        Safariで開くとデータが安全に保存されるよ！
+        ${bodyMsg}
         <div class="inapp-step">
           <div class="inapp-step-icon">📱</div>
           <div>${info.step}</div>
