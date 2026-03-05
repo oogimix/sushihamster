@@ -124,6 +124,7 @@ body.phase-enlighten {
 .score-header {
   flex-shrink:0; z-index:10; position:relative;
   padding:10px 16px 8px;
+  padding-top:calc(10px + env(safe-area-inset-top));
   background:rgba(255,255,255,0.3); backdrop-filter:blur(16px);
   border-bottom:1.5px solid rgba(255,255,255,0.6);
   box-shadow:0 2px 16px rgba(59,159,212,0.08);
@@ -1417,7 +1418,7 @@ function spawnTaoOrb(x,y){
     },i*55+Math.random()*30);
   });
 }
-function spawnDjBurst(x,y){['🎧','💿','🎵','🎚️','🔊'].forEach((em,i)=>{setTimeout(()=>{const d=document.createElement('div');d.className='dj-burst';d.textContent=em;d.style.left=(x+(Math.random()-0.5)*120)+'px';d.style.top=(y+(Math.random()-0.5)*80)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1200);},i*80);});}
+function spawnDjBurst(x,y){['🎧','💿','🎵','🎚️','🔊'].forEach((em,i)=>{setTimeout(()=>{const d=document.createElement('div');d.className='dj-burst';d.textContent=em;const fs=i===0?3:(1.4+Math.random()*0.8);d.style.cssText=`left:${x+(Math.random()-0.5)*120}px;top:${y+(Math.random()-0.5)*80}px;font-size:${fs}rem;`;document.body.appendChild(d);setTimeout(()=>d.remove(),1200);},i*80);});}
 
 // ── BUY ──
 function buyUpgrade(id,kind){
@@ -1542,7 +1543,35 @@ function renderAll(){
 }
 
 // ── UPDATE UI ──
-const TAO_R=['入門','初伝','中伝','奥伝','皆伝','天道','地道','人道','自然','無極','太極','道','🌌'];
+// TAOランク：ユニーク種類の取得数ベース（beyond除く13種類、1種類ごとに昇格）
+// beyondを購入した瞬間に最終称号が解放される
+const TAO_RANK_TIERS = [
+  { threshold:  1, name: '入門' },
+  { threshold:  2, name: '初伝' },
+  { threshold:  3, name: '中伝' },
+  { threshold:  4, name: '奥伝' },
+  { threshold:  5, name: '皆伝' },
+  { threshold:  6, name: '天道' },
+  { threshold:  7, name: '地道' },
+  { threshold:  8, name: '人道' },
+  { threshold:  9, name: '自然' },
+  { threshold: 10, name: '無極' },
+  { threshold: 11, name: '太極' },
+  { threshold: 12, name: '道' },
+  { threshold: 13, name: '大道' },
+];
+const TAO_RANK_ULTIMATE = '道の彼方';
+function getTaoRank() {
+  if (S.taoUpgrades.find(u => u.id === 'beyond')?.owned > 0) return TAO_RANK_ULTIMATE;
+  const owned = S.taoUpgrades.filter(u => u.id !== 'beyond' && u.owned >= 1).length;
+  if (!owned) return null;
+  let rank = TAO_RANK_TIERS[0].name;
+  for (const r of TAO_RANK_TIERS) {
+    if (owned >= r.threshold) rank = r.name;
+    else break;
+  }
+  return rank;
+}
 // DJランク：djStacksの閾値ベース（各DJアイテムを買うごとに+1）
 // dj_beyondを購入した瞬間に最終称号が解放される
 const DJ_RANK_TIERS = [
@@ -1584,7 +1613,7 @@ function updateUI(){
   document.getElementById('statTotal').textContent=fmt(S.totalEarned);
   document.getElementById('statBpmTotal').textContent=fmt(S.totalBpm);
   document.getElementById('statTime').textContent=fmtTime(S.playSeconds);
-  document.getElementById('statTao').textContent=S.taoStacks>0?(TAO_R[Math.min(S.taoStacks-1,TAO_R.length-1)]+` (Lv${S.taoStacks})`):'未覚醒';
+  document.getElementById('statTao').textContent=getTaoRank()||'未覚醒';
   document.getElementById('statDjRank').textContent=getDjRank()||'—';
   // 次に買える最安DJアイテムのコストを上限に（なければ固定1000）
   const nextDjCost = S.djUpgrades.filter(u=>u.owned<u.maxOwn).reduce((min,u)=>Math.min(min,u.cost), Infinity);

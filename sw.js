@@ -1,5 +1,5 @@
 // sushihamster clicker - Service Worker
-const CACHE_NAME = 'sushihamster-v1';
+const CACHE_NAME = 'sushihamster-v4';
 const ASSETS = [
   './sushihamster_clicker.html',
   './manifest.json',
