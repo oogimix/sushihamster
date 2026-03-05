@@ -1,7 +1,7 @@
 // sushihamster clicker - Service Worker
 const CACHE_NAME = 'sushihamster-v1';
 const ASSETS = [
-  './sushihamster_clicker_PWA.html',
+  './sushihamster_clicker.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
@@ -36,7 +36,7 @@ self.addEventListener('fetch', (event) => {
       return cached || fetch(event.request).catch(() => {
         // オフラインでHTMLリクエストが来たらメインページを返す
         if (event.request.mode === 'navigate') {
-          return caches.match('./sushihamster_clicker_PWA.html');
+          return caches.match('./sushihamster_clicker.html');
         }
       });
     })

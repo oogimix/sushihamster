@@ -2,7 +2,7 @@
   "name": "sushihamster clicker",
   "short_name": "sushihamster",
   "description": "sushihamsterをクリックしてすしを量産しよう！",
-  "start_url": "./sushihamster_clicker_PWA.html",
+  "start_url": "./sushihamster_clicker.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0d2233",
