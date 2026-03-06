@@ -167,7 +167,7 @@ body.phase-enlighten {
 
 /* ══ メイン ══ */
 .main-content { flex:1; overflow:hidden; position:relative; z-index:5; display:flex; flex-direction:column; }
-.game-panel { display:none; flex-direction:column; align-items:center; padding:8px 16px 0; gap:5px; height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.game-panel { display:none; flex-direction:column; align-items:center; padding:8px 16px 6px; padding-bottom:calc(80px + env(safe-area-inset-bottom)); gap:5px; height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch; }
 .game-panel.active { display:flex; }
 .upgrade-panel { display:none; flex-direction:column; height:100%; }
 .upgrade-panel.active { display:flex; }
@@ -1071,39 +1071,39 @@ const UPGRADES_DEF = [
 ];
 const TAO_DEF = [
   // ── 道の入口（序盤〜中盤①と並走）── 全収益×系を廃止、自動/クリック特化に
-  {id:'wuwei',    name:'無為 · wu wei',         desc:'自動収益 ×2',              lore:'為學日益、為道日損。何もしないことが最大の力',            icon:'☯️',baseCost:5000,           effect:'auto_mult',  value:2,    maxOwn:1},
-  {id:'qi',       name:'氣 · qi',               desc:'クリック威力 +2,000',      lore:'万物に流れる生命エネルギー',                             icon:'🌀',baseCost:20000,          effect:'click_flat', value:2000, maxOwn:5},
-  {id:'yinyang',  name:'陰陽 · yin yang',        desc:'自動&クリック ×2',         lore:'陰と陽は対立せず。動と静—その両方に道は宿る',            icon:'☯️',baseCost:40000,          effect:'both_mult',  value:2,    maxOwn:1},
-  {id:'bagua',    name:'八卦 · bagua',            desc:'自動 +50,000/秒',          lore:'八方から鮨が集まる。乾兌離震巽坎艮坤',                  icon:'🔯',baseCost:100000,         effect:'auto_flat',  value:50000,maxOwn:1},
+  {id:'wuwei',    name:'無為 · wu wei',         desc:'自動収益 ×1.2',           lore:'為學日益、為道日損。何もしないことが最大の力',            icon:'☯️',baseCost:5e5,            effect:'auto_mult',  value:1.2,  maxOwn:1},
+  {id:'qi',       name:'氣 · qi',               desc:'クリック威力 +2,000',      lore:'万物に流れる生命エネルギー',                             icon:'🌀',baseCost:2e6,            effect:'click_flat', value:2000, maxOwn:5},
+  {id:'yinyang',  name:'陰陽 · yin yang',        desc:'自動&クリック ×1.2',      lore:'陰と陽は対立せず。動と静—その両方に道は宿る',            icon:'☯️',baseCost:4e6,            effect:'both_mult',  value:1.2,  maxOwn:1},
+  {id:'bagua',    name:'八卦 · bagua',            desc:'自動 +50,000/秒',          lore:'八方から鮨が集まる。乾兌離震巽坎艮坤',                  icon:'🔯',baseCost:1e7,            effect:'auto_flat',  value:50000,maxOwn:1},
   // ── 中盤と並走（TAO特有の強力ブースト）──
-  {id:'wuxing',   name:'五行 · wu xing',         desc:'自動収益 ×3',              lore:'木火土金水の永遠の循環',                                 icon:'🔥',baseCost:200000000,      effect:'auto_mult',  value:3,    maxOwn:1},
-  {id:'taote',    name:'道徳経 · tao te ching',  desc:'自動 +2,000,000/秒',       lore:'道可道、非常道',                                         icon:'📜',baseCost:5000000000,     effect:'auto_flat',  value:2000000,maxOwn:1},
-  {id:'zhuangzi', name:'胡蝶の夢 · zhuangzi',    desc:'クリック威力 ×5',          lore:'昔者荘周夢に胡蝶となる',                                icon:'🦋',baseCost:50000000000,    effect:'click_mult', value:5,    maxOwn:1},
-  {id:'emptiness',name:'無 · emptiness',         desc:'自動&クリック ×5',         lore:'當其無、有室之用。無の境地で全てを得る',                 icon:'⭕',baseCost:500000000000,   effect:'both_mult',  value:5,    maxOwn:1},
-  {id:'creation', name:'天地創造 · genesis',     desc:'自動&クリック ×10',        lore:'太初有道。はじめに道ありき',                             icon:'🌏',baseCost:5000000000000,  effect:'both_mult',  value:10,   maxOwn:1},
-  {id:'hundun',   name:'混沌 · hundun',           desc:'自動&クリック ×20',        lore:'渾沌に七つの穴を開けた時、鮨の宇宙が始まる',            icon:'🌪️',baseCost:50000000000000, effect:'both_mult',  value:20,   maxOwn:1},
-  {id:'taiji',    name:'太極 · taiji',            desc:'全収益 ×5 & 自動+1億/秒', lore:'太極は両儀を生じ、全宇宙が捧げる',                      icon:'🌐',baseCost:500000000000000,effect:'taiji',      value:5,    maxOwn:1},
-  {id:'thetao',   name:'道 · THE TAO',            desc:'自動&クリック ×50',        lore:'道生一、一生二、三生万物。万物は鮨となる',               icon:'∞', baseCost:5e15,           effect:'both_mult',  value:50,   maxOwn:1},
-  {id:'xuwu',     name:'虚無 · 大道の果て',       desc:'自動収益 ×100',            lore:'知者不言、言者不知。ただ——鮨',                          icon:'🕳️',baseCost:2e16,           effect:'auto_mult',  value:100,  maxOwn:1},
-  {id:'beyond',   name:'道の彼方 · BEYOND TAO',  desc:'🌌 全収益 ×1000 🌌',       lore:'人法地、地法天、天法道、道法自然',                       icon:'🌌',baseCost:5e17,           effect:'all_mult',   value:3,    maxOwn:1},
+  {id:'wuxing',   name:'五行 · wu xing',         desc:'自動収益 ×1.3',           lore:'木火土金水の永遠の循環',                                 icon:'🔥',baseCost:2e10,           effect:'auto_mult',  value:1.3,  maxOwn:1},
+  {id:'taote',    name:'道徳経 · tao te ching',  desc:'自動 +2,000,000/秒',       lore:'道可道、非常道',                                         icon:'📜',baseCost:5e11,           effect:'auto_flat',  value:2000000,maxOwn:1},
+  {id:'zhuangzi', name:'胡蝶の夢 · zhuangzi',    desc:'クリック威力 ×1.5',       lore:'昔者荘周夢に胡蝶となる',                                icon:'🦋',baseCost:5e12,           effect:'click_mult', value:1.5,  maxOwn:1},
+  {id:'emptiness',name:'無 · emptiness',         desc:'自動&クリック ×1.5',      lore:'當其無、有室之用。無の境地で全てを得る',                 icon:'⭕',baseCost:5e13,           effect:'both_mult',  value:1.5,  maxOwn:1},
+  {id:'creation', name:'天地創造 · genesis',     desc:'自動&クリック ×2',        lore:'太初有道。はじめに道ありき',                             icon:'🌏',baseCost:5e14,           effect:'both_mult',  value:2,    maxOwn:1},
+  {id:'hundun',   name:'混沌 · hundun',           desc:'自動&クリック ×3',        lore:'渾沌に七つの穴を開けた時、鮨の宇宙が始まる',            icon:'🌪️',baseCost:5e15,           effect:'both_mult',  value:3,    maxOwn:1},
+  {id:'taiji',    name:'太極 · taiji',            desc:'全収益 ×2 & 自動+1億/秒', lore:'太極は両儀を生じ、全宇宙が捧げる',                      icon:'🌐',baseCost:5e16,           effect:'taiji',      value:2,    maxOwn:1},
+  {id:'thetao',   name:'道 · THE TAO',            desc:'自動&クリック ×4',        lore:'道生一、一生二、三生万物。万物は鮨となる',               icon:'∞', baseCost:5e17,           effect:'both_mult',  value:4,    maxOwn:1},
+  {id:'xuwu',     name:'虚無 · 大道の果て',       desc:'自動収益 ×5',            lore:'知者不言、言者不知。ただ——鮨',                          icon:'🕳️',baseCost:2e18,           effect:'auto_mult',  value:5,    maxOwn:1},
+  {id:'beyond',   name:'道の彼方 · BEYOND TAO',  desc:'🌌 全収益 ×5 🌌',          lore:'人法地、地法天、天法道、道法自然',                       icon:'🌌',baseCost:5e19,           effect:'all_mult',   value:5,    maxOwn:1},
 ];
 const DJ_DEF = [
-  // BPM自動生成系の値を5倍に強化してsushiインフレに追いつかせる
-  {id:'dj_vinyl',   name:'バイナル盤',            desc:'🍣 鮨収益 +10%',           lore:'レコードが回るたびに鮨が生まれる',                  icon:'💿',bpmCost:50,         effect:'sushi_pct',  value:0.1,  maxOwn:10},
-  {id:'dj_eq',      name:'イコライザー',           desc:'BPM自動生成 +5/秒',         lore:'周波数を操る者が世界を操る',                          icon:'🎚️',bpmCost:100,        effect:'bpm_auto',   value:5,    maxOwn:20},
-  {id:'dj_headphone',name:'ヘッドホン',            desc:'クリック +30',              lore:'音楽に乗せてクリックが加速',                  icon:'🎧',bpmCost:200,        effect:'click_boost',value:30,   maxOwn:10},
-  {id:'dj_808',     name:'808ベース',              desc:'クリックでBPM +3',           lore:'重低音が大地を揺らす',                                icon:'🔊',bpmCost:300,        effect:'bpm_click',  value:3,    maxOwn:10},
-  {id:'dj_loop',    name:'インフィニティループ',   desc:'🍣 収益 ×1.3',              lore:'終わりなきループに入った者は時間を超える',            icon:'🔁',bpmCost:800,        effect:'sushi_mult', value:1.3,  maxOwn:5},
-  {id:'dj_drop',    name:'THE DROP',              desc:'BPM自動 +50/秒',             lore:'ドロップの瞬間——会場が揺れ、鮨が降り注ぐ',         icon:'💣',bpmCost:2000,       effect:'bpm_auto',   value:50,   maxOwn:10},
-  {id:'dj_sample',  name:'宇宙サンプラー',         desc:'クリック威力 ×1.5',          lore:'宇宙の音を採取しサンプリング',                        icon:'🎹',bpmCost:5000,       effect:'click_mult', value:1.5,  maxOwn:3},
-  {id:'dj_rave',    name:'銀河レイヴ',             desc:'🍣 収益 ×2 & BPM ×1.5',    lore:'銀河規模のレイヴパーティー',                          icon:'🌈',bpmCost:15000,      effect:'rave',       value:2,    maxOwn:1},
-  {id:'dj_ai',      name:'AI DJ システム',         desc:'BPM自動 +500/秒',            lore:'人工知能が完璧なビートを刻み続ける',                  icon:'🤖',bpmCost:40000,      effect:'bpm_auto',   value:500,  maxOwn:5},
-  {id:'dj_quantum', name:'量子ビート',             desc:'クリックごとにBPM +50',      lore:'量子もつれがBPMを爆増させる',                         icon:'⚛️',bpmCost:120000,     effect:'bpm_click',  value:50,   maxOwn:5},
-  {id:'dj_god',     name:'神のターンテーブル',     desc:'🍣 全収益 ×5',              lore:'神がターンテーブルを回す',                            icon:'🎛️',bpmCost:500000,     effect:'sushi_mult', value:5,    maxOwn:2},
-  {id:'dj_tao_mix', name:'道×DJ フュージョン',     desc:'TAO効果が全て ×2',           lore:'老子もDJだったかもしれない',                          icon:'☯️',bpmCost:2000000,    effect:'tao_boost',  value:2,    maxOwn:1},
-  {id:'dj_universe',name:'宇宙DJセット',           desc:'BPM自動 +50,000/秒',         lore:'宇宙全体がサウンドシステム',                          icon:'🌌',bpmCost:10000000,   effect:'bpm_auto',   value:50000,maxOwn:3},
-  {id:'dj_omega',   name:'Ω オメガビート',         desc:'🍣 全収益 ×50 & BPM ×10',   lore:'宇宙最後のビート',                                    icon:'🔮',bpmCost:100000000,  effect:'omega_beat', value:50,   maxOwn:1},
-  {id:'dj_beyond',  name:'BEYOND THE VIBES',       desc:'🎵 全収益 ×500 🎵',          lore:'VIBESは道であり、道はVIBESだ。この周波数に名前はない',icon:'🎆',bpmCost:1000000000, effect:'all_mult_dj',value:500,  maxOwn:1},
+  // 序盤のコストを下げ、コスト順に並び替え
+  {id:'dj_headphone',name:'ヘッドホン',            desc:'クリック +30',              lore:'音楽に乗せてクリックが加速',                  icon:'🎧',bpmCost:500,        effect:'click_boost',value:30,   maxOwn:10},
+  {id:'dj_vinyl',   name:'バイナル盤',            desc:'🍣 鮨収益 +10%',           lore:'レコードが回るたびに鮨が生まれる',                  icon:'💿',bpmCost:800,        effect:'sushi_pct',  value:0.1,  maxOwn:10},
+  {id:'dj_eq',      name:'イコライザー',           desc:'BPM自動生成 +5/秒',         lore:'周波数を操る者が世界を操る',                          icon:'🎚️',bpmCost:1500,       effect:'bpm_auto',   value:5,    maxOwn:20},
+  {id:'dj_808',     name:'808ベース',              desc:'クリックでBPM +3',           lore:'重低音が大地を揺らす',                                icon:'🔊',bpmCost:2500,       effect:'bpm_click',  value:3,    maxOwn:10},
+  {id:'dj_loop',    name:'インフィニティループ',   desc:'🍣 収益 ×1.1',              lore:'終わりなきループに入った者は時間を超える',            icon:'🔁',bpmCost:16000,      effect:'sushi_mult', value:1.1,  maxOwn:5},
+  {id:'dj_drop',    name:'THE DROP',              desc:'BPM自動 +50/秒',             lore:'ドロップの瞬間——会場が揺れ、鮨が降り注ぐ',         icon:'💣',bpmCost:40000,      effect:'bpm_auto',   value:50,   maxOwn:10},
+  {id:'dj_sample',  name:'宇宙サンプラー',         desc:'クリック威力 ×1.1',          lore:'宇宙の音を採取しサンプリング',                        icon:'🎹',bpmCost:100000,     effect:'click_mult', value:1.1,  maxOwn:3},
+  {id:'dj_rave',    name:'銀河レイヴ',             desc:'🍣 収益 ×1.2 & BPM ×1.5',    lore:'銀河規模のレイヴパーティー',                          icon:'🌈',bpmCost:300000,     effect:'rave',       value:1.2,  maxOwn:1},
+  {id:'dj_ai',      name:'AI DJ システム',         desc:'BPM自動 +500/秒',            lore:'人工知能が完璧なビートを刻み続ける',                  icon:'🤖',bpmCost:800000,     effect:'bpm_auto',   value:500,  maxOwn:5},
+  {id:'dj_quantum', name:'量子ビート',             desc:'クリックごとにBPM +50',      lore:'量子もつれがBPMを爆増させる',                         icon:'⚛️',bpmCost:2.4e6,      effect:'bpm_click',  value:50,   maxOwn:5},
+  {id:'dj_god',     name:'神のターンテーブル',     desc:'🍣 全収益 ×2',              lore:'神がターンテーブルを回す',                            icon:'🎛️',bpmCost:1e7,        effect:'sushi_mult', value:2,    maxOwn:2},
+  {id:'dj_tao_mix', name:'道×DJ フュージョン',     desc:'TAO効果が全て ×1.1',         lore:'老子もDJだったかもしれない',                          icon:'☯️',bpmCost:4e7,        effect:'tao_boost',  value:1.1,  maxOwn:1},
+  {id:'dj_universe',name:'宇宙DJセット',           desc:'BPM自動 +50,000/秒',         lore:'宇宙全体がサウンドシステム',                          icon:'🌌',bpmCost:2e8,        effect:'bpm_auto',   value:50000,maxOwn:3},
+  {id:'dj_omega',   name:'Ω オメガビート',         desc:'🍣 全収益 ×4 & BPM ×10',   lore:'宇宙最後のビート',                                    icon:'🔮',bpmCost:2e9,        effect:'omega_beat', value:4,    maxOwn:1},
+  {id:'dj_beyond',  name:'BEYOND THE VIBES',       desc:'🎵 全収益 ×5 🎵',            lore:'VIBESは道であり、道はVIBESだ。この周波数に名前はない',icon:'🎆',bpmCost:2e10,       effect:'all_mult_dj',value:5,    maxOwn:1},
 ];
 
 const ACHIEVEMENTS_DEF = [
@@ -1338,7 +1338,7 @@ function selectChar(c){
 // ── EFFECTIVE ──
 function effClick(){const rc=S.rebirthMult?S.rebirthMult.click:1;return Math.max(1,Math.floor(S.clickPower*S.multipliers.clickMult*S.multipliers.allMult*S.multipliers.sushiMult*rc));}
 function effAuto(){const rm=S.rebirthMult?S.rebirthMult.sushi:1;return S.autoPerSec*S.multipliers.autoMult*S.multipliers.allMult*S.multipliers.sushiMult*rm;}
-function effBpmAuto(){const rb=S.rebirthMult?S.rebirthMult.bpm:1;return S.bpmAuto*S.multipliers.bpmMult*rb;}
+function effBpmAuto(){const rb=S.rebirthMult?S.rebirthMult.bpm:1;return S.bpmAuto*S.multipliers.bpmMult*S.multipliers.allMult*rb;}
 
 // ── CLICK ──
 function handleClick(e){
@@ -1440,9 +1440,9 @@ function buyUpgrade(id,kind){
   if(isDj){if(S.bpm<up.cost)return;S.bpm-=up.cost;}
   else{if(S.sushi<up.cost)return;S.sushi-=up.cost;if(up.cost>=1e8)S._bigSpender=true;if(up.cost>=1e8)S._bigSpender=true;}
   up.owned++;
-  if(isTao){applyTao(up);up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.baseCost*Math.pow(2.5,up.owned));spawnTaoOrb(window.innerWidth/2,window.innerHeight/3);showToast('☯️ '+up.name+' — 道を得た！','tao');const c=document.getElementById('charCircle');c.classList.add('tao-aura');setTimeout(()=>c.classList.remove('tao-aura'),1500);showBackBtn('tao');if(up.id==='beyond')showGrandFinale('tao');}
-  else if(isDj){applyDj(up);up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.bpmCost*Math.pow(2.2,up.owned));spawnDjBurst(window.innerWidth/2,window.innerHeight/3);showToast('🎧 '+up.name+' — ビートを刻め！','dj');const c=document.getElementById('charCircle');c.classList.add('dj-aura');setTimeout(()=>c.classList.remove('dj-aura'),1200);showBackBtn('dj');if(up.id==='dj_beyond')showGrandFinale('dj');updateBeatSpeed();}
-  else{if(up.type==='click')S.clickPower+=up.power;else S.autoPerSec+=up.power;up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.baseCost*Math.pow(1.65,up.owned));spawnSushiBurst(window.innerWidth/2,window.innerHeight/3);showToast(up.icon+' '+up.name+' をゲット！','normal');showBackBtn('normal');}
+  if(isTao){applyTao(up);up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.baseCost*Math.pow(2.8,up.owned));spawnTaoOrb(window.innerWidth/2,window.innerHeight/3);showToast('☯️ '+up.name+' — 道を得た！','tao');const c=document.getElementById('charCircle');c.classList.add('tao-aura');setTimeout(()=>c.classList.remove('tao-aura'),1500);showBackBtn('tao');if(up.id==='beyond')showGrandFinale('tao');}
+  else if(isDj){applyDj(up);up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.bpmCost*Math.pow(2.5,up.owned));spawnDjBurst(window.innerWidth/2,window.innerHeight/3);showToast('🎧 '+up.name+' — ビートを刻め！','dj');const c=document.getElementById('charCircle');c.classList.add('dj-aura');setTimeout(()=>c.classList.remove('dj-aura'),1200);showBackBtn('dj');if(up.id==='dj_beyond')showGrandFinale('dj');updateBeatSpeed();}
+  else{if(up.type==='click')S.clickPower+=up.power;else S.autoPerSec+=up.power;up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.baseCost*Math.pow(1.7,up.owned));spawnSushiBurst(window.innerWidth/2,window.innerHeight/3);showToast(up.icon+' '+up.name+' をゲット！','normal');showBackBtn('normal');}
   renderAll();updateUI();
 }
 function applyTao(up){switch(up.effect){case'auto_mult':S.multipliers.autoMult*=up.value;break;case'click_mult':S.multipliers.clickMult*=up.value;break;case'both_mult':S.multipliers.autoMult*=up.value;S.multipliers.clickMult*=up.value;break;case'all_mult':S.multipliers.allMult*=up.value;break;case'click_flat':S.clickPower+=up.value;break;case'auto_flat':S.autoPerSec+=up.value;break;case'taiji':S.multipliers.allMult*=up.value;S.autoPerSec+=100000000;break;}S.taoStacks++;}
