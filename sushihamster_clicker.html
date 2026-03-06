@@ -1483,7 +1483,7 @@ function showOfflineModal(timeStr, sushiGain, bpmGain, capped) {
     <div style="background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border:1.5px solid rgba(255,255,255,0.85);border-radius:24px;padding:24px;max-width:300px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(59,159,212,0.25);">
       <div style="font-size:2.5rem;margin-bottom:6px;">💤</div>
       <div style="font-family:'Exo 2',sans-serif;font-weight:900;font-size:1.1rem;color:#1a3c52;margin-bottom:4px;">おかえり！</div>
-      <div style="font-size:0.75rem;color:#888;margin-bottom:16px;">${timeStr}の間、ハムスターが働いてたよ${capped ? '<br><span style="color:#f87171;font-size:0.65rem;">（最大12時間）</span>' : ''}</div>
+      <div style="font-size:0.75rem;color:#888;margin-bottom:16px;">${timeStr}の間、スシハム達が遊んでたよ${capped ? '<br><span style="color:#f87171;font-size:0.65rem;">（最大12時間）</span>' : ''}</div>
       <div style="background:linear-gradient(135deg,rgba(59,159,212,0.08),rgba(75,191,176,0.08));border:1.5px solid rgba(59,159,212,0.15);border-radius:16px;padding:14px;margin-bottom:16px;">
         ${hasSushi ? `<div style="font-size:0.78rem;color:#1a3c52;font-weight:800;margin-bottom:${hasBpm?'8px':'0'};">🍣 <span style="font-family:'Exo 2';font-size:1.3rem;background:linear-gradient(135deg,#3b9fd4,#4bbfb0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">+${fmt(sushiGain)}</span> 個</div>` : ''}
         ${hasBpm ? `<div style="font-size:0.78rem;color:#6b21a8;font-weight:800;">🎧 <span style="font-family:'Exo 2';font-size:1.3rem;background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">+${fmt(bpmGain)}</span> BPM</div>` : ''}
