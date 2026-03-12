@@ -339,6 +339,41 @@ body.phase-enlighten {
 .upgrade-card.dj-card .upgrade-owned { color:var(--dj-purple); }
 .upgrade-card.dj-card.affordable::after { background:linear-gradient(90deg,transparent,rgba(200,150,255,0.6),transparent); }
 
+/* ══ ダークフェーズ時のカードテキスト可読性改善 ══ */
+/* DJ フェーズ（濃い紫背景） */
+body.phase-dj .upgrade-name { color:#f0e0ff !important; text-shadow:0 1px 5px rgba(0,0,0,0.7); }
+body.phase-dj .upgrade-desc { color:#88ecff !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
+body.phase-dj .upgrade-lore { color:#c8b8e8 !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
+body.phase-dj .upgrade-cost { color:#ff90d8 !important; }
+body.phase-dj .upgrade-owned { color:#88ecff !important; }
+body.phase-dj .cost-shortage { color:#ff8080 !important; }
+body.phase-dj .upgrade-card.dj-card .upgrade-name { color:#ffd8ff !important; }
+body.phase-dj .upgrade-card.dj-card .upgrade-desc { color:#d8b0ff !important; }
+body.phase-dj .upgrade-card.tao-card .upgrade-name { color:#fff0c0 !important; }
+body.phase-dj .upgrade-card.tao-card .upgrade-desc { color:#f0d080 !important; }
+/* TAO フェーズ（濃い茶背景） */
+body.phase-tao .upgrade-name { color:#fff0c0 !important; text-shadow:0 1px 5px rgba(0,0,0,0.7); }
+body.phase-tao .upgrade-desc { color:#f0d870 !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
+body.phase-tao .upgrade-lore { color:#e0c880 !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
+body.phase-tao .upgrade-cost { color:#70e8ff !important; }
+body.phase-tao .upgrade-owned { color:#90e8b0 !important; }
+body.phase-tao .cost-shortage { color:#ff9090 !important; }
+body.phase-tao .upgrade-card.tao-card .upgrade-name { color:#ffe890 !important; }
+body.phase-tao .upgrade-card.tao-card .upgrade-desc { color:#f8d050 !important; }
+body.phase-tao .upgrade-card.dj-card .upgrade-name { color:#ffd8ff !important; }
+body.phase-tao .upgrade-card.dj-card .upgrade-desc { color:#e8b8ff !important; }
+/* UNIVERSE（space）フェーズ（漆黒宇宙背景） */
+body.phase-space .upgrade-name { color:#e0f0ff !important; text-shadow:0 1px 5px rgba(0,0,0,0.7); }
+body.phase-space .upgrade-desc { color:#70d8ff !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
+body.phase-space .upgrade-lore { color:#a8c8e8 !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
+body.phase-space .upgrade-cost { color:#50e0ff !important; }
+body.phase-space .upgrade-owned { color:#70e8b8 !important; }
+body.phase-space .cost-shortage { color:#ff8080 !important; }
+body.phase-space .upgrade-card.tao-card .upgrade-name { color:#fff0c0 !important; }
+body.phase-space .upgrade-card.tao-card .upgrade-desc { color:#f0d070 !important; }
+body.phase-space .upgrade-card.dj-card .upgrade-name { color:#ffd8ff !important; }
+body.phase-space .upgrade-card.dj-card .upgrade-desc { color:#d8b0ff !important; }
+
 /* 購入可能マーカー */
 .can-buy-dot {
   position:absolute; top:8px; right:8px;
