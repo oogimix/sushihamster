@@ -8,10 +8,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="sushihamster">
 <title>sushihamster clicker</title>
-<!-- PWA: manifest & アイコン -->
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./icon-192.png">
-<meta name="theme-color" content="#1a3c52">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Exo+2:wght@700;900&display=swap" rel="stylesheet">
 <style>
 
@@ -124,7 +120,6 @@ body.phase-enlighten {
 .score-header {
   flex-shrink:0; z-index:10; position:relative;
   padding:10px 16px 8px;
-  padding-top:calc(10px + env(safe-area-inset-top));
   background:rgba(255,255,255,0.3); backdrop-filter:blur(16px);
   border-bottom:1.5px solid rgba(255,255,255,0.6);
   box-shadow:0 2px 16px rgba(59,159,212,0.08);
@@ -339,41 +334,6 @@ body.phase-enlighten {
 .upgrade-card.dj-card .upgrade-owned { color:var(--dj-purple); }
 .upgrade-card.dj-card.affordable::after { background:linear-gradient(90deg,transparent,rgba(200,150,255,0.6),transparent); }
 
-/* ══ ダークフェーズ時のカードテキスト可読性改善 ══ */
-/* DJ フェーズ（濃い紫背景） */
-body.phase-dj .upgrade-name { color:#f0e0ff !important; text-shadow:0 1px 5px rgba(0,0,0,0.7); }
-body.phase-dj .upgrade-desc { color:#88ecff !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
-body.phase-dj .upgrade-lore { color:#c8b8e8 !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
-body.phase-dj .upgrade-cost { color:#ff90d8 !important; }
-body.phase-dj .upgrade-owned { color:#88ecff !important; }
-body.phase-dj .cost-shortage { color:#ff8080 !important; }
-body.phase-dj .upgrade-card.dj-card .upgrade-name { color:#ffd8ff !important; }
-body.phase-dj .upgrade-card.dj-card .upgrade-desc { color:#d8b0ff !important; }
-body.phase-dj .upgrade-card.tao-card .upgrade-name { color:#fff0c0 !important; }
-body.phase-dj .upgrade-card.tao-card .upgrade-desc { color:#f0d080 !important; }
-/* TAO フェーズ（濃い茶背景） */
-body.phase-tao .upgrade-name { color:#fff0c0 !important; text-shadow:0 1px 5px rgba(0,0,0,0.7); }
-body.phase-tao .upgrade-desc { color:#f0d870 !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
-body.phase-tao .upgrade-lore { color:#e0c880 !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
-body.phase-tao .upgrade-cost { color:#70e8ff !important; }
-body.phase-tao .upgrade-owned { color:#90e8b0 !important; }
-body.phase-tao .cost-shortage { color:#ff9090 !important; }
-body.phase-tao .upgrade-card.tao-card .upgrade-name { color:#ffe890 !important; }
-body.phase-tao .upgrade-card.tao-card .upgrade-desc { color:#f8d050 !important; }
-body.phase-tao .upgrade-card.dj-card .upgrade-name { color:#ffd8ff !important; }
-body.phase-tao .upgrade-card.dj-card .upgrade-desc { color:#e8b8ff !important; }
-/* UNIVERSE（space）フェーズ（漆黒宇宙背景） */
-body.phase-space .upgrade-name { color:#e0f0ff !important; text-shadow:0 1px 5px rgba(0,0,0,0.7); }
-body.phase-space .upgrade-desc { color:#70d8ff !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
-body.phase-space .upgrade-lore { color:#a8c8e8 !important; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
-body.phase-space .upgrade-cost { color:#50e0ff !important; }
-body.phase-space .upgrade-owned { color:#70e8b8 !important; }
-body.phase-space .cost-shortage { color:#ff8080 !important; }
-body.phase-space .upgrade-card.tao-card .upgrade-name { color:#fff0c0 !important; }
-body.phase-space .upgrade-card.tao-card .upgrade-desc { color:#f0d070 !important; }
-body.phase-space .upgrade-card.dj-card .upgrade-name { color:#ffd8ff !important; }
-body.phase-space .upgrade-card.dj-card .upgrade-desc { color:#d8b0ff !important; }
-
 /* 購入可能マーカー */
 .can-buy-dot {
   position:absolute; top:8px; right:8px;
@@ -415,6 +375,7 @@ body.phase-space .upgrade-card.dj-card .upgrade-desc { color:#d8b0ff !important;
 /* ══ フロート/エフェクト ══ */
 .float-text { position:fixed; font-family:'Exo 2',sans-serif; font-weight:900; pointer-events:none; animation:floatScore 0.85s ease-out forwards; z-index:1000; }
 .float-text.normal { font-size:1.3rem; background:linear-gradient(135deg,var(--blue),var(--teal)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.float-text.fairy { font-size:1.3rem; background:linear-gradient(135deg,#f87171,#fb923c); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .float-text.tao { font-size:1.6rem; background:linear-gradient(135deg,#c9a84c,#e8c96a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .float-text.bpm { font-size:1.1rem; background:linear-gradient(135deg,var(--dj-purple),var(--dj-pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 @keyframes floatScore { 0% { opacity:1; transform:translateY(0) scale(1); } 100% { opacity:0; transform:translateY(-55px) scale(1.3); } }
@@ -522,9 +483,9 @@ body.phase-space .upgrade-card.dj-card .upgrade-desc { color:#d8b0ff !important;
 }
 /* ══ PANORAMA SYSTEM ══ */
 .panorama-wrap {
-  width:100%; overflow:hidden;
+  width:100%; flex-shrink:0; overflow:hidden;
   border-radius:16px; position:relative;
-  flex:1; min-height:80px;
+  height:80px;
   border:2px solid rgba(255,255,255,0.35);
   background:rgba(200,240,255,0.2);
   transition:background 1.2s ease, border-color 1.2s ease;
@@ -1029,7 +990,7 @@ body.phase-enlighten .pano-label {
       <div style="margin-top:12px; padding:10px; background:rgba(255,100,0,0.08); border:1.5px dashed rgba(255,100,0,0.4); border-radius:12px;">
         <div style="font-size:0.6rem; font-weight:900; font-family:'Exo 2',sans-serif; color:#f97316; letter-spacing:1px; margin-bottom:8px;">🛠 DEBUG CHEAT</div>
         <div style="display:flex; flex-wrap:wrap; gap:6px;">
-          <button onclick="S.sushi+=1e15;S.totalEarned+=1e15;updateUI();" style="flex:1;padding:8px;border-radius:10px;border:none;background:linear-gradient(135deg,#f97316,#ef4444);color:white;font-family:'Exo 2',sans-serif;font-weight:900;font-size:0.65rem;cursor:pointer;">🍣 +お鮨MAX</button>
+          <button onclick="S.sushi+=5e16;S.totalEarned+=5e16;updateUI();" style="flex:1;padding:8px;border-radius:10px;border:none;background:linear-gradient(135deg,#f97316,#ef4444);color:white;font-family:'Exo 2',sans-serif;font-weight:900;font-size:0.65rem;cursor:pointer;">🍣 +お鮨MAX</button>
           <button onclick="S.bpm+=1e9;updateUI();" style="flex:1;padding:8px;border-radius:10px;border:none;background:linear-gradient(135deg,#a855f7,#ec4899);color:white;font-family:'Exo 2',sans-serif;font-weight:900;font-size:0.65rem;cursor:pointer;">🎧 +BPM MAX</button>
           <button onclick="S.taoUpgrades.forEach(u=>{if(u.id==='beyond'){u.owned=1;}});applyTao(S.taoUpgrades.find(u=>u.id==='beyond'));updateRebirthUI();updateUI();showToast('🌌 beyond解放！','tao');" style="flex:1;padding:8px;border-radius:10px;border:none;background:linear-gradient(135deg,#c9a84c,#8B6914);color:white;font-family:'Exo 2',sans-serif;font-weight:900;font-size:0.65rem;cursor:pointer;">🌌 beyond解放</button>
           <button onclick="S.upgrades.forEach(u=>{while(u.owned<u.maxOwn){u.owned++;applyUpgrade(u);}});S.taoUpgrades.forEach(u=>{if(u.owned<u.maxOwn){u.owned=1;applyTao(u);}});S.djUpgrades.forEach(u=>{if(u.owned<u.maxOwn){u.owned=1;applyDj(u);}});updateRebirthUI();renderAll();updateUI();showToast('✨ 全解放！','save');" style="flex:1;padding:8px;border-radius:10px;border:none;background:linear-gradient(135deg,#10b981,#059669);color:white;font-family:'Exo 2',sans-serif;font-weight:900;font-size:0.65rem;cursor:pointer;">✨ 全UP解放</button>
@@ -1081,69 +1042,57 @@ const IMG = {
 };
 
 const UPGRADES_DEF = [
-  // ── 序盤（〜1時間） ──
-  {id:'wheel',     name:'ハムスターホイール', desc:'クリック +1',              lore:'ぐるぐる回れば鮨も増える',                           icon:'🎡',baseCost:15,               power:1,           type:'click',maxOwn:20},
-  {id:'robot',     name:'お鮨ロボット',       desc:'自動 +1/秒',               lore:'鉄の腕が休まず握り続ける',                           icon:'🤖',baseCost:50,               power:1,           type:'auto', maxOwn:30},
-  {id:'love',      name:'ラヴリーパワー',     desc:'クリック +5',              lore:'愛の力は無限大。二人の絆が鮨を呼ぶ',                icon:'💖',baseCost:200,              power:5,           type:'click',maxOwn:15},
-  {id:'cheers',    name:'乾杯ビール',         desc:'自動 +5/秒',               lore:'乾杯の音頭で鮨が舞い降りる',                         icon:'🍺',baseCost:500,              power:5,           type:'auto', maxOwn:15},
-  {id:'farm',      name:'お鮨農場',           desc:'自動 +20/秒',              lore:'大地に種を蒔けば鮨が育つ',                           icon:'🌻',baseCost:2000,             power:20,          type:'auto', maxOwn:15},
-  {id:'factory',   name:'お鮨工場',           desc:'自動 +100/秒',             lore:'24時間稼働の巨大工場が鮨を大量生産',                 icon:'🏭',baseCost:30000,            power:100,         type:'auto', maxOwn:10},
-  {id:'universe',  name:'宇宙鮨',             desc:'クリック +500',            lore:'宇宙の果てにも鮨はある',                             icon:'🛸',baseCost:150000,           power:500,         type:'click',maxOwn:8},
-  {id:'galaxy',    name:'銀河鮨',             desc:'自動 +2,000/秒',           lore:'百億の星々が鮨を運ぶ',                               icon:'🚀',baseCost:800000,           power:2000,        type:'auto', maxOwn:8},
-  {id:'dimension', name:'次元の鮨門',         desc:'クリック +10,000',         lore:'時空を超えた門から無限の鮨が流れ込む',               icon:'🌀',baseCost:5000000,          power:10000,       type:'click',maxOwn:6},
-  {id:'timesushi', name:'時空鮨',             desc:'自動 +50,000/秒',          lore:'過去・現在・未来の全鮨を同時収穫',                   icon:'⌛',baseCost:30000000,         power:50000,       type:'auto', maxOwn:6},
-  // ── 中盤①（1〜3時間）── 10倍ステップで間を埋める
-  {id:'typhoon',   name:'鮨タイフーン',       desc:'自動 +500,000/秒',         lore:'鮨の嵐が世界を覆い尽くす。もはや誰にも止められない',icon:'🌊',baseCost:200000000,       power:500000,      type:'auto', maxOwn:5},
-  {id:'godsushi',  name:'神の握り',           desc:'クリック +3,000,000',      lore:'神が一握りするたびに宇宙が揺れる',                   icon:'👐',baseCost:2000000000,      power:3000000,     type:'click',maxOwn:5},
-  // ── 中盤②（3〜8時間）──
-  {id:'sushifleet',name:'宇宙鮨艦隊',         desc:'自動 +5,000,000/秒',       lore:'無数の宇宙船が銀河を縦断しながら鮨を収穫する',       icon:'⚡',baseCost:20000000000,     power:5000000,     type:'auto', maxOwn:4},
-  {id:'bigbang',   name:'ビッグバン鮨',       desc:'自動 +50,000,000/秒',      lore:'宇宙誕生の瞬間に生まれた原初の鮨',                   icon:'💥',baseCost:200000000000,    power:50000000,    type:'auto', maxOwn:4},
-  // ── 後半（8〜20時間）──
-  {id:'supernova', name:'超新星鮨',           desc:'クリック +30,000,000',     lore:'星の爆発とともに鮨が宇宙に散り、億万の命が宿る',     icon:'💫',baseCost:2000000000000,   power:30000000,    type:'click',maxOwn:3},
-  {id:'omegasushi',name:'Ω オメガ鮨',         desc:'自動 +500,000,000/秒',     lore:'宇宙崩壊の後も残る、最後にして最大の鮨',             icon:'🌠',baseCost:20000000000000,  power:500000000,   type:'auto', maxOwn:3},
-  {id:'voidgate',  name:'虚無の鮨門',         desc:'クリック +300,000,000',    lore:'無の彼方から無限の鮨が溢れ出す。存在と無の境界で',   icon:'🕳️',baseCost:200000000000000,  power:300000000,    type:'click',maxOwn:2},
-  {id:'multiv',    name:'多元宇宙鮨連邦',     desc:'自動 +5,000,000,000/秒',   lore:'無数の平行宇宙全てで同時に鮨が発生する',             icon:'🪐',baseCost:2000000000000000, power:5000000000,   type:'auto', maxOwn:2},
-  // ── 超後半（20〜30時間）── TAO終盤と並走する高コスト帯
-  {id:'sushivoid', name:'虚空鮨',             desc:'自動 +500億/秒',           lore:'虚空から湧き出す無数の鮨。次元の壁など存在しない',    icon:'🌑',baseCost:2e16,            power:50000000000,  type:'auto', maxOwn:2},
-  {id:'sushigod',  name:'神鮨領域',           desc:'自動 +5兆/秒',             lore:'神の領域で鮨が創造され続ける。宇宙の法則を超えた',    icon:'✨',baseCost:2e17,            power:5000000000000,type:'auto', maxOwn:2},
+  {id:'wheel',     name:'ハムスターホイール',  desc:'クリック +1',            lore:'ぐるぐる回れば鮨も増える',                 icon:'🎡',baseCost:15,          power:1,        type:'click',maxOwn:20},
+  {id:'robot',     name:'お鮨ロボット',      desc:'自動 +1/秒',             lore:'鉄の腕が休まず握り続ける',                   icon:'🤖',baseCost:50,          power:1,        type:'auto', maxOwn:30},
+  {id:'love',      name:'ラヴリーパワー',     desc:'クリック +5',            lore:'愛の力は無限大。二人の絆が鮨を呼ぶ',       icon:'💖',baseCost:200,         power:5,        type:'click',maxOwn:15},
+  {id:'cheers',    name:'乾杯ビール',      desc:'自動 +5/秒',             lore:'乾杯の音頭で鮨が舞い降りる',               icon:'🍺',baseCost:500,         power:5,        type:'auto', maxOwn:15},
+  {id:'farm',      name:'お鮨農場',          desc:'自動 +20/秒',            lore:'大地に種を蒔けば鮨が育つ',                 icon:'🌻',baseCost:2000,        power:20,       type:'auto', maxOwn:15},
+  {id:'factory',   name:'お鮨工場',          desc:'自動 +100/秒',           lore:'24時間稼働の巨大工場が鮨を大量生産',           icon:'🏭',baseCost:30000,       power:100,      type:'auto', maxOwn:10},
+  {id:'universe',  name:'宇宙鮨',            desc:'クリック +500',          lore:'宇宙の果てにも鮨はある',                   icon:'🛸',baseCost:150000,      power:500,      type:'click',maxOwn:8},
+  {id:'galaxy',    name:'銀河鮨',         desc:'自動 +2,000/秒',         lore:'百億の星々が鮨を運ぶ',           icon:'🚀',baseCost:800000,      power:2000,     type:'auto', maxOwn:8},
+  {id:'dimension', name:'次元の鮨門',         desc:'クリック +10,000',       lore:'時空を超えた門から無限の鮨が流れ込む',     icon:'🌀',baseCost:5000000,     power:10000,    type:'click',maxOwn:6},
+  {id:'timesushi', name:'時空鮨',            desc:'自動 +50,000/秒',        lore:'過去・現在・未来の全鮨を同時収穫',         icon:'⌛',baseCost:30000000,    power:50000,    type:'auto', maxOwn:6},
+  {id:'godsushi',  name:'神の握り',            desc:'クリック +500,000',      lore:'神が一握りするたびに宇宙が揺れる',           icon:'👐',baseCost:140000000000,   power:500000,   type:'click',maxOwn:5},
+  {id:'bigbang',   name:'ビッグバン鮨',       desc:'自動 +5,000,000/秒',     lore:'宇宙誕生の瞬間に生まれた原初の鮨',         icon:'💥',baseCost:1400000000000,  power:5000000,  type:'auto', maxOwn:4},
+  {id:'omegasushi',name:'Ω オメガ鮨',        desc:'クリック +50,000,000',   lore:'宇宙崩壊の後も残る最後の鮨',             icon:'🌠',baseCost:14000000000000, power:50000000, type:'click',maxOwn:3},
+  {id:'multiv',    name:'多元宇宙鮨連邦',     desc:'自動 +1,000,000,000/秒', lore:'無数の平行宇宙全てで同時に鮨が発生する', icon:'🪐',baseCost:210000000000000,power:1000000000,type:'auto',maxOwn:2},
+  {id:'eternalsushi',name:'永劫の鮨',        desc:'クリック +500,000,000',  lore:'時の果てに佇む一貫——永遠の味',           icon:'♾️',baseCost:3000000000000000,power:500000000, type:'click',maxOwn:3},
+  {id:'voidroll',  name:'虚空巻き',           desc:'自動 +20,000,000,000/秒',lore:'虚空から絶え間なく鮨が湧き出す',         icon:'🕳️',baseCost:12000000000000000,power:20000000000,type:'auto',maxOwn:2},
 ];
 const TAO_DEF = [
-  // ── 道の入口（序盤〜中盤①と並走）── 全収益×系を廃止、自動/クリック特化に
-  {id:'wuwei',    name:'無為 · wu wei',         desc:'自動収益 ×1.2',           lore:'為學日益、為道日損。何もしないことが最大の力',            icon:'☯️',baseCost:5e5,            effect:'auto_mult',  value:1.2,  maxOwn:1},
-  {id:'qi',       name:'氣 · qi',               desc:'クリック威力 +2,000',      lore:'万物に流れる生命エネルギー',                             icon:'🌀',baseCost:2e6,            effect:'click_flat', value:2000, maxOwn:5},
-  {id:'yinyang',  name:'陰陽 · yin yang',        desc:'自動&クリック ×1.2',      lore:'陰と陽は対立せず。動と静—その両方に道は宿る',            icon:'☯️',baseCost:4e6,            effect:'both_mult',  value:1.2,  maxOwn:1},
-  {id:'bagua',    name:'八卦 · bagua',            desc:'自動 +50,000/秒',          lore:'八方から鮨が集まる。乾兌離震巽坎艮坤',                  icon:'🔯',baseCost:1e7,            effect:'auto_flat',  value:50000,maxOwn:1},
-  // ── 中盤と並走（TAO特有の強力ブースト）──
-  {id:'wuxing',   name:'五行 · wu xing',         desc:'自動収益 ×1.3',           lore:'木火土金水の永遠の循環',                                 icon:'🔥',baseCost:2e10,           effect:'auto_mult',  value:1.3,  maxOwn:1},
-  {id:'taote',    name:'道徳経 · tao te ching',  desc:'自動 +2,000,000/秒',       lore:'道可道、非常道',                                         icon:'📜',baseCost:5e11,           effect:'auto_flat',  value:2000000,maxOwn:1},
-  {id:'zhuangzi', name:'胡蝶の夢 · zhuangzi',    desc:'クリック威力 ×1.5',       lore:'昔者荘周夢に胡蝶となる',                                icon:'🦋',baseCost:5e12,           effect:'click_mult', value:1.5,  maxOwn:1},
-  {id:'emptiness',name:'無 · emptiness',         desc:'自動&クリック ×1.5',      lore:'當其無、有室之用。無の境地で全てを得る',                 icon:'⭕',baseCost:5e13,           effect:'both_mult',  value:1.5,  maxOwn:1},
-  {id:'creation', name:'天地創造 · genesis',     desc:'自動&クリック ×2',        lore:'太初有道。はじめに道ありき',                             icon:'🌏',baseCost:5e14,           effect:'both_mult',  value:2,    maxOwn:1},
-  {id:'hundun',   name:'混沌 · hundun',           desc:'自動&クリック ×3',        lore:'渾沌に七つの穴を開けた時、鮨の宇宙が始まる',            icon:'🌪️',baseCost:5e15,           effect:'both_mult',  value:3,    maxOwn:1},
-  {id:'taiji',    name:'太極 · taiji',            desc:'全収益 ×2 & 自動+1億/秒', lore:'太極は両儀を生じ、全宇宙が捧げる',                      icon:'🌐',baseCost:5e16,           effect:'taiji',      value:2,    maxOwn:1},
-  {id:'thetao',   name:'道 · THE TAO',            desc:'自動&クリック ×4',        lore:'道生一、一生二、三生万物。万物は鮨となる',               icon:'∞', baseCost:5e17,           effect:'both_mult',  value:4,    maxOwn:1},
-  {id:'xuwu',     name:'虚無 · 大道の果て',       desc:'自動収益 ×5',            lore:'知者不言、言者不知。ただ——鮨',                          icon:'🕳️',baseCost:2e18,           effect:'auto_mult',  value:5,    maxOwn:1},
-  {id:'beyond',   name:'道の彼方 · BEYOND TAO',  desc:'🌌 全収益 ×5 🌌',          lore:'人法地、地法天、天法道、道法自然',                       icon:'🌌',baseCost:5e18,           effect:'all_mult',   value:5,    maxOwn:1},
+  {id:'wuwei',    name:'無為 · wu wei',         desc:'放置収益 ×1.5',             lore:'為學日益、為道日損。何もしないことが最大の力',             icon:'☯️',baseCost:5000,          effect:'auto_mult',  value:1.2,maxOwn:1},
+  {id:'qi',       name:'氣 · qi',               desc:'クリック威力 +100',          lore:'万物に流れる生命エネルギー',                              icon:'🌀',baseCost:20000,         effect:'click_flat', value:100,maxOwn:5},
+  {id:'yinyang',  name:'陰陽 · yin yang',        desc:'クリック＆放置 ×1.5',       lore:'陰と陽は対立せず。動と静—その両方に道は宿る',             icon:'☯️',baseCost:40000,         effect:'both_mult',  value:1.2,maxOwn:1},
+  {id:'bagua',    name:'八卦 · bagua',            desc:'自動 +80/秒',               lore:'八方から鮨が集まる。乾兌離震巽坎艮坤',                 icon:'🔯',baseCost:100000,        effect:'auto_flat',  value:80, maxOwn:1},
+  {id:'wuxing',   name:'五行 · wu xing',         desc:'全収益 ×2',                 lore:'木火土金水の永遠の循環',                                  icon:'🔥',baseCost:20000000,      effect:'all_mult',   value:1.3,  maxOwn:1},
+  {id:'taote',    name:'道徳経 · tao te ching',  desc:'自動 +500/秒',              lore:'道可道、非常道',                                          icon:'📜',baseCost:200000000,     effect:'auto_flat',  value:10000,maxOwn:1},
+  {id:'zhuangzi', name:'胡蝶の夢 · zhuangzi',    desc:'クリック威力 ×3',           lore:'昔者荘周夢に胡蝶となる',                                 icon:'🦋',baseCost:2000000000,    effect:'click_mult', value:1.8,  maxOwn:1},
+  {id:'emptiness',name:'無 · emptiness',         desc:'全収益 ×5',                 lore:'當其無、有室之用。無の境地で全てを得る',                  icon:'⭕',baseCost:20000000000,   effect:'all_mult',   value:1.5,  maxOwn:1},
+  {id:'creation', name:'天地創造 · genesis',     desc:'自動 ×3 & クリック ×2',    lore:'太初有道。はじめに道ありき',                              icon:'🌏',baseCost:200000000000,  effect:'both_mult',  value:1.5,  maxOwn:1},
+  {id:'hundun',   name:'混沌 · hundun',           desc:'全収益 ×8',                 lore:'渾沌に七つの穴を開けた時、鮨の宇宙が始まる',           icon:'🌪️',baseCost:2000000000000, effect:'all_mult',   value:1.5,  maxOwn:1},
+  {id:'taiji',    name:'太極 · taiji',            desc:'全収益 ×15 & 自動+1億/秒', lore:'太極は両儀を生じ、全宇宙が捧げる',                       icon:'🌐',baseCost:20000000000000,effect:'taiji',      value:2, maxOwn:1},
+  {id:'thetao',   name:'道 · THE TAO',            desc:'全収益 ×30',                lore:'道生一、一生二、三生万物。万物は鮨となる',              icon:'∞', baseCost:2e14,          effect:'all_mult',   value:2, maxOwn:1},
+  {id:'xuwu',     name:'虚無 · 大道の果て',       desc:'全収益 ×100',               lore:'知者不言、言者不知。ただ——鮨',                         icon:'🕳️',baseCost:2e15,          effect:'all_mult',   value:2,maxOwn:1},
+  {id:'mushin',   name:'無心 · mushin',           desc:'自動 ×5 & クリック ×3',    lore:'心を空にせよ。無心の一手が万を握る',                     icon:'🪷',baseCost:5e15,          effect:'both_mult',  value:1.8,maxOwn:1},
+  {id:'tenchi',   name:'天地 · heaven & earth',   desc:'全収益 ×10 & 自動+10億/秒',lore:'天は高く地は厚く、その間に鮨は満ちる',                   icon:'⛩️',baseCost:1.2e16,        effect:'tenchi',     value:2.5,maxOwn:1},
+  {id:'beyond',   name:'道の彼方 · BEYOND TAO',  desc:'🌌 全収益 ×1000 🌌',       lore:'人法地、地法天、天法道、道法自然',                        icon:'🌌',baseCost:3.5e16,        effect:'all_mult',   value:3,maxOwn:1},
 ];
 const DJ_DEF = [
-  // 序盤
-  {id:'dj_headphone',name:'ヘッドホン',            desc:'クリックでBPM +30',              lore:'音楽に乗せてクリックが加速',                              icon:'🎧',bpmCost:500,        effect:'bpm_click',  value:30,         maxOwn:10},
-  {id:'dj_vinyl',    name:'バイナル盤',             desc:'🎵 BPM +10%',                   lore:'レコードが回るたびにBPMが跳ね上がる',                     icon:'💿',bpmCost:800,        effect:'bpm_pct',    value:0.1,        maxOwn:10},
-  {id:'dj_eq',       name:'イコライザー',           desc:'BPM自動生成 +100/秒',            lore:'周波数を操る者が世界を操る',                              icon:'🎚️',bpmCost:1500,       effect:'bpm_auto',   value:100,        maxOwn:20},
-  {id:'dj_808',      name:'808ベース',              desc:'クリックでBPM +100',             lore:'重低音が大地を揺らす',                                    icon:'🔊',bpmCost:2500,       effect:'bpm_click',  value:100,        maxOwn:10},
-  {id:'dj_loop',     name:'インフィニティループ',   desc:'🎵 BPM ×1.2',                   lore:'終わりなきループがBPMをねじ曲げる',                       icon:'🔁',bpmCost:16000,      effect:'bpm_mult',   value:1.2,        maxOwn:5},
-  {id:'dj_drop',     name:'THE DROP',               desc:'BPM自動 +5,000/秒',             lore:'ドロップの瞬間——ビートが爆発する',                        icon:'💣',bpmCost:40000,      effect:'bpm_auto',   value:5000,       maxOwn:10},
-  {id:'dj_sample',   name:'宇宙サンプラー',         desc:'クリック威力 ×1.1',              lore:'宇宙の音を採取しサンプリング',                            icon:'🎹',bpmCost:100000,     effect:'click_mult', value:1.1,        maxOwn:3},
-  {id:'dj_rave',     name:'銀河レイヴ',             desc:'🎵 BPM ×1.5',                   lore:'銀河規模のレイヴ——全宇宙がビートに震える',               icon:'🌈',bpmCost:300000,     effect:'bpm_mult',   value:1.5,        maxOwn:1},
-  {id:'dj_ai',       name:'AI DJ システム',         desc:'BPM自動 +20万/秒',               lore:'人工知能が完璧なビートを刻み続ける',                      icon:'🤖',bpmCost:800000,     effect:'bpm_auto',   value:200000,     maxOwn:5},
-  {id:'dj_quantum',  name:'量子ビート',             desc:'クリックでBPM +5,000',           lore:'量子もつれがBPMを爆増させる',                             icon:'⚛️',bpmCost:2.4e6,      effect:'bpm_click',  value:5000,       maxOwn:5},
-  {id:'dj_god',      name:'神のターンテーブル',     desc:'🎵 BPM ×2',                     lore:'神がターンテーブルを回すたびBPMが倍になる',               icon:'🎛️',bpmCost:1e7,        effect:'bpm_mult',   value:2,          maxOwn:2},
-  {id:'dj_tao_mix',  name:'道×DJ フュージョン',     desc:'TAO効果が全て ×1.1',             lore:'老子もDJだったかもしれない',                              icon:'☯️',bpmCost:4e7,        effect:'tao_boost',  value:1.1,        maxOwn:1},
-  {id:'dj_universe', name:'宇宙DJセット',           desc:'BPM自動 +2億/秒',                lore:'宇宙全体がサウンドシステム',                              icon:'🌌',bpmCost:2e8,        effect:'bpm_auto',   value:200000000,  maxOwn:3},
-  {id:'dj_omega',    name:'Ω オメガビート',          desc:'🎵 BPM ×10',                    lore:'宇宙最後のビートがBPMを10倍に跳ね上げる',                icon:'🔮',bpmCost:2e9,        effect:'bpm_mult',   value:10,         maxOwn:1},
-  {id:'dj_hyperbeat',name:'⚡ ハイパービート',       desc:'BPM自動 +50億/秒',               lore:'音速を超えたビートが時空を震わせる',                      icon:'⚡',bpmCost:5e14,       effect:'bpm_auto',   value:5000000000, maxOwn:3},
-  {id:'dj_infinity', name:'♾️ インフィニティBeat',   desc:'BPM自動 +1,000億/秒',            lore:'無限のビートが宇宙の彼方まで届く',                        icon:'🌀',bpmCost:5e15,       effect:'bpm_auto',   value:100000000000,maxOwn:2},
-  {id:'dj_beyond',   name:'BEYOND THE VIBES',        desc:'🎵 全収益 ×5 🎵',               lore:'VIBESは道であり、道はVIBESだ。この周波数に名前はない',   icon:'🎆',bpmCost:1e18,       effect:'all_mult_dj',value:5,          maxOwn:1},
+  {id:'dj_vinyl',   name:'バイナル盤',            desc:'🍣 鮨収益 +10%',          lore:'レコードが回るたびに鮨が生まれる',                 icon:'💿',bpmCost:50,         effect:'sushi_pct',  value:0.1, maxOwn:10},
+  {id:'dj_eq',      name:'イコライザー',           desc:'BPM自動生成 +1/秒',         lore:'周波数を操る者が世界を操る',                         icon:'🎚️',bpmCost:100,        effect:'bpm_auto',   value:1,   maxOwn:20},
+  {id:'dj_headphone',name:'ヘッドホン',            desc:'クリック +30',           lore:'音楽に乗せてクリックが加速',                 icon:'🎧',bpmCost:200,        effect:'click_boost',value:30,  maxOwn:10},
+  {id:'dj_808',     name:'808ベース',             desc:'クリックでBPM +3',          lore:'重低音が大地を揺らす',                               icon:'🔊',bpmCost:300,        effect:'bpm_click',  value:3,   maxOwn:10},
+  {id:'dj_loop',    name:'インフィニティループ',   desc:'🍣 収益 ×1.3',             lore:'終わりなきループに入った者は時間を超える',           icon:'🔁',bpmCost:800,        effect:'sushi_mult', value:1.3, maxOwn:5},
+  {id:'dj_drop',    name:'THE DROP',             desc:'BPM自動 +5/秒',             lore:'ドロップの瞬間——会場が揺れ、鮨が降り注ぐ',        icon:'💣',bpmCost:2000,       effect:'bpm_auto',   value:5,   maxOwn:10},
+  {id:'dj_sample',  name:'宇宙サンプラー',         desc:'クリック威力 ×1.5',         lore:'宇宙の音を採取しサンプリング',                       icon:'🎹',bpmCost:5000,       effect:'click_mult', value:1.5, maxOwn:3},
+  {id:'dj_rave',    name:'銀河レイヴ',             desc:'🍣 収益 ×2 & BPM ×1.5',   lore:'銀河規模のレイヴパーティー',                         icon:'🌈',bpmCost:15000,      effect:'rave',       value:2,   maxOwn:1},
+  {id:'dj_ai',      name:'AI DJ システム',        desc:'BPM自動 +30/秒',            lore:'人工知能が完璧なビートを刻み続ける',                 icon:'🤖',bpmCost:40000,      effect:'bpm_auto',   value:30,  maxOwn:5},
+  {id:'dj_quantum', name:'量子ビート',             desc:'クリックごとにBPM +15',     lore:'量子もつれがBPMを爆増させる',                        icon:'⚛️',bpmCost:120000,     effect:'bpm_click',  value:15,  maxOwn:5},
+  {id:'dj_god',     name:'神のターンテーブル',     desc:'🍣 全収益 ×5',             lore:'神がターンテーブルを回す',                           icon:'🎛️',bpmCost:500000,     effect:'sushi_mult', value:5,   maxOwn:2},
+  {id:'dj_tao_mix', name:'道×DJ フュージョン',    desc:'TAO効果が全て ×2',          lore:'老子もDJだったかもしれない',                         icon:'☯️',bpmCost:2000000,    effect:'tao_boost',  value:2,   maxOwn:1},
+  {id:'dj_universe',name:'宇宙DJセット',           desc:'BPM自動 +1,000/秒',         lore:'宇宙全体がサウンドシステム',                         icon:'🌌',bpmCost:50000000,   effect:'bpm_auto',   value:1000, maxOwn:3},
+  {id:'dj_omega',   name:'Ω オメガビート',         desc:'🍣 全収益 ×50 & BPM ×3',  lore:'宇宙最後のビート',                                   icon:'🔮',bpmCost:500000000,  effect:'omega_beat', value:50,  maxOwn:1},
+  {id:'dj_beyond',  name:'BEYOND THE VIBES',      desc:'🎵 全収益 ×500 🎵',        lore:'VIBESは道であり、道はVIBESだ。この周波数に名前はない',icon:'🎆',bpmCost:10000000000,effect:'all_mult_dj',value:500, maxOwn:1},
 ];
 
 const ACHIEVEMENTS_DEF = [
@@ -1163,18 +1112,19 @@ const ACHIEVEMENTS_DEF = [
   {id:'sushi_1q',      icon:'\u2728', name:'\u9ba8\u795e',               desc:'\u9ba8\u30921000\u5146\u500b\u7372\u5f97',            check:s=>s.totalEarned>=1e15},
   {id:'sushi_1qi',     icon:'\ud83c\udf20', name:'\u9ba8\u3092\u8d85\u3048\u305f\u5b58\u5728',     desc:'\u9ba8\u3092100\u4eac\u500b\u7372\u5f97',             check:s=>s.totalEarned>=1e18},
   // \u2500\u2500 \u6642\u9593\u30fb\u30d7\u30ec\u30a4\u7cfb \u2500\u2500
-  {id:'play_10m',      icon:'⏱️', name:'ちょっとだけ',       desc:'10分プレイ（累計）',    check:s=>s.playSeconds>=600},
-  {id:'play_1h',       icon:'🕐', name:'1時間鮨師',          desc:'1時間プレイ（累計）',   check:s=>s.playSeconds>=3600},
-  {id:'play_10h',      icon:'🕙', name:'鮨廃人',             desc:'10時間プレイ（累計）',  check:s=>s.playSeconds>=36000},
-  {id:'play_24h',      icon:'🏆', name:'鮨人生',             desc:'24時間プレイ（累計）',  check:s=>s.playSeconds>=86400},
+  {id:'play_10m',      icon:'\u23f1\ufe0f', name:'\u3061\u3087\u3063\u3068\u3060\u3051',       desc:'10\u5206\u30d7\u30ec\u30a4',                  check:s=>s.playSeconds>=600},
+  {id:'play_1h',       icon:'\ud83d\udd50', name:'1\u6642\u9593\u9ba8\u5e2b',          desc:'1\u6642\u9593\u30d7\u30ec\u30a4',                 check:s=>s.playSeconds>=3600},
+  {id:'play_10h',      icon:'\ud83d\udd59', name:'\u9ba8\u5ec3\u4eba',             desc:'10\u6642\u9593\u30d7\u30ec\u30a4',                check:s=>s.playSeconds>=36000},
+  {id:'play_24h',      icon:'\ud83d\udcc5', name:'\u4e00\u65e5\u9ba8\u6f2c\u3051',         desc:'24\u6642\u9593\u30d7\u30ec\u30a4',                check:s=>s.playSeconds>=86400},
+  {id:'play_100h',     icon:'\ud83c\udfc6', name:'\u9ba8\u4eba\u751f',             desc:'100\u6642\u9593\u30d7\u30ec\u30a4',               check:s=>s.playSeconds>=360000},
   // \u2500\u2500 \u30a2\u30a4\u30c6\u30e0\u8cfc\u5165\u7cfb \u2500\u2500
   {id:'first_buy',     icon:'\ud83d\uded2', name:'\u521d\u3081\u3066\u306e\u8cfc\u5165',        desc:'\u6700\u521d\u306e\u30a2\u30a4\u30c6\u30e0\u3092\u8cfc\u5165',        check:s=>s.upgrades.some(u=>u.owned>=1)},
   {id:'buy_10',        icon:'\ud83d\udce6', name:'\u8cb7\u3044\u7269\u597d\u304d',          desc:'\u901a\u5e38\u30a2\u30a4\u30c6\u30e0\u309210\u500b\u8cfc\u5165',      check:s=>s.upgrades.reduce((a,u)=>a+u.owned,0)>=10},
   {id:'buy_50',        icon:'\ud83c\udfea', name:'\u7206\u8cb7\u3044',              desc:'\u901a\u5e38\u30a2\u30a4\u30c6\u30e0\u309250\u500b\u8cfc\u5165',      check:s=>s.upgrades.reduce((a,u)=>a+u.owned,0)>=50},
   {id:'normal_all',    icon:'\u2705', name:'\u901a\u5e38\u30b3\u30f3\u30d7',          desc:'\u901a\u5e38\u30a2\u30a4\u30c6\u30e0\u3092\u5168\u7a2e\u8cfc\u5165',      check:s=>s.upgrades.every(u=>u.owned>=1)},
   {id:'normal_max',    icon:'\ud83d\udcaf', name:'\u901a\u5e38\u30d5\u30ebMAX',         desc:'\u901a\u5e38\u30a2\u30a4\u30c6\u30e0\u3092\u5168\u90e8MAX',       check:s=>s.upgrades.every(u=>u.owned>=u.maxOwn)},
-  {id:'tao_all',       icon:'\u262f\ufe0f', name:'\u9053\u306e\u30b3\u30f3\u30d7',         desc:'TAO\u30a2\u30a4\u30c6\u30e0\u3092\u5168\u7a2e\u8cfc\u5165',       check:s=>s.taoUpgrades.every(u=>u.owned>=1)},
-  {id:'dj_all',        icon:'\ud83c\udfa7', name:'DJ\u30b3\u30f3\u30d7',            desc:'DJ\u30a2\u30a4\u30c6\u30e0\u3092\u5168\u7a2e\u8cfc\u5165',        check:s=>s.djUpgrades.every(u=>u.owned>=1)},
+  {id:'tao_all',       icon:'\u262f\ufe0f', name:'\u9053\u306e\u30b3\u30f3\u30d7',         desc:'TAO\u30a2\u30a4\u30c6\u30e0\u3092\u5168\u7a2e\u8cfc\u5165',       check:s=>s.taoUpgrades.every(u=>u.owned>=u.maxOwn)},
+  {id:'dj_all',        icon:'\ud83c\udfa7', name:'DJ\u30b3\u30f3\u30d7',            desc:'DJ\u30a2\u30a4\u30c6\u30e0\u3092\u5168\u7a2e\u8cfc\u5165',        check:s=>s.djUpgrades.every(u=>u.owned>=u.maxOwn)},
   // \u2500\u2500 TAO\u7cfb \u2500\u2500
   {id:'tao_first',     icon:'\u262f\ufe0f', name:'\u9053\u306b\u5165\u308b',           desc:'\u6700\u521d\u306eTAO\u30a2\u30a4\u30c6\u30e0\u53d6\u5f97',       check:s=>s.taoStacks>=1},
   {id:'tao_5',         icon:'\ud83c\udf00', name:'\u9053\u306e\u63a2\u6c42\u8005',          desc:'TAO\u30a2\u30a4\u30c6\u30e05\u500b\u53d6\u5f97',          check:s=>s.taoStacks>=5},
@@ -1198,7 +1148,7 @@ const ACHIEVEMENTS_DEF = [
   {id:'sushi_fairy',   icon:'🍣', name:'sushifairy推し',    desc:'隠し実績',                    check:s=>s._sushiFairy||false},
   {id:'hamster_fan',   icon:'🐹', name:'sushihamster愛好家',    desc:'隠し実績',                    check:s=>s._hamsterFan||false},
   {id:'all_phases',    icon:'\ud83c\udf08', name:'\u5168\u4e16\u754c\u65c5\u884c\u8005',        desc:'\u96a0\u3057\u5b9f\u7e3e',                    check:s=>(s.unlockedPhases||[]).length>=5},
-  {id:'triple_max',    icon:'\ud83d\udc51', name:'\u5168\u30b3\u30f3\u30d7\u738b',          desc:'\u901a\u5e38\u30fbTAO\u30fbDJ\u3092\u5168\u7a2e\u8cfc\u5165',     check:s=>s.upgrades.every(u=>u.owned>=1)&&s.taoUpgrades.every(u=>u.owned>=1)&&s.djUpgrades.every(u=>u.owned>=1)},
+  {id:'triple_max',    icon:'\ud83d\udc51', name:'\u5168\u30b3\u30f3\u30d7\u738b',          desc:'\u901a\u5e38\u30fbTAO\u30fbDJ\u3092\u5168\u90e8MAX',     check:s=>s.upgrades.every(u=>u.owned>=u.maxOwn)&&s.taoUpgrades.every(u=>u.owned>=u.maxOwn)&&s.djUpgrades.every(u=>u.owned>=u.maxOwn)},
   {id:'saved_10',      icon:'\ud83d\udcbe', name:'\u30bb\u30fc\u30d6\u9b54',            desc:'\u96a0\u3057\u5b9f\u7e3e',                    check:s=>s._saveCount>=10},
 ];
 
@@ -1225,7 +1175,7 @@ function makeState() {
     upgrades:UPGRADES_DEF.map(u=>({...u,owned:0,cost:u.baseCost})),
     taoUpgrades:TAO_DEF.map(u=>({...u,owned:0,cost:u.baseCost})),
     djUpgrades:DJ_DEF.map(u=>({...u,owned:0,cost:u.bpmCost})),
-    milestones:[100,1000,10000,100000,1000000,1e8,1e10,1e12,1e14,1e15],
+    milestones:[100,1000,10000,100000,1000000,1e8,1e10,1e12,5e12,1e13,5e13,1e14,5e14,1e15],
     unlockedPhases:['aero'], manualPhase:null,
     rebirths:0, rebirthMult:{sushi:1,click:1,bpm:1}, achievements:[],
     reached:[],
@@ -1377,7 +1327,7 @@ function selectChar(c){
 // ── EFFECTIVE ──
 function effClick(){const rc=S.rebirthMult?S.rebirthMult.click:1;return Math.max(1,Math.floor(S.clickPower*S.multipliers.clickMult*S.multipliers.allMult*S.multipliers.sushiMult*rc));}
 function effAuto(){const rm=S.rebirthMult?S.rebirthMult.sushi:1;return S.autoPerSec*S.multipliers.autoMult*S.multipliers.allMult*S.multipliers.sushiMult*rm;}
-function effBpmAuto(){const rb=S.rebirthMult?S.rebirthMult.bpm:1;return S.bpmAuto*S.multipliers.bpmMult*S.multipliers.allMult*rb;}
+function effBpmAuto(){const rb=S.rebirthMult?S.rebirthMult.bpm:1;return S.bpmAuto*S.multipliers.bpmMult*rb;}
 
 // ── CLICK ──
 function handleClick(e){
@@ -1387,7 +1337,7 @@ function handleClick(e){
   const sc=document.getElementById('scoreDisplay');
   sc.classList.remove('pop');void sc.offsetWidth;sc.classList.add('pop');
   setTimeout(()=>sc.classList.remove('pop'),120);
-  spawnFloat('+'+fmt(p),e.clientX-30,e.clientY-20,'normal');
+  spawnFloat('+'+fmt(p),e.clientX-30,e.clientY-20,S.activeChar==='sushifairy'?'fairy':'normal');
   if(S.clicks%5===0)spawnFloat('♪+'+bg,e.clientX+10,e.clientY-40,'bpm');
   if(S.clicks%10===0)spawnConfetti(e.clientX,e.clientY);
   updateBeatSpeed();checkMilestones();updateUI();
@@ -1468,7 +1418,7 @@ function spawnTaoOrb(x,y){
     },i*55+Math.random()*30);
   });
 }
-function spawnDjBurst(x,y){['🎧','💿','🎵','🎚️','🔊'].forEach((em,i)=>{setTimeout(()=>{const d=document.createElement('div');d.className='dj-burst';d.textContent=em;const fs=i===0?3:(1.4+Math.random()*0.8);d.style.cssText=`left:${x+(Math.random()-0.5)*120}px;top:${y+(Math.random()-0.5)*80}px;font-size:${fs}rem;`;document.body.appendChild(d);setTimeout(()=>d.remove(),1200);},i*80);});}
+function spawnDjBurst(x,y){['🎧','💿','🎵','🎚️','🔊'].forEach((em,i)=>{setTimeout(()=>{const d=document.createElement('div');d.className='dj-burst';d.textContent=em;d.style.left=(x+(Math.random()-0.5)*120)+'px';d.style.top=(y+(Math.random()-0.5)*80)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1200);},i*80);});}
 
 // ── BUY ──
 function buyUpgrade(id,kind){
@@ -1479,13 +1429,13 @@ function buyUpgrade(id,kind){
   if(isDj){if(S.bpm<up.cost)return;S.bpm-=up.cost;}
   else{if(S.sushi<up.cost)return;S.sushi-=up.cost;if(up.cost>=1e8)S._bigSpender=true;if(up.cost>=1e8)S._bigSpender=true;}
   up.owned++;
-  if(isTao){applyTao(up);up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.baseCost*Math.pow(2.8,up.owned));spawnTaoOrb(window.innerWidth/2,window.innerHeight/3);showToast('☯️ '+up.name+' — 道を得た！','tao');const c=document.getElementById('charCircle');c.classList.add('tao-aura');setTimeout(()=>c.classList.remove('tao-aura'),1500);showBackBtn('tao');if(up.id==='beyond')showGrandFinale('tao');}
-  else if(isDj){applyDj(up);up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.bpmCost*Math.pow(2.5,up.owned));spawnDjBurst(window.innerWidth/2,window.innerHeight/3);showToast('🎧 '+up.name+' — ビートを刻め！','dj');const c=document.getElementById('charCircle');c.classList.add('dj-aura');setTimeout(()=>c.classList.remove('dj-aura'),1200);showBackBtn('dj');if(up.id==='dj_beyond')showGrandFinale('dj');updateBeatSpeed();}
-  else{if(up.type==='click')S.clickPower+=up.power;else S.autoPerSec+=up.power;up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.baseCost*Math.pow(1.7,up.owned));spawnSushiBurst(window.innerWidth/2,window.innerHeight/3);showToast(up.icon+' '+up.name+' をゲット！','normal');showBackBtn('normal');}
+  if(isTao){applyTao(up);up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.baseCost*Math.pow(2.5,up.owned));spawnTaoOrb(window.innerWidth/2,window.innerHeight/3);showToast('☯️ '+up.name+' — 道を得た！','tao');const c=document.getElementById('charCircle');c.classList.add('tao-aura');setTimeout(()=>c.classList.remove('tao-aura'),1500);showBackBtn('tao');if(up.id==='beyond')showGrandFinale('tao');}
+  else if(isDj){applyDj(up);up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.bpmCost*Math.pow(2.2,up.owned));spawnDjBurst(window.innerWidth/2,window.innerHeight/3);showToast('🎧 '+up.name+' — ビートを刻め！','dj');const c=document.getElementById('charCircle');c.classList.add('dj-aura');setTimeout(()=>c.classList.remove('dj-aura'),1200);showBackBtn('dj');if(up.id==='dj_beyond')showGrandFinale('dj');updateBeatSpeed();}
+  else{if(up.type==='click')S.clickPower+=up.power;else S.autoPerSec+=up.power;up.cost=up.owned>=up.maxOwn?Infinity:Math.floor(up.baseCost*Math.pow(1.65,up.owned));spawnSushiBurst(window.innerWidth/2,window.innerHeight/3);showToast(up.icon+' '+up.name+' をゲット！','normal');showBackBtn('normal');}
   renderAll();updateUI();
 }
-function applyTao(up){switch(up.effect){case'auto_mult':S.multipliers.autoMult*=up.value;break;case'click_mult':S.multipliers.clickMult*=up.value;break;case'both_mult':S.multipliers.autoMult*=up.value;S.multipliers.clickMult*=up.value;S.multipliers.bpmMult*=up.value;break;case'all_mult':S.multipliers.allMult*=up.value;break;case'click_flat':S.clickPower+=up.value;break;case'auto_flat':S.autoPerSec+=up.value;break;case'taiji':S.multipliers.allMult*=up.value;S.autoPerSec+=100000000;break;}S.taoStacks++;}
-function applyDj(up){switch(up.effect){case'click_boost':S.clickPower+=up.value;break;case'sushi_pct':S.multipliers.sushiMult*=(1+up.value);break;case'sushi_mult':S.multipliers.sushiMult*=up.value;break;case'bpm_pct':S.multipliers.bpmMult*=(1+up.value);break;case'bpm_mult':S.multipliers.bpmMult*=up.value;break;case'bpm_auto':S.bpmAuto+=up.value;break;case'bpm_click':S.bpmPerClick+=up.value;break;case'click_mult':S.multipliers.clickMult*=up.value;break;case'rave':S.multipliers.sushiMult*=up.value;S.multipliers.bpmMult*=1.5;break;case'tao_boost':S.multipliers.allMult*=up.value;break;case'omega_beat':S.multipliers.sushiMult*=up.value;S.multipliers.bpmMult*=10;break;case'all_mult_dj':S.multipliers.allMult*=up.value;S.multipliers.bpmMult*=up.value;break;}S.djStacks++;}
+function applyTao(up){switch(up.effect){case'auto_mult':S.multipliers.autoMult*=up.value;break;case'click_mult':S.multipliers.clickMult*=up.value;break;case'both_mult':S.multipliers.autoMult*=up.value;S.multipliers.clickMult*=up.value;break;case'all_mult':S.multipliers.allMult*=up.value;break;case'click_flat':S.clickPower+=up.value;break;case'auto_flat':S.autoPerSec+=up.value;break;case'taiji':S.multipliers.allMult*=up.value;S.autoPerSec+=100000000;break;case'tenchi':S.multipliers.allMult*=up.value;S.autoPerSec+=1000000000;break;}S.taoStacks++;}
+function applyDj(up){switch(up.effect){case'click_boost':S.clickPower+=up.value;break;case'sushi_pct':S.multipliers.sushiMult*=(1+up.value);break;case'sushi_mult':S.multipliers.sushiMult*=up.value;break;case'bpm_auto':S.bpmAuto+=up.value;break;case'bpm_click':S.bpmPerClick+=up.value;break;case'click_mult':S.multipliers.clickMult*=up.value;break;case'rave':S.multipliers.sushiMult*=up.value;S.multipliers.bpmMult*=1.5;break;case'tao_boost':S.multipliers.allMult*=up.value;break;case'omega_beat':S.multipliers.sushiMult*=up.value;S.multipliers.bpmMult*=3;break;case'all_mult_dj':S.multipliers.allMult*=up.value;S.multipliers.bpmMult*=10;break;}S.djStacks++;}
 
 // ── FINALE ──
 function showGrandFinale(type){
@@ -1503,7 +1453,7 @@ setInterval(()=>{const sg=effAuto()/10;if(sg>0){S.sushi+=sg;S.totalEarned+=sg;}c
 setInterval(()=>S.playSeconds++,1000);
 
 // ── MILESTONES ──
-const M=['🍣 100個！いい調子！','🌊 1,000個！波に乗れ！','⭐ 1万個！才能の片鱗…','🚀 10万個！大気圏突破！','🌙 100万個！月面着陸！','🌟 1億個！銀河の扉が開く！','💫 100億個！星系を支配！','🌌 1兆個！宇宙の真理に近づく…','☯️ 100兆個！道の入口が見える…','🌠 1000兆個！道の彼方——もう少しだ！'];
+const M=['🍣 100個！いい調子！','🌊 1,000個！波に乗れ！','⭐ 1万個！才能の片鱗…','🚀 10万個！大気圏突破！','🌙 100万個！月面着陸！','🌟 1億個！銀河の扉が開く！','💫 100億個！星系を支配！','🌌 1兆個！宇宙の真理に近づく…','🔥 5兆個！鮨の炎が燃え盛る！','⚡ 10兆個！雷鳴が宇宙を貫く！','🌊 50兆個！大海原の彼方へ！','☯️ 100兆個！道の入口が見える…','🌙 500兆個！月と太陽が交差する…','🌠 1000兆個！道の彼方——もう少しだ！'];
 function checkMilestones(){S.milestones.forEach((m,i)=>{if(S.totalEarned>=m&&!S.reached.includes(m)){S.reached.push(m);showToast(M[i]||'🎊 '+fmt(m)+'個達成！','normal');}});}
 
 // ── TOAST ──
@@ -1522,7 +1472,7 @@ function showOfflineModal(timeStr, sushiGain, bpmGain, capped) {
     <div style="background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);border:1.5px solid rgba(255,255,255,0.85);border-radius:24px;padding:24px;max-width:300px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(59,159,212,0.25);">
       <div style="font-size:2.5rem;margin-bottom:6px;">💤</div>
       <div style="font-family:'Exo 2',sans-serif;font-weight:900;font-size:1.1rem;color:#1a3c52;margin-bottom:4px;">おかえり！</div>
-      <div style="font-size:0.75rem;color:#888;margin-bottom:16px;">${timeStr}の間、スシハム達が遊んでたよ${capped ? '<br><span style="color:#f87171;font-size:0.65rem;">（最大12時間）</span>' : ''}</div>
+      <div style="font-size:0.75rem;color:#888;margin-bottom:16px;">${timeStr}の間、ハムスターが働いてたよ${capped ? '<br><span style="color:#f87171;font-size:0.65rem;">（最大12時間）</span>' : ''}</div>
       <div style="background:linear-gradient(135deg,rgba(59,159,212,0.08),rgba(75,191,176,0.08));border:1.5px solid rgba(59,159,212,0.15);border-radius:16px;padding:14px;margin-bottom:16px;">
         ${hasSushi ? `<div style="font-size:0.78rem;color:#1a3c52;font-weight:800;margin-bottom:${hasBpm?'8px':'0'};">🍣 <span style="font-family:'Exo 2';font-size:1.3rem;background:linear-gradient(135deg,#3b9fd4,#4bbfb0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">+${fmt(sushiGain)}</span> 個</div>` : ''}
         ${hasBpm ? `<div style="font-size:0.78rem;color:#6b21a8;font-weight:800;">🎧 <span style="font-family:'Exo 2';font-size:1.3rem;background:linear-gradient(135deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">+${fmt(bpmGain)}</span> BPM</div>` : ''}
@@ -1550,7 +1500,7 @@ function applyOfflineProgress(savedAt) {
 }
 
 // ── FORMAT ──
-function fmt(n){n=Math.floor(n);if(n>=1e28)return(n/1e28).toFixed(2)+'穰';if(n>=1e24)return(n/1e24).toFixed(2)+'秭';if(n>=1e20)return(n/1e20).toFixed(2)+'垓';if(n>=1e16)return(n/1e16).toFixed(2)+'京';if(n>=1e12)return(n/1e12).toFixed(2)+'兆';if(n>=1e8)return(n/1e8).toFixed(2)+'億';if(n>=1e4)return(n/1e4).toFixed(1)+'万';return n.toString();}
+function fmt(n){if(!isFinite(n)||isNaN(n))return'0';n=Math.floor(n);if(n>=1e20){const gai=Math.floor(n/1e20);const kei=Math.floor((n%1e20)/1e16);return gai+'垓'+kei+'京';}if(n>=1e16){const kei=Math.floor(n/1e16);const cho=Math.floor((n%1e16)/1e12);return kei+'京'+cho+'兆';}if(n>=1e12){const cho=Math.floor(n/1e12);const oku=Math.floor((n%1e12)/1e8);return cho+'兆'+oku+'億';}if(n>=1e8)return(n/1e8).toFixed(2)+'億';if(n>=1e4)return(n/1e4).toFixed(1)+'万';return n.toString();}
 function fmtTime(s){if(s<60)return s+'秒';if(s<3600)return Math.floor(s/60)+'分';if(s<86400)return Math.floor(s/3600)+'時間'+Math.floor((s%3600)/60)+'分';return Math.floor(s/86400)+'日'+Math.floor((s%86400)/3600)+'時間';}
 
 // ── RENDER ──
@@ -1593,35 +1543,7 @@ function renderAll(){
 }
 
 // ── UPDATE UI ──
-// TAOランク：ユニーク種類の取得数ベース（beyond除く13種類、1種類ごとに昇格）
-// beyondを購入した瞬間に最終称号が解放される
-const TAO_RANK_TIERS = [
-  { threshold:  1, name: '入門' },
-  { threshold:  2, name: '初伝' },
-  { threshold:  3, name: '中伝' },
-  { threshold:  4, name: '奥伝' },
-  { threshold:  5, name: '皆伝' },
-  { threshold:  6, name: '天道' },
-  { threshold:  7, name: '地道' },
-  { threshold:  8, name: '人道' },
-  { threshold:  9, name: '自然' },
-  { threshold: 10, name: '無極' },
-  { threshold: 11, name: '太極' },
-  { threshold: 12, name: '道' },
-  { threshold: 13, name: '大道' },
-];
-const TAO_RANK_ULTIMATE = '道の彼方';
-function getTaoRank() {
-  if (S.taoUpgrades.find(u => u.id === 'beyond')?.owned > 0) return TAO_RANK_ULTIMATE;
-  const owned = S.taoUpgrades.filter(u => u.id !== 'beyond' && u.owned >= 1).length;
-  if (!owned) return null;
-  let rank = TAO_RANK_TIERS[0].name;
-  for (const r of TAO_RANK_TIERS) {
-    if (owned >= r.threshold) rank = r.name;
-    else break;
-  }
-  return rank;
-}
+const TAO_R=['入門','初伝','中伝','奥伝','皆伝','天道','地道','人道','自然','無極','太極','道','🌌'];
 // DJランク：djStacksの閾値ベース（各DJアイテムを買うごとに+1）
 // dj_beyondを購入した瞬間に最終称号が解放される
 const DJ_RANK_TIERS = [
@@ -1639,8 +1561,7 @@ const DJ_RANK_TIERS = [
   { threshold: 74, name: 'Legend DJ' },
   { threshold: 80, name: 'God DJ' },
   { threshold: 84, name: 'Cosmic DJ' },
-  { threshold: 87, name: '∞ OMEGA DJ' },
-  { threshold: 91, name: '∞ HYPER OMEGA DJ' },
+  { threshold: 86, name: '∞ OMEGA DJ' },
 ];
 const DJ_RANK_ULTIMATE = '🎆 ULTRAHYPER✦VIBES✦DJ 🎆';
 function getDjRank() {
@@ -1664,62 +1585,65 @@ function updateUI(){
   document.getElementById('statTotal').textContent=fmt(S.totalEarned);
   document.getElementById('statBpmTotal').textContent=fmt(S.totalBpm);
   document.getElementById('statTime').textContent=fmtTime(S.playSeconds);
-  document.getElementById('statTao').textContent=getTaoRank()||'未覚醒';
+  document.getElementById('statTao').textContent=S.taoStacks>0?(TAO_R[Math.min(S.taoStacks-1,TAO_R.length-1)]+` (Lv${S.taoStacks})`):'未覚醒';
   document.getElementById('statDjRank').textContent=getDjRank()||'—';
-  // 次に買える最安DJアイテムのコストを上限に（なければ固定1000）
-  const nextDjCost = S.djUpgrades.filter(u=>u.owned<u.maxOwn).reduce((min,u)=>Math.min(min,u.cost), Infinity);
-  const bpmMax = isFinite(nextDjCost) ? nextDjCost : Math.max(1000, S.totalBpm * 0.05);
-  const bpmPct=Math.min(100,(S.bpm/bpmMax)*100);
-  const bpmFillEl=document.getElementById('bpmFill');
-  const bpmTrackEl=bpmFillEl ? bpmFillEl.parentElement : null;
-  const wasFull=bpmFillEl ? bpmFillEl.classList.contains('full') : false;
-  const isFull=bpmPct>=99.5;
-  bpmFillEl.style.width=bpmPct+'%';
-  if(isFull && !wasFull){
-    bpmFillEl.classList.add('full');
-    bpmTrackEl.classList.add('full');
-    // ビートインジケーター全点灯
-    document.querySelectorAll('.bpm-beat').forEach(b=>{
-      b.classList.add('active');
-      setTimeout(()=>b.classList.remove('active'),500);
-    });
-    setTimeout(()=>{
+  // BPMバー・ゲーム画面系の更新 — stats画面ではスキップ
+  if(curPanel!=='stats'){
+    const nextDjCost = S.djUpgrades.filter(u=>u.owned<u.maxOwn).reduce((min,u)=>Math.min(min,u.cost), Infinity);
+    const bpmMax = isFinite(nextDjCost) ? nextDjCost : Math.max(1000, S.totalBpm * 0.05);
+    const bpmPct=Math.min(100,(S.bpm/bpmMax)*100);
+    const bpmFillEl=document.getElementById('bpmFill');
+    const bpmTrackEl=bpmFillEl ? bpmFillEl.parentElement : null;
+    const wasFull=bpmFillEl ? bpmFillEl.classList.contains('full') : false;
+    const isFull=bpmPct>=99.5;
+    bpmFillEl.style.width=bpmPct+'%';
+    if(isFull && !wasFull){
+      bpmFillEl.classList.add('full');
+      bpmTrackEl.classList.add('full');
+      document.querySelectorAll('.bpm-beat').forEach(b=>{
+        b.classList.add('active');
+        setTimeout(()=>b.classList.remove('active'),500);
+      });
+      setTimeout(()=>{
+        bpmFillEl.classList.remove('full');
+        bpmTrackEl.classList.remove('full');
+      },600);
+    } else if(!isFull){
       bpmFillEl.classList.remove('full');
-      bpmTrackEl.classList.remove('full');
-    },600);
-  } else if(!isFull){
-    bpmFillEl.classList.remove('full');
-    if(bpmTrackEl) bpmTrackEl.classList.remove('full');
+      if(bpmTrackEl) bpmTrackEl.classList.remove('full');
+    }
+    document.getElementById('bpmRank').textContent=getDjRank()||'— NO SIGNAL —';
+    document.getElementById('glowRing').classList.toggle('dj-mode',S.djStacks>0);
+    const isFairyNow=S.activeChar==='sushifairy';
+    document.getElementById('clickHint').textContent=S.djStacks>0?(isFairyNow?'鮨を握れ！':'ビートを刻め！'):'タップしてお鮨をゲット！';
+    document.getElementById('clickHint').className='click-hint'+(S.djStacks>0?' dj':'');
+    document.getElementById('clickArrow').className='click-arrow'+(S.djStacks>0?' dj':'');
   }
-  document.getElementById('bpmRank').textContent=getDjRank()||'— NO SIGNAL —';
-  document.getElementById('glowRing').classList.toggle('dj-mode',S.djStacks>0);
-  const isFairyNow=S.activeChar==='sushifairy';
-  document.getElementById('clickHint').textContent=S.djStacks>0?(isFairyNow?'鮨を握れ！':'ビートを刻め！'):'タップしてお鮨をゲット！';
-  document.getElementById('clickHint').className='click-hint'+(S.djStacks>0?' dj':'');
-  document.getElementById('clickArrow').className='click-arrow'+(S.djStacks>0?' dj':'');
 
-  // カード状態更新（affordableクラスとdotのみ）
-  document.querySelectorAll('#upgradeList .upgrade-card').forEach(card=>{
-    const up=S.upgrades.find(u=>u.id===card.dataset.id);if(!up)return;
-    const maxed=up.owned>=up.maxOwn,can=!maxed&&S.sushi>=up.cost;
-    card.classList.toggle('affordable',can);card.classList.toggle('locked',!can&&!maxed);
-    const dot=card.querySelector('.can-buy-dot');if(dot)dot.style.opacity=can?'1':'0';
-    const sh=card.querySelector('.cost-shortage');if(sh)sh.textContent=(!can&&!maxed)?`あと ${fmt(up.cost-S.sushi)} 不足`:'';
-  });
-  document.querySelectorAll('#taoList .upgrade-card').forEach(card=>{
-    const up=S.taoUpgrades.find(u=>u.id===card.dataset.id);if(!up)return;
-    const maxed=up.owned>=up.maxOwn,can=!maxed&&S.sushi>=up.cost;
-    card.classList.toggle('affordable',can);card.classList.toggle('locked',!can&&!maxed);
-    const dot=card.querySelector('.can-buy-dot');if(dot)dot.style.opacity=can?'1':'0';
-    const sh=card.querySelector('.cost-shortage');if(sh)sh.textContent=(!can&&!maxed)?`あと ${fmt(up.cost-S.sushi)} 不足`:'';
-  });
-  document.querySelectorAll('#djList .upgrade-card').forEach(card=>{
-    const up=S.djUpgrades.find(u=>u.id===card.dataset.id);if(!up)return;
-    const maxed=up.owned>=up.maxOwn,can=!maxed&&S.bpm>=up.cost;
-    card.classList.toggle('affordable',can);card.classList.toggle('locked',!can&&!maxed);
-    const dot=card.querySelector('.can-buy-dot');if(dot)dot.style.opacity=can?'1':'0';
-    const sh=card.querySelector('.cost-shortage');if(sh)sh.textContent=(!can&&!maxed)?`あと ${fmt(up.cost-S.bpm)} 不足`:'';
-  });
+  // カード状態更新（affordableクラスとdotのみ）— stats画面ではスキップ
+  if(curPanel!=='stats'){
+    document.querySelectorAll('#upgradeList .upgrade-card').forEach(card=>{
+      const up=S.upgrades.find(u=>u.id===card.dataset.id);if(!up)return;
+      const maxed=up.owned>=up.maxOwn,can=!maxed&&S.sushi>=up.cost;
+      card.classList.toggle('affordable',can);card.classList.toggle('locked',!can&&!maxed);
+      const dot=card.querySelector('.can-buy-dot');if(dot)dot.style.opacity=can?'1':'0';
+      const sh=card.querySelector('.cost-shortage');if(sh)sh.textContent=(!can&&!maxed)?`あと ${fmt(up.cost-S.sushi)} 不足`:'';
+    });
+    document.querySelectorAll('#taoList .upgrade-card').forEach(card=>{
+      const up=S.taoUpgrades.find(u=>u.id===card.dataset.id);if(!up)return;
+      const maxed=up.owned>=up.maxOwn,can=!maxed&&S.sushi>=up.cost;
+      card.classList.toggle('affordable',can);card.classList.toggle('locked',!can&&!maxed);
+      const dot=card.querySelector('.can-buy-dot');if(dot)dot.style.opacity=can?'1':'0';
+      const sh=card.querySelector('.cost-shortage');if(sh)sh.textContent=(!can&&!maxed)?`あと ${fmt(up.cost-S.sushi)} 不足`:'';
+    });
+    document.querySelectorAll('#djList .upgrade-card').forEach(card=>{
+      const up=S.djUpgrades.find(u=>u.id===card.dataset.id);if(!up)return;
+      const maxed=up.owned>=up.maxOwn,can=!maxed&&S.bpm>=up.cost;
+      card.classList.toggle('affordable',can);card.classList.toggle('locked',!can&&!maxed);
+      const dot=card.querySelector('.can-buy-dot');if(dot)dot.style.opacity=can?'1':'0';
+      const sh=card.querySelector('.cost-shortage');if(sh)sh.textContent=(!can&&!maxed)?`あと ${fmt(up.cost-S.bpm)} 不足`:'';
+    });
+  }
 
   // タブバッジ更新
   const nb={
@@ -1733,7 +1657,7 @@ function updateUI(){
     el.classList.toggle('can-buy',n>0);
   });
   // ナビドット
-  document.getElementById('dotUpgrade').classList.toggle('visible',(nb.normal+nb.tao)>0&&curPanel!=='upgrade');
+  document.getElementById('dotUpgrade').classList.toggle('visible',(nb.normal+nb.tao+nb.dj)>0&&curPanel!=='upgrade');
   document.getElementById('dotTao').classList.toggle('visible',nb.tao>0&&!(curPanel==='upgrade'&&curTab==='tao'));
   document.getElementById('dotDj').classList.toggle('visible',nb.dj>0&&!(curPanel==='upgrade'&&curTab==='dj'));
   // 転生バッジ（タイトル下にさりげなく）
@@ -2243,12 +2167,14 @@ function renderAchievements() {
 
 function checkAchievements() {
   if(!S.achievements) S.achievements=[];
+  let newUnlock = false;
   ACHIEVEMENTS_DEF.forEach(function(def) {
     try {
       if(!S.achievements.includes(def.id) && def.check(S)){
         S.achievements.push(def.id);
         showToast('\ud83c\udfc6 \u5b9f\u7e3e\u89e3\u9664: '+def.icon+' '+def.name,'save');
         spawnBuyConfetti('normal');
+        newUnlock = true;
       }
     } catch(e) { /* skip broken check */ }
   });
@@ -2257,7 +2183,7 @@ function checkAchievements() {
     if(h>=0&&h<4) S._nightOwl=true;
     if(S.playSeconds<600 && S.taoStacks>=1) S._speedRun=true;
   } catch(e) {}
-  renderAchievements();
+  if(newUnlock && curPanel==='stats') renderAchievements();
 }
 
 
@@ -2267,8 +2193,7 @@ function updateRebirthUI() {
   if(!S.rebirths) S.rebirths=0;
   const rb = REBIRTH_DATA[S.rebirths]||REBIRTH_DATA[10];
   const next = REBIRTH_DATA[Math.min(S.rebirths+1,10)];
-  const canRebirth = (S.taoUpgrades.find(u=>u.id==='beyond')?.owned>0 ||
-                      S.djUpgrades.find(u=>u.id==='dj_beyond')?.owned>0) &&
+  const canRebirth = S.taoUpgrades.find(u=>u.id==='beyond')?.owned>0 &&
                      S.rebirths < 10;
   const pct = S.rebirths / 10 * 100;
 
@@ -2280,7 +2205,7 @@ function updateRebirthUI() {
     ? '✨ MAX到達！'
     : canRebirth
       ? `✨ 転生する → ${next.title}`
-      : '🔒 beyond到達で転生解放';
+      : '🔒 TAO BEYOND到達で転生解放';
 
   const panel = document.getElementById('rebirthPanel');
   if (!panel) return;
@@ -2478,9 +2403,8 @@ function _applyLoadData(d) {
 
 function doRebirth() {
   if(S.rebirths>=10) return;
-  const canRebirth = (S.taoUpgrades.find(u=>u.id==='beyond')?.owned>0 ||
-                      S.djUpgrades.find(u=>u.id==='dj_beyond')?.owned>0);
-  if(!canRebirth){ showToast('\u307e\u305abeyond\u3092\u30af\u30ea\u30a2\u3057\u3066\uff01','normal'); return; }
+  const canRebirth = S.taoUpgrades.find(u=>u.id==='beyond')?.owned>0;
+  if(!canRebirth){ showToast('TAOのBEYONDを達成して！','normal'); return; }
 
   S.rebirths = (S.rebirths||0) + 1;
   const rb = REBIRTH_DATA[S.rebirths];
@@ -2491,10 +2415,18 @@ function doRebirth() {
     rebirths: S.rebirths, rebirthMult: S.rebirthMult,
     achievements: S.achievements||[], unlockedPhases: S.unlockedPhases||['aero'],
     _nightOwl: S._nightOwl, _speedRun: S._speedRun, _bigSpender: S._bigSpender,
-    playSeconds: S.playSeconds||0,
   };
   S = makeState();
   Object.assign(S, keep);
+
+  // 転生ボーナス: 初期クリック力 & 初期自動生成 & 初期寿司を付与
+  const startClick = Math.floor(5 * rb.cm);
+  const startAuto = Math.floor(3 * rb.sm);
+  const startSushi = Math.floor(100 * rb.sm);
+  S.clickPower = startClick;
+  S.autoPerSec = startAuto;
+  S.sushi = startSushi;
+  S.totalEarned = startSushi;
 
   // \u8ee2\u751f\u30d5\u30a3\u30ca\u30fc\u30ec\u6f14\u51fa
   const finale = document.createElement('div');
@@ -2505,8 +2437,9 @@ function doRebirth() {
       \u8ee2\u751f ${S.rebirths} \u56de\u76ee<br>${rb.title}
     </div>
     <div class="finale-sub">
-      \ud83c\udf63\u00d7${rb.sm} &nbsp; \ud83d\udc46\u00d7${rb.cm} &nbsp; \ud83c\udfa7\u00d7${rb.bm}<br>
-      \u30dc\u30fc\u30ca\u30b9\u304c\u6c38\u7d9a\u3067\u52a0\u7b97\u3055\u308c\u305f\uff01
+      🍣×${rb.sm} &nbsp; 👆×${rb.cm} &nbsp; 🎧×${rb.bm}<br>
+      初期クリック力 ${startClick} / 自動 ${startAuto}/秒 / 🍣${startSushi}個<br>
+      ボーナスが永続で加算された！
     </div>
     <button class="finale-close" style="background:linear-gradient(135deg,#a855f7,#ec4899);"
       onclick="this.parentElement.remove();renderAll();updateUI();">
@@ -2552,13 +2485,11 @@ function doRebirth() {
     };
     const info = instructions[inApp] || instructions['android_webview'];
 
-    const bodyMsg = inApp === 'discord'
-      ? `このままだとセーブデータが消えることがあるよ😢<br>ブラウザで開くとデータが安全に保存されるよ！`
-      : `このままだとセーブデータが消えることがあるよ😢<br>Safariで開くと：<br>✅ データが安全に保存される<br>✅ ホーム画面にアプリとして追加できる`;
     banner.innerHTML = `
       <div class="inapp-title">${info.icon} ${info.app}で開いてるよ！</div>
       <div class="inapp-body">
-        ${bodyMsg}
+        このままだとセーブデータが消えることがあるよ😢<br>
+        Safariで開くとデータが安全に保存されるよ！
         <div class="inapp-step">
           <div class="inapp-step-icon">📱</div>
           <div>${info.step}</div>
@@ -2620,17 +2551,6 @@ function doRebirth() {
     if (banner) banner.classList.remove('show');
   };
 })();
-</script>
-
-<!-- PWA: Service Worker 登録 -->
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('SW registered:', reg.scope))
-      .catch(err => console.warn('SW registration failed:', err));
-  });
-}
 </script>
 
 <!-- アプリ内ブラウザ警告バナー -->
