@@ -7,6 +7,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="sushihamster">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
 <title>sushihamster clicker</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Exo+2:wght@700;900&display=swap" rel="stylesheet">
 <style>
@@ -2580,5 +2583,10 @@ function doRebirth() {
   <div class="a2hs-note">一度追加すれば次からこのお知らせは出ないよ</div>
 </div>
 
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
 </body>
 </html>
