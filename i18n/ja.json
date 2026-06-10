@@ -132,7 +132,9 @@
       "del_title": "🗑️ 削除しますか？",
       "delete_btn": "削除",
       "name_req": "名前を入力してください",
-      "like_title": "いいね！"
+      "like_title": "いいね！",
+      "fullscreen_btn": "✦ 全画面で描く",
+      "fullscreen_done": "✅ 完了"
     },
     "del_hint": "投稿時に設定した削除キーを入力してください（設定なしの場合はそのまま確認）",
     "del_key_ph": "削除キー",

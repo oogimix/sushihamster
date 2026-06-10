@@ -132,7 +132,9 @@
       "del_title": "🗑️ 确认删除这幅画？",
       "delete_btn": "删除",
       "name_req": "请输入名字",
-      "like_title": "点赞！"
+      "like_title": "点赞！",
+      "fullscreen_btn": "✦ 全屏绘画",
+      "fullscreen_done": "✅ 完成"
     },
     "del_hint": "请输入发帖时设置的删除密钥（未设置则直接确认）",
     "del_key_ph": "删除密钥",

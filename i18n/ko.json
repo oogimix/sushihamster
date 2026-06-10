@@ -132,7 +132,9 @@
       "del_title": "🗑️ 이 그림을 삭제하시겠습니까?",
       "delete_btn": "삭제",
       "name_req": "이름을 입력해주세요",
-      "like_title": "좋아요!"
+      "like_title": "좋아요!",
+      "fullscreen_btn": "✦ 전체화면으로 그리기",
+      "fullscreen_done": "✅ 완료"
     },
     "del_hint": "작성 시 설정한 삭제 키를 입력하세요 (미설정 시 그대로 확인)",
     "del_key_ph": "삭제 키",

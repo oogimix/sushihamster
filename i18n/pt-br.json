@@ -132,7 +132,9 @@
       "del_title": "🗑️ Excluir este desenho?",
       "delete_btn": "Excluir",
       "name_req": "Por favor, insira seu nome",
-      "like_title": "Curtir!"
+      "like_title": "Curtir!",
+      "fullscreen_btn": "✦ Desenhar em tela cheia",
+      "fullscreen_done": "✅ Concluído"
     },
     "del_hint": "Digite a chave de exclusão definida na publicação (deixe em branco se não tiver)",
     "del_key_ph": "Chave de exclusão",

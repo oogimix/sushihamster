@@ -44,6 +44,37 @@
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   });
 
+  // ---- 全画面モード（スマホ用） ----
+  const fsEl      = document.getElementById("canvas-fs");
+  const fsToolsEl = document.getElementById("canvas-fs-tools");
+  const fsAreaEl  = document.getElementById("canvas-fs-area");
+  const fsDoneBtn = document.getElementById("canvas-fs-done");
+  const btnFS     = document.getElementById("btn-fullscreen");
+  const toolsEl   = document.getElementById("oekaki-tools");
+  const canvasWrap= document.getElementById("canvas-wrap");
+
+  // 元の位置をコメントノードで記憶
+  let toolsPH = null, canvasPH = null;
+
+  btnFS?.addEventListener("click", () => {
+    toolsPH  = document.createComment("tools-ph");
+    canvasPH = document.createComment("canvas-ph");
+    toolsEl.parentNode.insertBefore(toolsPH,  toolsEl);
+    canvasWrap.parentNode.insertBefore(canvasPH, canvasWrap);
+    fsToolsEl.appendChild(toolsEl);
+    fsAreaEl.appendChild(canvasWrap);
+    fsEl.classList.add("show");
+    document.body.style.overflow = "hidden";
+  });
+
+  fsDoneBtn?.addEventListener("click", () => {
+    if (toolsPH)  toolsPH.parentNode.insertBefore(toolsEl,   toolsPH);
+    if (canvasPH) canvasPH.parentNode.insertBefore(canvasWrap, canvasPH);
+    toolsPH?.remove();  canvasPH?.remove();
+    fsEl.classList.remove("show");
+    document.body.style.overflow = "";
+  });
+
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
     const sx = canvas.width  / rect.width;

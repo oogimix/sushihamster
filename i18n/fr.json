@@ -132,7 +132,9 @@
       "del_title": "🗑️ Supprimer ce dessin ?",
       "delete_btn": "Supprimer",
       "name_req": "Veuillez entrer votre nom",
-      "like_title": "J'aime !"
+      "like_title": "J'aime !",
+      "fullscreen_btn": "✦ Dessiner en plein écran",
+      "fullscreen_done": "✅ Terminé"
     },
     "del_hint": "Entrez la clé de suppression définie lors de la publication (laisser vide si aucune)",
     "del_key_ph": "Clé de suppression",
