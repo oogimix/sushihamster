@@ -6,7 +6,9 @@
     "og_title": "Site do sushihamster",
     "og_desc": "Site do sushihamster 🐹🍣 Notícias e agenda sempre atualizadas!"
   },
-  "menu": { "title": "▼ Menu" },
+  "menu": {
+    "title": "▼ Menu"
+  },
   "nav": {
     "home": "Início",
     "profile": "Perfil",
@@ -90,7 +92,56 @@
       "board": "Ir para o fórum",
       "oekaki": "Ir para o fórum de desenhos",
       "newtab_note": "(abre em nova aba)"
-    }
+    },
+    "board": {
+      "title": "📝 Mural de Recados",
+      "rules_title": "Regras do Mural",
+      "r1": "🔑 Não compartilhe informações pessoais",
+      "r2": "💔 Não use para fins de relacionamento",
+      "r3": "✨ Sem spam ou trolling — use com cuidado!",
+      "r4": "🌈 Não publique nada que magoe ou ofenda alguém",
+      "footer": "Vamos nos divertir juntos! 🐹",
+      "form_title": "✏️ Nova Mensagem",
+      "name_ph": "Nome (obrigatório, máx. 20 car.)",
+      "delkey_ph": "Chave de exclusão (opcional)",
+      "msg_ph": "Mensagem (obrigatória, máx. 200 car.)",
+      "submit": "Publicar 🐹",
+      "submitting": "Publicando...",
+      "list_title": "💬 Mensagens",
+      "empty": "Ainda sem mensagens. Seja o primeiro! 🐹",
+      "del_title": "🗑️ Excluir esta mensagem?",
+      "delete_btn": "Excluir",
+      "name_req": "Por favor, insira seu nome",
+      "msg_req": "Por favor, insira uma mensagem"
+    },
+    "oekaki": {
+      "title": "🎨 Mural de Desenhos",
+      "form_title": "✏️ Desenhe e publique!",
+      "color_label": "🖊 Cor:",
+      "size_label": "Tamanho:",
+      "pen_btn": "🖊 Caneta",
+      "eraser_btn": "🧹 Borracha",
+      "name_ph": "Nome (obrigatório, máx. 20 car.)",
+      "comment_ph": "Comentário (opcional, máx. 40 car.)",
+      "delkey_ph": "Chave de exclusão (opcional)",
+      "clear_btn": "🗑 Limpar",
+      "submit": "Publicar 🐹",
+      "submitting": "Publicando...",
+      "gallery_title": "🖼️ Desenhos de todos",
+      "empty": "Ainda sem desenhos. Seja o primeiro! 🎨",
+      "del_title": "🗑️ Excluir este desenho?",
+      "delete_btn": "Excluir",
+      "name_req": "Por favor, insira seu nome"
+    },
+    "del_hint": "Digite a chave de exclusão definida na publicação (deixe em branco se não tiver)",
+    "del_key_ph": "Chave de exclusão",
+    "del_cancel": "Cancelar",
+    "del_confirm": "Excluir",
+    "del_wrong_key": "Chave de exclusão incorreta",
+    "del_fail": "Falha ao excluir",
+    "post_fail": "Falha ao publicar",
+    "posted": "Publicado! 🐹",
+    "loading": "Carregando..."
   },
   "links": {
     "title": "Links",

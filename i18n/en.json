@@ -6,7 +6,9 @@
     "og_title": "sushihamster Official Website",
     "og_desc": "sushihamster Official Website 🐹🍣 Bringing you the latest updates and event info!"
   },
-  "menu": { "title": "▼ Menu" },
+  "menu": {
+    "title": "▼ Menu"
+  },
   "nav": {
     "home": "Home",
     "profile": "Profile",
@@ -90,7 +92,56 @@
       "board": "Go to the board",
       "oekaki": "Go to the drawing board",
       "newtab_note": "(opens in a new tab)"
-    }
+    },
+    "board": {
+      "title": "📝 Message Board",
+      "rules_title": "Board Rules",
+      "r1": "🔑 Please don't share personal info",
+      "r2": "💔 No seeking relationships",
+      "r3": "✨ No trolling — treat this space with care!",
+      "r4": "🌈 Don't post anything hurtful or offensive",
+      "footer": "Let's keep it friendly and fun! 🐹",
+      "form_title": "✏️ New Post",
+      "name_ph": "Name (required, max 20 chars)",
+      "delkey_ph": "Delete key (optional)",
+      "msg_ph": "Message (required, max 200 chars)",
+      "submit": "Post 🐹",
+      "submitting": "Posting...",
+      "list_title": "💬 Posts",
+      "empty": "No posts yet. Be the first! 🐹",
+      "del_title": "🗑️ Delete this post?",
+      "delete_btn": "Delete",
+      "name_req": "Please enter your name",
+      "msg_req": "Please enter a message"
+    },
+    "oekaki": {
+      "title": "🎨 Drawing Board",
+      "form_title": "✏️ Draw & Post!",
+      "color_label": "🖊 Color:",
+      "size_label": "Size:",
+      "pen_btn": "🖊 Pen",
+      "eraser_btn": "🧹 Eraser",
+      "name_ph": "Name (required, max 20 chars)",
+      "comment_ph": "Comment (optional, max 40 chars)",
+      "delkey_ph": "Delete key (optional)",
+      "clear_btn": "🗑 Clear",
+      "submit": "Post 🐹",
+      "submitting": "Posting...",
+      "gallery_title": "🖼️ Everyone's Art",
+      "empty": "No drawings yet. Be the first! 🎨",
+      "del_title": "🗑️ Delete this drawing?",
+      "delete_btn": "Delete",
+      "name_req": "Please enter your name"
+    },
+    "del_hint": "Enter the delete key you set when posting (leave blank if none)",
+    "del_key_ph": "Delete key",
+    "del_cancel": "Cancel",
+    "del_confirm": "Delete",
+    "del_wrong_key": "Wrong delete key",
+    "del_fail": "Failed to delete",
+    "post_fail": "Failed to post",
+    "posted": "Posted! 🐹",
+    "loading": "Loading..."
   },
   "links": {
     "title": "Links",

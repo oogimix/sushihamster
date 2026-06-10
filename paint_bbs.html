@@ -8,34 +8,34 @@
 </head>
 <body>
   <div class="oekaki-wrap">
-    <h2>🎨 お絵かき掲示板</h2>
+    <h2 data-i18n="bbs.oekaki.title">🎨 お絵かき掲示板</h2>
 
     <div class="draw-panel">
-      <h3>✏️ お絵かきして投稿しよう！</h3>
+      <h3 data-i18n="bbs.oekaki.form_title">✏️ お絵かきして投稿しよう！</h3>
       <div class="oekaki-tools">
-        <label>🖊 色:</label>
+        <label data-i18n="bbs.oekaki.color_label">🖊 色:</label>
         <input type="color" id="color-picker" class="color-picker" value="#333333" title="色を選択" />
-        <label>太さ:</label>
+        <label data-i18n="bbs.oekaki.size_label">太さ:</label>
         <input type="range" id="size-slider" class="size-slider" min="1" max="40" value="6" />
         <span id="size-label" style="font-size:.85rem;color:#888;min-width:24px">6</span>
-        <button class="tool-btn active" id="btn-pen">🖊 ペン</button>
-        <button class="tool-btn"        id="btn-eraser">🧹 消しゴム</button>
+        <button class="tool-btn active" id="btn-pen"    data-i18n="bbs.oekaki.pen_btn">🖊 ペン</button>
+        <button class="tool-btn"        id="btn-eraser" data-i18n="bbs.oekaki.eraser_btn">🧹 消しゴム</button>
       </div>
       <div id="canvas-wrap">
         <canvas id="main-canvas" width="700" height="420"></canvas>
       </div>
       <div class="oekaki-submit-form">
-        <input type="text"     id="inp-name"    placeholder="名前（必須・20文字以内）"     maxlength="20" />
-        <input type="text"     id="inp-comment" placeholder="一言コメント（任意・40文字）" maxlength="40" />
-        <input type="password" id="inp-delkey"  placeholder="削除キー（任意）"             maxlength="20" />
-        <button class="clear-btn"       id="clear-btn">🗑 クリア</button>
-        <button class="bbs-submit-btn"  id="post-btn">投稿する 🐹</button>
+        <input type="text"     id="inp-name"    data-i18n-attr="placeholder|bbs.oekaki.name_ph"    placeholder="名前（必須・20文字以内）"     maxlength="20" />
+        <input type="text"     id="inp-comment" data-i18n-attr="placeholder|bbs.oekaki.comment_ph" placeholder="一言コメント（任意・40文字）" maxlength="40" />
+        <input type="password" id="inp-delkey"  data-i18n-attr="placeholder|bbs.oekaki.delkey_ph"  placeholder="削除キー（任意）"             maxlength="20" />
+        <button class="clear-btn"       id="clear-btn" data-i18n="bbs.oekaki.clear_btn">🗑 クリア</button>
+        <button class="bbs-submit-btn"  id="post-btn"  data-i18n="bbs.oekaki.submit">投稿する 🐹</button>
       </div>
     </div>
 
     <div class="gallery-section">
-      <h3>🖼️ みんなの絵</h3>
-      <div id="gallery-list"><p class="bbs-loading">読み込み中...</p></div>
+      <h3 data-i18n="bbs.oekaki.gallery_title">🖼️ みんなの絵</h3>
+      <div id="gallery-list"><p class="bbs-loading" data-i18n="bbs.loading">読み込み中...</p></div>
     </div>
   </div>
 
@@ -50,12 +50,12 @@
 
   <div class="bbs-del-overlay" id="del-overlay">
     <div class="bbs-del-box">
-      <h4>🗑️ 削除しますか？</h4>
-      <p>投稿時に設定した削除キーを入力してください（設定なしの場合はそのまま確認）</p>
-      <input type="password" id="del-key-input" placeholder="削除キー" />
+      <h4 data-i18n="bbs.oekaki.del_title">🗑️ 削除しますか？</h4>
+      <p data-i18n="bbs.del_hint">投稿時に設定した削除キーを入力してください（設定なしの場合はそのまま確認）</p>
+      <input type="password" id="del-key-input" data-i18n-attr="placeholder|bbs.del_key_ph" placeholder="削除キー" />
       <div class="btn-row">
-        <button class="bbs-btn-cancel"  id="del-cancel">キャンセル</button>
-        <button class="bbs-btn-confirm" id="del-confirm">削除する</button>
+        <button class="bbs-btn-cancel"  id="del-cancel"  data-i18n="bbs.del_cancel">キャンセル</button>
+        <button class="bbs-btn-confirm" id="del-confirm" data-i18n="bbs.del_confirm">削除する</button>
       </div>
     </div>
   </div>

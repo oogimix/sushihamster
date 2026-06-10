@@ -16,12 +16,13 @@
   const postBtn = document.getElementById("post-btn");
   if (postBtn) {
     postBtn.addEventListener("click", async () => {
+      const t = window.i18nGet || (k => k);
       const name = document.getElementById("inp-name").value.trim();
       const msg  = msgEl.value.trim();
       const key  = document.getElementById("inp-delkey").value.trim();
-      if (!name) { alert("名前を入力してください"); return; }
-      if (!msg)  { alert("メッセージを入力してください"); return; }
-      postBtn.disabled = true; postBtn.textContent = "投稿中...";
+      if (!name) { alert(t("bbs.board.name_req")); return; }
+      if (!msg)  { alert(t("bbs.board.msg_req")); return; }
+      postBtn.disabled = true; postBtn.textContent = t("bbs.board.submitting");
       try {
         await db.collection(COL).add({
           name, msg, deleteKey: key,
@@ -30,8 +31,8 @@
         document.getElementById("inp-name").value  = "";
         document.getElementById("inp-delkey").value = "";
         msgEl.value = ""; charEl.textContent = "0";
-      } catch (e) { alert("投稿に失敗しました: " + e.message); }
-      postBtn.disabled = false; postBtn.textContent = "投稿する 🐹";
+      } catch (e) { alert(t("bbs.post_fail") + ": " + e.message); }
+      postBtn.disabled = false; postBtn.textContent = t("bbs.board.submit");
     });
   }
 
@@ -42,7 +43,8 @@
     .onSnapshot(snap => {
       if (!document.getElementById("posts-list")) { unsubscribe(); return; }
       if (snap.empty) {
-        listEl.innerHTML = "<p style='color:#aaa;text-align:center;padding:24px'>まだ投稿がありません。最初の一言をどうぞ！🐹</p>";
+        const t = window.i18nGet || (k => k);
+        listEl.innerHTML = `<p style='color:#aaa;text-align:center;padding:24px'>${t("bbs.board.empty")}</p>`;
         return;
       }
       listEl.innerHTML = "";
@@ -59,7 +61,7 @@
             <span class="post-no">No.${no--}</span>
           </div>
           <div class="post-body">${esc(msg)}</div>
-          <button class="post-delete-btn" data-id="${d.id}" data-key="${esc(deleteKey || '')}">削除</button>
+          <button class="post-delete-btn" data-id="${d.id}" data-key="${esc(deleteKey || '')}">${(window.i18nGet||((k)=>k))("bbs.board.delete_btn")}</button>
         `;
         listEl.appendChild(card);
       });
@@ -68,7 +70,7 @@
       );
     }, err => {
       const el = document.getElementById("posts-list");
-      if (el) el.innerHTML = `<p style='color:red'>読み込み失敗: ${err.message}</p>`;
+      if (el) el.innerHTML = `<p style='color:red'>${(window.i18nGet||((k)=>k))("bbs.loading")}: ${err.message}</p>`;
     });
 
   // ---- 削除ダイアログ ----
@@ -82,11 +84,12 @@
   }
   document.getElementById("del-cancel")?.addEventListener("click",  () => overlay.classList.remove("show"));
   document.getElementById("del-confirm")?.addEventListener("click", async () => {
+    const t = window.i18nGet || (k => k);
     const input = document.getElementById("del-key-input").value.trim();
-    if (pendingKey && input !== pendingKey) { alert("削除キーが違います"); return; }
+    if (pendingKey && input !== pendingKey) { alert(t("bbs.del_wrong_key")); return; }
     try {
       await db.collection(COL).doc(pendingId).delete();
       overlay.classList.remove("show");
-    } catch (e) { alert("削除に失敗しました: " + e.message); }
+    } catch (e) { alert(t("bbs.del_fail") + ": " + e.message); }
   });
 })();

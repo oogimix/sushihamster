@@ -6,7 +6,9 @@
     "og_title": "Site officiel de sushihamster",
     "og_desc": "Site officiel de sushihamster 🐹🍣 Infos, actualités et dates à jour !"
   },
-  "menu": { "title": "▼ Menu" },
+  "menu": {
+    "title": "▼ Menu"
+  },
   "nav": {
     "home": "Accueil",
     "profile": "Profil",
@@ -90,7 +92,56 @@
       "board": "Accéder au forum",
       "oekaki": "Accéder au forum de dessins",
       "newtab_note": "(s’ouvre dans un nouvel onglet)"
-    }
+    },
+    "board": {
+      "title": "📝 Forum",
+      "rules_title": "Règles du forum",
+      "r1": "🔑 Ne partagez pas d'informations personnelles",
+      "r2": "💔 Pas de recherche de rencontres",
+      "r3": "✨ Pas de trolling — utilisez cet espace avec soin !",
+      "r4": "🌈 Ne publiez rien de blessant ou d'offensant",
+      "footer": "Soyons amis et amusons-nous ensemble ! 🐹",
+      "form_title": "✏️ Nouveau message",
+      "name_ph": "Nom (obligatoire, 20 car. max)",
+      "delkey_ph": "Clé de suppression (optionnel)",
+      "msg_ph": "Message (obligatoire, 200 car. max)",
+      "submit": "Publier 🐹",
+      "submitting": "Publication...",
+      "list_title": "💬 Messages",
+      "empty": "Aucun message pour l'instant. Soyez le premier ! 🐹",
+      "del_title": "🗑️ Supprimer ce message ?",
+      "delete_btn": "Supprimer",
+      "name_req": "Veuillez entrer votre nom",
+      "msg_req": "Veuillez entrer un message"
+    },
+    "oekaki": {
+      "title": "🎨 Tableau de dessin",
+      "form_title": "✏️ Dessinez et partagez !",
+      "color_label": "🖊 Couleur :",
+      "size_label": "Taille :",
+      "pen_btn": "🖊 Stylo",
+      "eraser_btn": "🧹 Gomme",
+      "name_ph": "Nom (obligatoire, 20 car. max)",
+      "comment_ph": "Commentaire (optionnel, 40 car.)",
+      "delkey_ph": "Clé de suppression (optionnel)",
+      "clear_btn": "🗑 Effacer",
+      "submit": "Publier 🐹",
+      "submitting": "Publication...",
+      "gallery_title": "🖼️ Les dessins de tous",
+      "empty": "Aucun dessin pour l'instant. Soyez le premier ! 🎨",
+      "del_title": "🗑️ Supprimer ce dessin ?",
+      "delete_btn": "Supprimer",
+      "name_req": "Veuillez entrer votre nom"
+    },
+    "del_hint": "Entrez la clé de suppression définie lors de la publication (laisser vide si aucune)",
+    "del_key_ph": "Clé de suppression",
+    "del_cancel": "Annuler",
+    "del_confirm": "Supprimer",
+    "del_wrong_key": "Clé de suppression incorrecte",
+    "del_fail": "Échec de la suppression",
+    "post_fail": "Échec de la publication",
+    "posted": "Publié ! 🐹",
+    "loading": "Chargement..."
   },
   "links": {
     "title": "Liens",

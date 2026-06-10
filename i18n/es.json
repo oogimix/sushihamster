@@ -6,7 +6,9 @@
     "og_title": "Página oficial de sushihamster",
     "og_desc": "Página oficial de sushihamster 🐹🍣 ¡Noticias y eventos siempre actualizados!"
   },
-  "menu": { "title": "▼ Menú" },
+  "menu": {
+    "title": "▼ Menú"
+  },
   "nav": {
     "home": "Inicio",
     "profile": "Perfil",
@@ -90,7 +92,56 @@
       "board": "Ir al foro",
       "oekaki": "Ir al foro de dibujos",
       "newtab_note": "(se abrirá en una nueva pestaña)"
-    }
+    },
+    "board": {
+      "title": "📝 Tablón de Mensajes",
+      "rules_title": "Reglas del Tablón",
+      "r1": "🔑 Por favor, no compartas información personal",
+      "r2": "💔 No busques relaciones aquí",
+      "r3": "✨ Sin trolling — ¡usa este espacio con cuidado!",
+      "r4": "🌈 No publiques nada hiriente u ofensivo",
+      "footer": "¡Seamos amigos y divirtámonos juntos! 🐹",
+      "form_title": "✏️ Nuevo Mensaje",
+      "name_ph": "Nombre (obligatorio, máx. 20 car.)",
+      "delkey_ph": "Clave de borrado (opcional)",
+      "msg_ph": "Mensaje (obligatorio, máx. 200 car.)",
+      "submit": "Publicar 🐹",
+      "submitting": "Publicando...",
+      "list_title": "💬 Mensajes",
+      "empty": "Aún no hay mensajes. ¡Sé el primero! 🐹",
+      "del_title": "🗑️ ¿Eliminar este mensaje?",
+      "delete_btn": "Eliminar",
+      "name_req": "Por favor, ingresa tu nombre",
+      "msg_req": "Por favor, ingresa un mensaje"
+    },
+    "oekaki": {
+      "title": "🎨 Tablón de Dibujos",
+      "form_title": "✏️ ¡Dibuja y comparte!",
+      "color_label": "🖊 Color:",
+      "size_label": "Tamaño:",
+      "pen_btn": "🖊 Pluma",
+      "eraser_btn": "🧹 Goma",
+      "name_ph": "Nombre (obligatorio, máx. 20 car.)",
+      "comment_ph": "Comentario (opcional, máx. 40 car.)",
+      "delkey_ph": "Clave de borrado (opcional)",
+      "clear_btn": "🗑 Borrar",
+      "submit": "Publicar 🐹",
+      "submitting": "Publicando...",
+      "gallery_title": "🖼️ Los dibujos de todos",
+      "empty": "Aún no hay dibujos. ¡Sé el primero! 🎨",
+      "del_title": "🗑️ ¿Eliminar este dibujo?",
+      "delete_btn": "Eliminar",
+      "name_req": "Por favor, ingresa tu nombre"
+    },
+    "del_hint": "Introduce la clave de borrado que pusiste al publicar (deja en blanco si no tienes)",
+    "del_key_ph": "Clave de borrado",
+    "del_cancel": "Cancelar",
+    "del_confirm": "Eliminar",
+    "del_wrong_key": "Clave de borrado incorrecta",
+    "del_fail": "Error al eliminar",
+    "post_fail": "Error al publicar",
+    "posted": "¡Publicado! 🐹",
+    "loading": "Cargando..."
   },
   "links": {
     "title": "Enlaces",

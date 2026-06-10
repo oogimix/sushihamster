@@ -6,7 +6,9 @@
     "og_title": "sushihamster 官方网站",
     "og_desc": "sushihamster 官方网站🐹🍣 最新信息、演出资讯持续更新中！"
   },
-  "menu": { "title": "▼ 功能菜单" },
+  "menu": {
+    "title": "▼ 功能菜单"
+  },
   "nav": {
     "home": "主页",
     "profile": "个人资料",
@@ -90,7 +92,56 @@
       "board": "点击进入留言板",
       "oekaki": "点击进入绘图留言板",
       "newtab_note": "（将在新标签页打开）"
-    }
+    },
+    "board": {
+      "title": "📝 留言板",
+      "rules_title": "使用规则",
+      "r1": "🔑 请勿发布个人信息",
+      "r2": "💔 禁止以交友为目的使用",
+      "r3": "✨ 禁止刷屏恶意行为！请珍惜使用",
+      "r4": "🌈 请勿发布任何令人受伤或不快的内容",
+      "footer": "大家一起友好愉快地交流吧♪ 多多关照🐹",
+      "form_title": "✏️ 发表留言",
+      "name_ph": "名字（必填，最多20字）",
+      "delkey_ph": "删除密钥（可选）",
+      "msg_ph": "留言内容（必填，最多200字）",
+      "submit": "发表 🐹",
+      "submitting": "发表中...",
+      "list_title": "💬 留言列表",
+      "empty": "暂无留言，来第一个发言吧！🐹",
+      "del_title": "🗑️ 确认删除这条留言？",
+      "delete_btn": "删除",
+      "name_req": "请输入名字",
+      "msg_req": "请输入留言内容"
+    },
+    "oekaki": {
+      "title": "🎨 绘图留言板",
+      "form_title": "✏️ 画画并发布！",
+      "color_label": "🖊 颜色:",
+      "size_label": "大小:",
+      "pen_btn": "🖊 画笔",
+      "eraser_btn": "🧹 橡皮",
+      "name_ph": "名字（必填，最多20字）",
+      "comment_ph": "留言（可选，最多40字）",
+      "delkey_ph": "删除密钥（可选）",
+      "clear_btn": "🗑 清除",
+      "submit": "发布 🐹",
+      "submitting": "发布中...",
+      "gallery_title": "🖼️ 大家的画",
+      "empty": "暂无画作，来画第一幅吧！🎨",
+      "del_title": "🗑️ 确认删除这幅画？",
+      "delete_btn": "删除",
+      "name_req": "请输入名字"
+    },
+    "del_hint": "请输入发帖时设置的删除密钥（未设置则直接确认）",
+    "del_key_ph": "删除密钥",
+    "del_cancel": "取消",
+    "del_confirm": "删除",
+    "del_wrong_key": "删除密钥错误",
+    "del_fail": "删除失败",
+    "post_fail": "发表失败",
+    "posted": "发表成功！🐹",
+    "loading": "加载中..."
   },
   "links": {
     "title": "友情链接",

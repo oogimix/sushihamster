@@ -93,8 +93,20 @@
 
   function applyI18n(root = document) {
     root.querySelectorAll("[data-i18n]").forEach(translateElement);
+    // data-i18n なしで data-i18n-attr だけ持つ要素（input placeholder 等）も処理
+    root.querySelectorAll("[data-i18n-attr]:not([data-i18n])").forEach(el => {
+      const attrMap = el.getAttribute("data-i18n-attr");
+      if (!attrMap) return;
+      attrMap.split(",").forEach(pair => {
+        const [attr, k] = pair.split("|").map(s => s.trim());
+        if (!k) return;
+        const v = get(dict, k);
+        if (v != null) el.setAttribute(attr, v);
+      });
+    });
   }
   window.applyI18n = applyI18n;
+  window.i18nGet = key => get(dict, key) ?? key;
 
   async function setLang(lang) {
     await loadDict(lang);

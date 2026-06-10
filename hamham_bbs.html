@@ -8,44 +8,44 @@
 </head>
 <body>
   <div class="bbs-wrap">
-    <h2>📝 掲示板</h2>
+    <h2 data-i18n="bbs.board.title">📝 掲示板</h2>
 
     <div class="rules-box">
-      <strong>利用ルール</strong>
+      <strong data-i18n="bbs.board.rules_title">利用ルール</strong>
       <ul>
-        <li>🔑 個人情報は載せないでね</li>
-        <li>💔 出会い目的での利用は遠慮してね</li>
-        <li>✨ 荒らし行為禁止！大切に使ってね</li>
-        <li>🌈 誰かが傷ついたり不快になることは投稿しないでね</li>
+        <li data-i18n="bbs.board.r1">🔑 個人情報は載せないでね</li>
+        <li data-i18n="bbs.board.r2">💔 出会い目的での利用は遠慮してね</li>
+        <li data-i18n="bbs.board.r3">✨ 荒らし行為禁止！大切に使ってね</li>
+        <li data-i18n="bbs.board.r4">🌈 誰かが傷ついたり不快になることは投稿しないでね</li>
       </ul>
-      <p style="margin:8px 0 0">みんなで仲良く楽しく交流しよう♪よろしくお願いします🐹</p>
+      <p style="margin:8px 0 0" data-i18n="bbs.board.footer">みんなで仲良く楽しく交流しよう♪よろしくお願いします🐹</p>
     </div>
 
     <div class="post-form">
-      <h3>✏️ 新規投稿</h3>
+      <h3 data-i18n="bbs.board.form_title">✏️ 新規投稿</h3>
       <div class="bbs-field-row">
-        <input type="text"     id="inp-name"   placeholder="名前（必須・20文字以内）" maxlength="20" />
-        <input type="password" id="inp-delkey" placeholder="削除キー（任意）"         maxlength="20" />
+        <input type="text"     id="inp-name"   data-i18n-attr="placeholder|bbs.board.name_ph"   placeholder="名前（必須・20文字以内）" maxlength="20" />
+        <input type="password" id="inp-delkey" data-i18n-attr="placeholder|bbs.board.delkey_ph" placeholder="削除キー（任意）"         maxlength="20" />
       </div>
-      <textarea id="inp-msg" placeholder="メッセージ（必須・200文字以内）" maxlength="200"></textarea>
+      <textarea id="inp-msg" data-i18n-attr="placeholder|bbs.board.msg_ph" placeholder="メッセージ（必須・200文字以内）" maxlength="200"></textarea>
       <div class="char-count"><span id="char-num">0</span> / 200</div>
-      <button class="bbs-submit-btn" id="post-btn">投稿する 🐹</button>
+      <button class="bbs-submit-btn" id="post-btn" data-i18n="bbs.board.submit">投稿する 🐹</button>
     </div>
 
     <div class="posts-section">
-      <h3>💬 投稿一覧</h3>
-      <div id="posts-list"><p class="bbs-loading">読み込み中...</p></div>
+      <h3 data-i18n="bbs.board.list_title">💬 投稿一覧</h3>
+      <div id="posts-list"><p class="bbs-loading" data-i18n="bbs.loading">読み込み中...</p></div>
     </div>
   </div>
 
   <div class="bbs-del-overlay" id="del-overlay">
     <div class="bbs-del-box">
-      <h4>🗑️ 投稿を削除しますか？</h4>
-      <p>投稿時に設定した削除キーを入力してください（設定なしの場合はそのまま確認）</p>
-      <input type="password" id="del-key-input" placeholder="削除キー" />
+      <h4 data-i18n="bbs.board.del_title">🗑️ 投稿を削除しますか？</h4>
+      <p data-i18n="bbs.del_hint">投稿時に設定した削除キーを入力してください（設定なしの場合はそのまま確認）</p>
+      <input type="password" id="del-key-input" data-i18n-attr="placeholder|bbs.del_key_ph" placeholder="削除キー" />
       <div class="btn-row">
-        <button class="bbs-btn-cancel"  id="del-cancel">キャンセル</button>
-        <button class="bbs-btn-confirm" id="del-confirm">削除する</button>
+        <button class="bbs-btn-cancel"  id="del-cancel"  data-i18n="bbs.del_cancel">キャンセル</button>
+        <button class="bbs-btn-confirm" id="del-confirm" data-i18n="bbs.del_confirm">削除する</button>
       </div>
     </div>
   </div>

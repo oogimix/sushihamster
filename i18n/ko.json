@@ -6,7 +6,9 @@
     "og_title": "sushihamster 공식 홈페이지",
     "og_desc": "sushihamster 공식 홈페이지 🐹🍣 최신 소식과 출연 정보를 전해드립니다!"
   },
-  "menu": { "title": "▼ 메뉴" },
+  "menu": {
+    "title": "▼ 메뉴"
+  },
   "nav": {
     "home": "홈",
     "profile": "프로필",
@@ -90,9 +92,58 @@
       "board": "게시판으로 가기",
       "oekaki": "그림 게시판으로 가기",
       "newtab_note": "(새 탭에서 열립니다)"
-    }
+    },
+    "board": {
+      "title": "📝 게시판",
+      "rules_title": "이용 규칙",
+      "r1": "🔑 개인정보는 올리지 마세요",
+      "r2": "💔 만남 목적의 이용은 삼가주세요",
+      "r3": "✨ 도배·악플 금지! 소중히 사용해주세요",
+      "r4": "🌈 누군가를 상처 입히거나 불쾌하게 하는 내용은 삼가주세요",
+      "footer": "모두 사이좋게 즐겁게 교류해요♪ 잘 부탁드립니다🐹",
+      "form_title": "✏️ 새 글 작성",
+      "name_ph": "이름 (필수, 최대 20자)",
+      "delkey_ph": "삭제 키 (선택)",
+      "msg_ph": "메시지 (필수, 최대 200자)",
+      "submit": "게시하기 🐹",
+      "submitting": "게시 중...",
+      "list_title": "💬 게시글 목록",
+      "empty": "아직 게시글이 없습니다. 첫 번째로 작성해보세요! 🐹",
+      "del_title": "🗑️ 이 게시글을 삭제하시겠습니까?",
+      "delete_btn": "삭제",
+      "name_req": "이름을 입력해주세요",
+      "msg_req": "메시지를 입력해주세요"
+    },
+    "oekaki": {
+      "title": "🎨 그림 게시판",
+      "form_title": "✏️ 그림 그리고 게시하기!",
+      "color_label": "🖊 색상:",
+      "size_label": "크기:",
+      "pen_btn": "🖊 펜",
+      "eraser_btn": "🧹 지우개",
+      "name_ph": "이름 (필수, 최대 20자)",
+      "comment_ph": "한마디 (선택, 최대 40자)",
+      "delkey_ph": "삭제 키 (선택)",
+      "clear_btn": "🗑 지우기",
+      "submit": "게시하기 🐹",
+      "submitting": "게시 중...",
+      "gallery_title": "🖼️ 모두의 그림",
+      "empty": "아직 그림이 없습니다. 첫 번째 그림을 그려보세요! 🎨",
+      "del_title": "🗑️ 이 그림을 삭제하시겠습니까?",
+      "delete_btn": "삭제",
+      "name_req": "이름을 입력해주세요"
+    },
+    "del_hint": "작성 시 설정한 삭제 키를 입력하세요 (미설정 시 그대로 확인)",
+    "del_key_ph": "삭제 키",
+    "del_cancel": "취소",
+    "del_confirm": "삭제",
+    "del_wrong_key": "삭제 키가 다릅니다",
+    "del_fail": "삭제에 실패했습니다",
+    "post_fail": "게시에 실패했습니다",
+    "posted": "게시되었습니다! 🐹",
+    "loading": "불러오는 중..."
   },
-   "links": {
+  "links": {
     "title": "링크 모음",
     "header": "🌐 링크 모음 🌐",
     "table": {
