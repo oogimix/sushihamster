@@ -49,13 +49,20 @@
     /* ギャラリー */
     .gallery-section h3 { color:#c06; margin:0 0 12px; }
     .gallery-grid {
-      display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px;
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px;
     }
     .gallery-card {
       background:#fff; border:1px solid #f9c; border-radius:10px;
       overflow:hidden; position:relative;
     }
-    .gallery-card img { width:100%; display:block; }
+    .gallery-card .thumb-wrap {
+      overflow:hidden; cursor:zoom-in; background:#f8f8f8;
+    }
+    .gallery-card img {
+      width:100%; display:block; aspect-ratio:5/3; object-fit:contain;
+      transition:transform .2s;
+    }
+    .gallery-card .thumb-wrap:hover img { transform:scale(1.03); }
     .gallery-card .card-info { padding:8px 10px; }
     .card-name { font-weight:bold; color:#c06; font-size:.9rem; }
     .card-time { font-size:.75rem; color:#aaa; margin-top:2px; }
@@ -66,6 +73,28 @@
       color:#bbb; font-size:.72rem; padding:2px 7px; cursor:pointer;
     }
     .card-del:hover { border-color:#e07; color:#e07; }
+
+    /* ライトボックス */
+    .lightbox {
+      display:none; position:fixed; inset:0; z-index:1000;
+      background:rgba(0,0,0,.85);
+      align-items:center; justify-content:center; flex-direction:column;
+      cursor:zoom-out;
+    }
+    .lightbox.show { display:flex; }
+    .lightbox img {
+      max-width:92vw; max-height:80vh;
+      border-radius:8px; box-shadow:0 4px 32px rgba(0,0,0,.5);
+    }
+    .lightbox-info {
+      color:#fff; margin-top:12px; text-align:center; font-size:.9rem;
+    }
+    .lightbox-info .lb-name { font-weight:bold; font-size:1rem; }
+    .lightbox-info .lb-comment { margin-top:4px; color:#ddd; }
+    .lightbox-close {
+      position:absolute; top:16px; right:20px;
+      background:none; border:none; color:#fff; font-size:2rem; cursor:pointer; line-height:1;
+    }
 
     .del-overlay {
       display:none; position:fixed; inset:0;
@@ -126,6 +155,16 @@
     <div class="gallery-section">
       <h3>🖼️ みんなの絵</h3>
       <div id="gallery-list"><p class="loading">読み込み中...</p></div>
+    </div>
+  </div>
+
+  <!-- ライトボックス -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lb-close">×</button>
+    <img id="lb-img" src="" alt="" />
+    <div class="lightbox-info">
+      <div class="lb-name" id="lb-name"></div>
+      <div class="lb-comment" id="lb-comment"></div>
     </div>
   </div>
 
@@ -289,7 +328,9 @@
           const card = document.createElement("div");
           card.className = "gallery-card";
           card.innerHTML = `
-            <img src="${imageData||''}" alt="${esc(name)}の絵" loading="lazy" />
+            <div class="thumb-wrap" data-img="${imageData||''}" data-name="${esc(name)}" data-comment="${esc(comment||'')}">
+              <img src="${imageData||''}" alt="${esc(name)}の絵" loading="lazy" />
+            </div>
             <div class="card-info">
               <div class="card-name">${esc(name)}</div>
               <div class="card-time">${timeStr}</div>
@@ -299,12 +340,27 @@
           `;
           grid.appendChild(card);
         });
+        grid.querySelectorAll(".thumb-wrap").forEach(wrap =>
+          wrap.addEventListener("click", () => openLightbox(wrap.dataset.img, wrap.dataset.name, wrap.dataset.comment))
+        );
         grid.querySelectorAll(".card-del").forEach(btn =>
           btn.addEventListener("click", () => openDel(btn.dataset.id, btn.dataset.key))
         );
       },
       err => { galleryEl.innerHTML = `<p style='color:red'>読み込み失敗: ${err.message}</p>`; }
     );
+
+    // ---- ライトボックス ----
+    const lightbox = document.getElementById("lightbox");
+    function openLightbox(img, name, comment) {
+      document.getElementById("lb-img").src = img;
+      document.getElementById("lb-name").textContent = name;
+      document.getElementById("lb-comment").textContent = comment || "";
+      lightbox.classList.add("show");
+    }
+    document.getElementById("lb-close").addEventListener("click", () => lightbox.classList.remove("show"));
+    lightbox.addEventListener("click", e => { if (e.target === lightbox) lightbox.classList.remove("show"); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") lightbox.classList.remove("show"); });
 
     // ---- 削除ダイアログ ----
     let pendingId = null, pendingKey = null;
