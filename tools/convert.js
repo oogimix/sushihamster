@@ -154,8 +154,14 @@ function convertAll() {
     }
   }
 
+  // JSON は news/ にある全HTMLから生成（MDのないHTMLも含める）
+  const allHtmlFiles = fs.readdirSync(outputDir)
+    .filter(f => f.endsWith('.html'))
+    .sort()
+    .reverse();
+
   try {
-    fs.writeFileSync(jsonPath, JSON.stringify(htmlFiles, null, 2) + '\n', 'utf8');
+    fs.writeFileSync(jsonPath, JSON.stringify(allHtmlFiles, null, 2) + '\n', 'utf8');
     console.log(`✅ Index written: ${jsonPath}`);
   } catch (err) {
     console.error('❌ Failed to write files-html.json', err);
