@@ -2,87 +2,12 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>掲示板 | sushihamster</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Rounded+Mplus+1c&display=swap" rel="stylesheet" />
-  <style>
-    body { background: var(--bg, #fff8f0); font-family: 'Rounded Mplus 1c', sans-serif; }
-    .bbs-wrap { max-width: 700px; margin: 0 auto; padding: 16px; }
-    .back-link { display:inline-block; margin-bottom:16px; color:#e07; text-decoration:none; font-weight:bold; }
-    .back-link:hover { text-decoration:underline; }
-
-    .post-form { background:#fff; border:2px solid #f9c; border-radius:12px; padding:16px; margin-bottom:24px; }
-    .post-form h3 { margin:0 0 12px; color:#c06; }
-    .post-form input, .post-form textarea {
-      width:100%; box-sizing:border-box;
-      border:1px solid #ddd; border-radius:8px;
-      padding:8px 10px; margin-bottom:8px;
-      font-family:inherit; font-size:0.95rem;
-    }
-    .post-form textarea { min-height:80px; resize:vertical; }
-    .field-row { display:flex; gap:8px; }
-    .field-row input { flex:1; }
-    .char-count { text-align:right; font-size:0.78rem; color:#999; margin-top:-4px; margin-bottom:8px; }
-    .submit-btn {
-      background:#e07; color:#fff; border:none; border-radius:8px;
-      padding:10px 24px; font-size:1rem; cursor:pointer; font-family:inherit;
-      transition:opacity .15s;
-    }
-    .submit-btn:hover { opacity:.85; }
-    .submit-btn:disabled { opacity:.5; cursor:default; }
-
-    .posts-section h3 { color:#c06; margin:0 0 12px; }
-    .post-card {
-      background:#fff; border:1px solid #f9c; border-radius:10px;
-      padding:12px 14px; margin-bottom:12px; position:relative;
-    }
-    .post-meta { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
-    .post-name { font-weight:bold; color:#c06; }
-    .post-time { font-size:0.78rem; color:#aaa; }
-    .post-no   { font-size:0.78rem; color:#ccc; }
-    .post-body { white-space:pre-wrap; word-break:break-all; font-size:0.95rem; line-height:1.7; }
-    .delete-btn {
-      position:absolute; top:10px; right:10px;
-      background:none; border:1px solid #ddd; border-radius:6px;
-      color:#bbb; font-size:0.75rem; padding:2px 8px; cursor:pointer;
-    }
-    .delete-btn:hover { border-color:#e07; color:#e07; }
-
-    .del-overlay {
-      display:none; position:fixed; inset:0;
-      background:rgba(0,0,0,.45); z-index:999;
-      align-items:center; justify-content:center;
-    }
-    .del-overlay.show { display:flex; }
-    .del-box {
-      background:#fff; border-radius:14px; padding:24px;
-      width:min(340px,90vw); box-shadow:0 4px 24px rgba(0,0,0,.2);
-    }
-    .del-box h4 { margin:0 0 8px; }
-    .del-box p  { font-size:.84rem; color:#888; margin:0 0 12px; }
-    .del-box input {
-      width:100%; box-sizing:border-box; border:1px solid #ddd;
-      border-radius:8px; padding:8px; font-size:1rem; margin-bottom:12px; font-family:inherit;
-    }
-    .del-box .btn-row { display:flex; gap:8px; justify-content:flex-end; }
-    .del-box button { border:none; border-radius:8px; padding:8px 18px; cursor:pointer; font-size:.9rem; font-family:inherit; }
-    .btn-cancel  { background:#eee; }
-    .btn-confirm { background:#e07; color:#fff; }
-
-    .rules-box { background:#fff8f0; border:1px solid #f9c; border-radius:10px; padding:14px; margin-bottom:20px; font-size:.9rem; }
-    .rules-box ul { margin:6px 0; padding-left:20px; }
-    .rules-box li { margin:4px 0; }
-    .loading { color:#aaa; text-align:center; padding:24px; }
-  </style>
+  <link rel="stylesheet" href="css/bbs.css" />
 </head>
 <body>
-  <header>
-    <div class="title">★☆ sushihamsterのホームページ ☆★</div>
-  </header>
-
   <div class="bbs-wrap">
-    <a class="back-link" href="index.html#bbs.html">← BBS集に戻る</a>
     <h2>📝 掲示板</h2>
 
     <div class="rules-box">
@@ -98,129 +23,31 @@
 
     <div class="post-form">
       <h3>✏️ 新規投稿</h3>
-      <div class="field-row">
-        <input type="text" id="inp-name" placeholder="名前（必須・20文字以内）" maxlength="20" />
-        <input type="password" id="inp-delkey" placeholder="削除キー（任意）" maxlength="20" />
+      <div class="bbs-field-row">
+        <input type="text"     id="inp-name"   placeholder="名前（必須・20文字以内）" maxlength="20" />
+        <input type="password" id="inp-delkey" placeholder="削除キー（任意）"         maxlength="20" />
       </div>
       <textarea id="inp-msg" placeholder="メッセージ（必須・200文字以内）" maxlength="200"></textarea>
       <div class="char-count"><span id="char-num">0</span> / 200</div>
-      <button class="submit-btn" id="post-btn">投稿する 🐹</button>
+      <button class="bbs-submit-btn" id="post-btn">投稿する 🐹</button>
     </div>
 
     <div class="posts-section">
       <h3>💬 投稿一覧</h3>
-      <div id="posts-list"><p class="loading">読み込み中...</p></div>
+      <div id="posts-list"><p class="bbs-loading">読み込み中...</p></div>
     </div>
   </div>
 
-  <div class="del-overlay" id="del-overlay">
-    <div class="del-box">
+  <div class="bbs-del-overlay" id="del-overlay">
+    <div class="bbs-del-box">
       <h4>🗑️ 投稿を削除しますか？</h4>
       <p>投稿時に設定した削除キーを入力してください（設定なしの場合はそのまま確認）</p>
       <input type="password" id="del-key-input" placeholder="削除キー" />
       <div class="btn-row">
-        <button class="btn-cancel" id="del-cancel">キャンセル</button>
-        <button class="btn-confirm" id="del-confirm">削除する</button>
+        <button class="bbs-btn-cancel"  id="del-cancel">キャンセル</button>
+        <button class="bbs-btn-confirm" id="del-confirm">削除する</button>
       </div>
     </div>
   </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getFirestore, collection, addDoc, query, orderBy,
-      limit, onSnapshot, deleteDoc, doc, serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const app = initializeApp({
-      apiKey: "AIzaSyB5Q9ArmFbMxIFFQvokrK-PyMblF6Z-tWI",
-      authDomain: "sushihamster-bbs.firebaseapp.com",
-      projectId: "sushihamster-bbs",
-      storageBucket: "sushihamster-bbs.firebasestorage.app",
-      messagingSenderId: "172720614221",
-      appId: "1:172720614221:web:2335ee8999f462df7ae504"
-    });
-    const db = getFirestore(app);
-    const COL = "bbs_posts";
-
-    const esc = s => String(s||"")
-      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-
-    // 文字数カウント
-    const msgEl  = document.getElementById("inp-msg");
-    const charEl = document.getElementById("char-num");
-    msgEl.addEventListener("input", () => charEl.textContent = msgEl.value.length);
-
-    // 投稿
-    document.getElementById("post-btn").addEventListener("click", async () => {
-      const name = document.getElementById("inp-name").value.trim();
-      const msg  = msgEl.value.trim();
-      const key  = document.getElementById("inp-delkey").value.trim();
-      if (!name) { alert("名前を入力してください"); return; }
-      if (!msg)  { alert("メッセージを入力してください"); return; }
-      const btn = document.getElementById("post-btn");
-      btn.disabled = true; btn.textContent = "投稿中...";
-      try {
-        await addDoc(collection(db, COL), { name, msg, deleteKey: key, ts: serverTimestamp() });
-        document.getElementById("inp-name").value = "";
-        msgEl.value = ""; charEl.textContent = "0";
-        document.getElementById("inp-delkey").value = "";
-      } catch(e) { alert("投稿に失敗しました: " + e.message); }
-      btn.disabled = false; btn.textContent = "投稿する 🐹";
-    });
-
-    // リアルタイム一覧
-    const listEl = document.getElementById("posts-list");
-    onSnapshot(
-      query(collection(db, COL), orderBy("ts","desc"), limit(200)),
-      snap => {
-        if (snap.empty) {
-          listEl.innerHTML = "<p style='color:#aaa;text-align:center;padding:24px'>まだ投稿がありません。最初の一言をどうぞ！🐹</p>";
-          return;
-        }
-        listEl.innerHTML = "";
-        let no = snap.size;
-        snap.forEach(d => {
-          const { name, msg, deleteKey, ts } = d.data();
-          const timeStr = ts?.toDate().toLocaleString("ja-JP") ?? "---";
-          const card = document.createElement("div");
-          card.className = "post-card";
-          card.innerHTML = `
-            <div class="post-meta">
-              <span class="post-name">${esc(name)}</span>
-              <span class="post-time">${timeStr}</span>
-              <span class="post-no">No.${no--}</span>
-            </div>
-            <div class="post-body">${esc(msg)}</div>
-            <button class="delete-btn" data-id="${d.id}" data-key="${esc(deleteKey||'')}">削除</button>
-          `;
-          listEl.appendChild(card);
-        });
-        listEl.querySelectorAll(".delete-btn").forEach(btn =>
-          btn.addEventListener("click", () => openDel(btn.dataset.id, btn.dataset.key))
-        );
-      },
-      err => { listEl.innerHTML = `<p style='color:red'>読み込み失敗: ${err.message}</p>`; }
-    );
-
-    // 削除ダイアログ
-    let pendingId = null, pendingKey = null;
-    const overlay = document.getElementById("del-overlay");
-    function openDel(id, key) {
-      pendingId = id; pendingKey = key;
-      document.getElementById("del-key-input").value = "";
-      overlay.classList.add("show");
-    }
-    document.getElementById("del-cancel").addEventListener("click", () => overlay.classList.remove("show"));
-    document.getElementById("del-confirm").addEventListener("click", async () => {
-      const input = document.getElementById("del-key-input").value.trim();
-      if (pendingKey && input !== pendingKey) { alert("削除キーが違います"); return; }
-      try {
-        await deleteDoc(doc(db, COL, pendingId));
-        overlay.classList.remove("show");
-      } catch(e) { alert("削除に失敗しました: " + e.message); }
-    });
-  </script>
 </body>
 </html>

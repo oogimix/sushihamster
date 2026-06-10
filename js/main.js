@@ -2,13 +2,40 @@
 (function () {
   // ========= 設定 =========
   const CONTENT_ID = "page-content";
-  const SCRIPT_IDS = ["news-loader-script", "share-script", "gallery-runtime"];
+  const SCRIPT_IDS = ["news-loader-script", "share-script", "gallery-runtime", "hamham-bbs-script", "paint-bbs-script"];
   const FILES_JSON = "news/files-html.json";
   const NEWS_LIST_SELECTOR = "#news-list, .news ul";
 
-  const BBS_PAGE = "hamham_bbs.html";
-  // スタンドアロンページ（SPA外で直接開く）
-  const DIRECT_PAGES = ["hamham_bbs.html", "paint_bbs.html"];
+  // Firebase BBS 設定
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyB5Q9ArmFbMxIFFQvokrK-PyMblF6Z-tWI",
+    authDomain: "sushihamster-bbs.firebaseapp.com",
+    projectId: "sushihamster-bbs",
+    storageBucket: "sushihamster-bbs.firebasestorage.app",
+    messagingSenderId: "172720614221",
+    appId: "1:172720614221:web:2335ee8999f462df7ae504"
+  };
+  let _firebaseReady = null;
+  function ensureFirebase() {
+    if (_firebaseReady) return _firebaseReady;
+    _firebaseReady = new Promise((resolve, reject) => {
+      const s1 = document.createElement("script");
+      s1.src = "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js";
+      s1.onload = () => {
+        const s2 = document.createElement("script");
+        s2.src = "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js";
+        s2.onload = () => {
+          if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+          resolve();
+        };
+        s2.onerror = reject;
+        document.head.appendChild(s2);
+      };
+      s1.onerror = reject;
+      document.head.appendChild(s1);
+    });
+    return _firebaseReady;
+  }
   const MOBILE_BP = 768;
 
   // ========= ヘルパ =========
@@ -233,11 +260,6 @@
   }
 
   function loadPage(page, pushState = true) {
-    // ★ スタンドアロンページは直接遷移（SPA外）
-    if (DIRECT_PAGES.includes(page)) {
-      location.href = page;
-      return;
-    }
 
     fetch(`${page}?v=${Date.now()}`, { cache: "no-store" })
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); })
@@ -315,6 +337,13 @@
 
         // ▼ ギャラリー初期化フック（#gallery出現を待ってから実行）
         onPageLoadedHook(page);
+
+        // ▼ BBS 初期化フック
+        if (page === "hamham_bbs.html") {
+          ensureFirebase().then(() => addScript("/js/hamham-bbs.js", "hamham-bbs-script"));
+        } else if (page === "paint_bbs.html") {
+          ensureFirebase().then(() => addScript("/js/paint-bbs.js", "paint-bbs-script"));
+        }
       })
       .catch(e => {
         console.error("ページ読み込みエラー:", e);
