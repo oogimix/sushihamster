@@ -7,7 +7,8 @@
   const NEWS_LIST_SELECTOR = "#news-list, .news ul";
 
   const BBS_PAGE = "hamham_bbs.html";
-  const BBS_EXTERNAL_URL = "https://sush1h4mst3r.stars.ne.jp/clipbbs/clipbbs.cgi";
+  // スタンドアロンページ（SPA外で直接開く）
+  const DIRECT_PAGES = ["hamham_bbs.html", "paint_bbs.html"];
   const MOBILE_BP = 768;
 
   // ========= ヘルパ =========
@@ -232,9 +233,9 @@
   }
 
   function loadPage(page, pushState = true) {
-    // ★ BBS は常に同一タブで外部URLへ遷移
-    if (page === BBS_PAGE) {
-      location.href = BBS_EXTERNAL_URL;
+    // ★ スタンドアロンページは直接遷移（SPA外）
+    if (DIRECT_PAGES.includes(page)) {
+      location.href = page;
       return;
     }
 

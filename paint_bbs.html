@@ -2,28 +2,327 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>お絵かき掲示板 | sushihamster</title>
   <link rel="stylesheet" href="style.css" />
-</head>
+  <link href="https://fonts.googleapis.com/css2?family=Rounded+Mplus+1c&display=swap" rel="stylesheet" />
+  <style>
+    body { background: var(--bg, #fff8f0); font-family: 'Rounded Mplus 1c', sans-serif; }
+    .oekaki-wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+    .back-link { display:inline-block; margin-bottom:16px; color:#e07; text-decoration:none; font-weight:bold; }
+    .back-link:hover { text-decoration:underline; }
 
+    /* キャンバスエリア */
+    .draw-panel { background:#fff; border:2px solid #f9c; border-radius:14px; padding:16px; margin-bottom:20px; }
+    .draw-panel h3 { margin:0 0 12px; color:#c06; }
+    .tools { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .tools label { font-size:.85rem; color:#666; }
+    .color-picker { width:36px; height:36px; border:none; border-radius:50%; cursor:pointer; padding:0; }
+    .size-slider { width:100px; }
+    .tool-btn {
+      border:2px solid #ddd; border-radius:8px; padding:5px 12px;
+      background:#fff; cursor:pointer; font-family:inherit; font-size:.88rem;
+    }
+    .tool-btn.active { border-color:#e07; background:#fff0f5; color:#e07; font-weight:bold; }
+    #canvas-wrap {
+      position:relative; border:2px solid #eee; border-radius:10px;
+      overflow:hidden; background:#fff; touch-action:none; cursor:crosshair;
+    }
+    #main-canvas { display:block; width:100%; }
+
+    /* 投稿フォーム */
+    .submit-form { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .submit-form input[type=text] {
+      flex:1; min-width:140px; border:1px solid #ddd; border-radius:8px;
+      padding:8px 10px; font-family:inherit; font-size:.95rem;
+    }
+    .submit-btn, .clear-btn {
+      border:none; border-radius:8px; padding:9px 18px;
+      font-size:.95rem; cursor:pointer; font-family:inherit;
+    }
+    .submit-btn { background:#e07; color:#fff; }
+    .submit-btn:hover { opacity:.85; }
+    .submit-btn:disabled { opacity:.5; cursor:default; }
+    .clear-btn { background:#eee; color:#666; }
+    .clear-btn:hover { background:#ddd; }
+
+    /* ギャラリー */
+    .gallery-section h3 { color:#c06; margin:0 0 12px; }
+    .gallery-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px;
+    }
+    .gallery-card {
+      background:#fff; border:1px solid #f9c; border-radius:10px;
+      overflow:hidden; position:relative;
+    }
+    .gallery-card img { width:100%; display:block; }
+    .gallery-card .card-info { padding:8px 10px; }
+    .card-name { font-weight:bold; color:#c06; font-size:.9rem; }
+    .card-time { font-size:.75rem; color:#aaa; margin-top:2px; }
+    .card-comment { font-size:.85rem; margin-top:4px; color:#555; word-break:break-all; }
+    .card-del {
+      position:absolute; top:6px; right:6px;
+      background:rgba(255,255,255,.85); border:1px solid #ddd; border-radius:6px;
+      color:#bbb; font-size:.72rem; padding:2px 7px; cursor:pointer;
+    }
+    .card-del:hover { border-color:#e07; color:#e07; }
+
+    .del-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,.45); z-index:999;
+      align-items:center; justify-content:center;
+    }
+    .del-overlay.show { display:flex; }
+    .del-box {
+      background:#fff; border-radius:14px; padding:24px;
+      width:min(340px,90vw); box-shadow:0 4px 24px rgba(0,0,0,.2);
+    }
+    .del-box h4 { margin:0 0 8px; }
+    .del-box p  { font-size:.84rem; color:#888; margin:0 0 12px; }
+    .del-box input {
+      width:100%; box-sizing:border-box; border:1px solid #ddd;
+      border-radius:8px; padding:8px; font-size:1rem; margin-bottom:12px; font-family:inherit;
+    }
+    .del-box .btn-row { display:flex; gap:8px; justify-content:flex-end; }
+    .del-box button { border:none; border-radius:8px; padding:8px 18px; cursor:pointer; font-size:.9rem; font-family:inherit; }
+    .btn-cancel  { background:#eee; }
+    .btn-confirm { background:#e07; color:#fff; }
+
+    .loading { color:#aaa; text-align:center; padding:24px; }
+  </style>
+</head>
 <body>
   <header>
-    <h2>🎨 お絵かき掲示板</h2>
+    <div class="title">★☆ sushihamsterのホームページ ☆★</div>
   </header>
 
-  <main class="main" style="max-width: 960px; margin: 0 auto;">
-    <iframe
-      src="https://oekaki.sushihamster.com/"
-      width="100%"
-      style="min-height: 80vh; border: 2px solid #ccc; border-radius: 8px;"
-      loading="lazy"
-    ></iframe>
+  <div class="oekaki-wrap">
+    <a class="back-link" href="index.html#bbs.html">← BBS集に戻る</a>
+    <h2>🎨 お絵かき掲示板</h2>
 
-    <!-- 念のための直リンク（iframeで操作しづらい人用） -->
-    <p style="text-align:center; margin: 12px 0;">
-      <a href="https://sush1h4mst3r.stars.ne.jp/potiboard5/potiboard.php" target="_blank" rel="noopener">別タブで開く(本気でお絵かきしたい人はこちらから!!)</a>
-    </p>
-  </main>
+    <div class="draw-panel">
+      <h3>✏️ お絵かきして投稿しよう！</h3>
+      <div class="tools">
+        <label>🖊 色:</label>
+        <input type="color" id="color-picker" class="color-picker" value="#333333" title="色を選択" />
+        <label>太さ:</label>
+        <input type="range" id="size-slider" class="size-slider" min="1" max="40" value="6" />
+        <span id="size-label" style="font-size:.85rem;color:#888;min-width:24px">6</span>
+        <button class="tool-btn active" id="btn-pen">🖊 ペン</button>
+        <button class="tool-btn" id="btn-eraser">🧹 消しゴム</button>
+      </div>
+      <div id="canvas-wrap">
+        <canvas id="main-canvas" width="700" height="420"></canvas>
+      </div>
+      <div class="submit-form">
+        <input type="text" id="inp-name" placeholder="名前（必須・20文字以内）" maxlength="20" />
+        <input type="text" id="inp-comment" placeholder="一言コメント（任意・40文字以内）" maxlength="40" />
+        <input type="password" id="inp-delkey" placeholder="削除キー（任意）" maxlength="20" />
+        <button class="clear-btn" id="clear-btn">🗑 クリア</button>
+        <button class="submit-btn" id="post-btn">投稿する 🐹</button>
+      </div>
+    </div>
+
+    <div class="gallery-section">
+      <h3>🖼️ みんなの絵</h3>
+      <div id="gallery-list"><p class="loading">読み込み中...</p></div>
+    </div>
+  </div>
+
+  <div class="del-overlay" id="del-overlay">
+    <div class="del-box">
+      <h4>🗑️ 削除しますか？</h4>
+      <p>投稿時に設定した削除キーを入力してください（設定なしの場合はそのまま確認）</p>
+      <input type="password" id="del-key-input" placeholder="削除キー" />
+      <div class="btn-row">
+        <button class="btn-cancel" id="del-cancel">キャンセル</button>
+        <button class="btn-confirm" id="del-confirm">削除する</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, query, orderBy,
+      limit, onSnapshot, deleteDoc, doc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyB5Q9ArmFbMxIFFQvokrK-PyMblF6Z-tWI",
+      authDomain: "sushihamster-bbs.firebaseapp.com",
+      projectId: "sushihamster-bbs",
+      storageBucket: "sushihamster-bbs.firebasestorage.app",
+      messagingSenderId: "172720614221",
+      appId: "1:172720614221:web:2335ee8999f462df7ae504"
+    });
+    const db = getFirestore(app);
+    const COL = "oekaki_posts";
+
+    const esc = s => String(s||"")
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+    // ---- キャンバス設定 ----
+    const canvas = document.getElementById("main-canvas");
+    const ctx    = canvas.getContext("2d");
+    const colorPicker = document.getElementById("color-picker");
+    const sizeSlider  = document.getElementById("size-slider");
+    const sizeLabel   = document.getElementById("size-label");
+    const btnPen      = document.getElementById("btn-pen");
+    const btnEraser   = document.getElementById("btn-eraser");
+
+    let drawing = false, tool = "pen";
+    let lastX = 0, lastY = 0;
+
+    // 白背景で初期化
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    sizeSlider.addEventListener("input", () => sizeLabel.textContent = sizeSlider.value);
+    btnPen.addEventListener("click", () => {
+      tool = "pen"; btnPen.classList.add("active"); btnEraser.classList.remove("active");
+    });
+    btnEraser.addEventListener("click", () => {
+      tool = "eraser"; btnEraser.classList.add("active"); btnPen.classList.remove("active");
+    });
+    document.getElementById("clear-btn").addEventListener("click", () => {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    });
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width  / rect.width;
+      const scaleY = canvas.height / rect.height;
+      if (e.touches) {
+        return [
+          (e.touches[0].clientX - rect.left) * scaleX,
+          (e.touches[0].clientY - rect.top)  * scaleY
+        ];
+      }
+      return [(e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY];
+    }
+
+    function startDraw(e) {
+      e.preventDefault();
+      drawing = true;
+      [lastX, lastY] = getPos(e);
+    }
+    function doDraw(e) {
+      e.preventDefault();
+      if (!drawing) return;
+      const [x, y] = getPos(e);
+      ctx.globalCompositeOperation = tool === "eraser" ? "destination-out" : "source-over";
+      ctx.strokeStyle = tool === "eraser" ? "rgba(0,0,0,1)" : colorPicker.value;
+      ctx.lineWidth   = parseInt(sizeSlider.value);
+      ctx.lineCap     = "round";
+      ctx.lineJoin    = "round";
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      [lastX, lastY] = [x, y];
+    }
+    function endDraw(e) { e.preventDefault(); drawing = false; }
+
+    canvas.addEventListener("mousedown",  startDraw);
+    canvas.addEventListener("mousemove",  doDraw);
+    canvas.addEventListener("mouseup",    endDraw);
+    canvas.addEventListener("mouseleave", endDraw);
+    canvas.addEventListener("touchstart", startDraw, { passive:false });
+    canvas.addEventListener("touchmove",  doDraw,    { passive:false });
+    canvas.addEventListener("touchend",   endDraw,   { passive:false });
+
+    // ---- 投稿 ----
+    document.getElementById("post-btn").addEventListener("click", async () => {
+      const name    = document.getElementById("inp-name").value.trim();
+      const comment = document.getElementById("inp-comment").value.trim();
+      const key     = document.getElementById("inp-delkey").value.trim();
+      if (!name) { alert("名前を入力してください"); return; }
+
+      const btn = document.getElementById("post-btn");
+      btn.disabled = true; btn.textContent = "投稿中...";
+
+      try {
+        // 白背景に合成してJPEGに変換（軽量化）
+        const offscreen = document.createElement("canvas");
+        offscreen.width  = canvas.width;
+        offscreen.height = canvas.height;
+        const octx = offscreen.getContext("2d");
+        octx.fillStyle = "#ffffff";
+        octx.fillRect(0, 0, offscreen.width, offscreen.height);
+        octx.drawImage(canvas, 0, 0);
+        const imageData = offscreen.toDataURL("image/jpeg", 0.6);
+
+        await addDoc(collection(db, COL), {
+          name, comment, deleteKey: key, imageData,
+          ts: serverTimestamp()
+        });
+
+        // キャンバスをリセット
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        document.getElementById("inp-name").value    = "";
+        document.getElementById("inp-comment").value = "";
+        document.getElementById("inp-delkey").value  = "";
+        alert("投稿しました！🐹");
+      } catch(e) { alert("投稿に失敗しました: " + e.message); }
+
+      btn.disabled = false; btn.textContent = "投稿する 🐹";
+    });
+
+    // ---- リアルタイムギャラリー ----
+    const galleryEl = document.getElementById("gallery-list");
+    onSnapshot(
+      query(collection(db, COL), orderBy("ts","desc"), limit(100)),
+      snap => {
+        if (snap.empty) {
+          galleryEl.innerHTML = "<p style='color:#aaa;text-align:center;padding:24px'>まだ投稿がありません。最初の絵を描いてね！🎨</p>";
+          return;
+        }
+        galleryEl.innerHTML = "<div class='gallery-grid' id='inner-grid'></div>";
+        const grid = document.getElementById("inner-grid");
+        snap.forEach(d => {
+          const { name, comment, imageData, deleteKey, ts } = d.data();
+          const timeStr = ts?.toDate().toLocaleString("ja-JP") ?? "---";
+          const card = document.createElement("div");
+          card.className = "gallery-card";
+          card.innerHTML = `
+            <img src="${imageData||''}" alt="${esc(name)}の絵" loading="lazy" />
+            <div class="card-info">
+              <div class="card-name">${esc(name)}</div>
+              <div class="card-time">${timeStr}</div>
+              ${comment ? `<div class="card-comment">${esc(comment)}</div>` : ""}
+            </div>
+            <button class="card-del" data-id="${d.id}" data-key="${esc(deleteKey||'')}">削除</button>
+          `;
+          grid.appendChild(card);
+        });
+        grid.querySelectorAll(".card-del").forEach(btn =>
+          btn.addEventListener("click", () => openDel(btn.dataset.id, btn.dataset.key))
+        );
+      },
+      err => { galleryEl.innerHTML = `<p style='color:red'>読み込み失敗: ${err.message}</p>`; }
+    );
+
+    // ---- 削除ダイアログ ----
+    let pendingId = null, pendingKey = null;
+    const overlay = document.getElementById("del-overlay");
+    function openDel(id, key) {
+      pendingId = id; pendingKey = key;
+      document.getElementById("del-key-input").value = "";
+      overlay.classList.add("show");
+    }
+    document.getElementById("del-cancel").addEventListener("click",  () => overlay.classList.remove("show"));
+    document.getElementById("del-confirm").addEventListener("click", async () => {
+      const input = document.getElementById("del-key-input").value.trim();
+      if (pendingKey && input !== pendingKey) { alert("削除キーが違います"); return; }
+      try {
+        await deleteDoc(doc(db, COL, pendingId));
+        overlay.classList.remove("show");
+      } catch(e) { alert("削除に失敗しました: " + e.message); }
+    });
+  </script>
 </body>
 </html>

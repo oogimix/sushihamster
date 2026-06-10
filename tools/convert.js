@@ -12,7 +12,7 @@ const { marked } = require('marked');
 // 入出力パス
 const inputDir = path.join(__dirname, '../news-md');
 const outputDir = path.join(__dirname, '../news');
-const jsonPath  = path.join(__dirname, '../files-html.json');
+const jsonPath  = path.join(__dirname, '../news/files-html.json');
 
 // ===== marked 基本設定 =====
 marked.setOptions({
