@@ -53,10 +53,12 @@
   const toolsEl   = document.getElementById("oekaki-tools");
   const canvasWrap= document.getElementById("canvas-wrap");
 
-  // 元の位置をコメントノードで記憶
   let toolsPH = null, canvasPH = null;
+  let fsOpen = false;
 
-  btnFS?.addEventListener("click", () => {
+  function openFullscreen() {
+    if (fsOpen || !fsEl) return;
+    fsOpen = true;
     toolsPH  = document.createComment("tools-ph");
     canvasPH = document.createComment("canvas-ph");
     toolsEl.parentNode.insertBefore(toolsPH,  toolsEl);
@@ -65,15 +67,26 @@
     fsAreaEl.appendChild(canvasWrap);
     fsEl.classList.add("show");
     document.body.style.overflow = "hidden";
-  });
+  }
 
-  fsDoneBtn?.addEventListener("click", () => {
-    if (toolsPH)  toolsPH.parentNode.insertBefore(toolsEl,   toolsPH);
-    if (canvasPH) canvasPH.parentNode.insertBefore(canvasWrap, canvasPH);
+  function closeFullscreen() {
+    if (!fsOpen || !fsEl) return;
+    fsOpen = false;
+    if (toolsPH)  toolsPH.parentNode?.insertBefore(toolsEl,   toolsPH);
+    if (canvasPH) canvasPH.parentNode?.insertBefore(canvasWrap, canvasPH);
     toolsPH?.remove();  canvasPH?.remove();
+    toolsPH = canvasPH = null;
     fsEl.classList.remove("show");
     document.body.style.overflow = "";
-  });
+  }
+
+  btnFS?.addEventListener("click", openFullscreen);
+  fsDoneBtn?.addEventListener("click", closeFullscreen);
+
+  // SPA 離脱時にも確実に閉じる（ゴミが残らないよう）
+  const _origUnload = window.__bbsFsCleanup;
+  if (_origUnload) _origUnload();
+  window.__bbsFsCleanup = closeFullscreen;
 
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
