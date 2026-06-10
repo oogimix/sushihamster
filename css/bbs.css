@@ -105,9 +105,25 @@
 .card-name    { font-weight: bold; color: #c06; font-size: .9rem; }
 .card-time    { font-size: .75rem; color: #aaa; margin-top: 2px; }
 .card-comment { font-size: .85rem; margin-top: 4px; color: #555; word-break: break-all; }
+.card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 10px 8px;
+}
+.like-btn {
+  background: none; border: 1.5px solid #f9c; border-radius: 20px;
+  padding: 4px 12px; font-size: .88rem; cursor: pointer; font-family: inherit;
+  color: #c06; transition: background .15s, transform .1s;
+  display: flex; align-items: center; gap: 4px;
+}
+.like-btn:hover:not(.liked) { background: #fff0f5; transform: scale(1.08); }
+.like-btn.liked {
+  background: #ffe0ee; border-color: #e07; color: #e07;
+  cursor: default;
+}
+.like-btn .like-count { font-weight: bold; min-width: 1ch; }
+
 .card-del-btn {
-  position: absolute; top: 6px; right: 6px;
-  background: rgba(255,255,255,.85); border: 1px solid #ddd; border-radius: 6px;
+  background: none; border: 1px solid #ddd; border-radius: 6px;
   color: #bbb; font-size: .72rem; padding: 2px 7px; cursor: pointer;
 }
 .card-del-btn:hover { border-color: #e07; color: #e07; }

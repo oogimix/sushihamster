@@ -131,7 +131,8 @@
       "empty": "Ainda sem desenhos. Seja o primeiro! 🎨",
       "del_title": "🗑️ Excluir este desenho?",
       "delete_btn": "Excluir",
-      "name_req": "Por favor, insira seu nome"
+      "name_req": "Por favor, insira seu nome",
+      "like_title": "Curtir!"
     },
     "del_hint": "Digite a chave de exclusão definida na publicação (deixe em branco se não tiver)",
     "del_key_ph": "Chave de exclusão",

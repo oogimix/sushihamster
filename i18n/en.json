@@ -131,7 +131,8 @@
       "empty": "No drawings yet. Be the first! 🎨",
       "del_title": "🗑️ Delete this drawing?",
       "delete_btn": "Delete",
-      "name_req": "Please enter your name"
+      "name_req": "Please enter your name",
+      "like_title": "Like!"
     },
     "del_hint": "Enter the delete key you set when posting (leave blank if none)",
     "del_key_ph": "Delete key",

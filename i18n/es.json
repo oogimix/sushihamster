@@ -131,7 +131,8 @@
       "empty": "Aún no hay dibujos. ¡Sé el primero! 🎨",
       "del_title": "🗑️ ¿Eliminar este dibujo?",
       "delete_btn": "Eliminar",
-      "name_req": "Por favor, ingresa tu nombre"
+      "name_req": "Por favor, ingresa tu nombre",
+      "like_title": "¡Me gusta!"
     },
     "del_hint": "Introduce la clave de borrado que pusiste al publicar (deja en blanco si no tienes)",
     "del_key_ph": "Clave de borrado",

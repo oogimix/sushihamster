@@ -3,6 +3,17 @@
   const db  = firebase.firestore();
   const COL = "oekaki_posts";
 
+  // ---- いいね localStorage ----
+  const LIKED_KEY = "sh_oekaki_liked";
+  function getLiked() {
+    try { return new Set(JSON.parse(localStorage.getItem(LIKED_KEY) || "[]")); }
+    catch { return new Set(); }
+  }
+  function addLiked(id) {
+    const s = getLiked(); s.add(id);
+    localStorage.setItem(LIKED_KEY, JSON.stringify([...s]));
+  }
+
   const esc = s => String(s || "")
     .replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -104,9 +115,13 @@
       }
       galleryEl.innerHTML = "<div class='gallery-grid' id='inner-grid'></div>";
       const grid = document.getElementById("inner-grid");
+      const likedSet = getLiked();
       snap.forEach(d => {
-        const { name, comment, imageData, deleteKey, ts } = d.data();
+        const { name, comment, imageData, deleteKey, ts, likes } = d.data();
         const timeStr = ts?.toDate().toLocaleString("ja-JP") ?? "---";
+        const likeCount = likes || 0;
+        const alreadyLiked = likedSet.has(d.id);
+        const t = window.i18nGet || (k => k);
         const card = document.createElement("div");
         card.className = "gallery-card";
         card.innerHTML = `
@@ -118,13 +133,32 @@
             <div class="card-time">${timeStr}</div>
             ${comment ? `<div class="card-comment">${esc(comment)}</div>` : ""}
           </div>
-          <button class="card-del-btn" data-id="${d.id}" data-key="${esc(deleteKey || '')}">${(window.i18nGet||((k)=>k))("bbs.oekaki.delete_btn")}</button>
+          <div class="card-footer">
+            <button class="like-btn${alreadyLiked ? ' liked' : ''}" data-id="${d.id}" title="${t('bbs.oekaki.like_title')}">
+              💖 <span class="like-count">${likeCount}</span>
+            </button>
+            <button class="card-del-btn" data-id="${d.id}" data-key="${esc(deleteKey || '')}">${t("bbs.oekaki.delete_btn")}</button>
+          </div>
         `;
         grid.appendChild(card);
       });
       grid.querySelectorAll(".thumb-wrap").forEach(w =>
         w.addEventListener("click", () => openLightbox(w.dataset.img, w.dataset.name, w.dataset.comment))
       );
+      grid.querySelectorAll(".like-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          if (btn.classList.contains("liked")) return;
+          btn.classList.add("liked");
+          const countEl = btn.querySelector(".like-count");
+          if (countEl) countEl.textContent = parseInt(countEl.textContent || "0") + 1;
+          addLiked(btn.dataset.id);
+          try {
+            await db.collection(COL).doc(btn.dataset.id).update({
+              likes: firebase.firestore.FieldValue.increment(1)
+            });
+          } catch (e) { console.error("いいね失敗:", e); }
+        });
+      });
       grid.querySelectorAll(".card-del-btn").forEach(btn =>
         btn.addEventListener("click", () => openDel(btn.dataset.id, btn.dataset.key))
       );

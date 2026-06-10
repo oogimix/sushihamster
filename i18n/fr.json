@@ -131,7 +131,8 @@
       "empty": "Aucun dessin pour l'instant. Soyez le premier ! 🎨",
       "del_title": "🗑️ Supprimer ce dessin ?",
       "delete_btn": "Supprimer",
-      "name_req": "Veuillez entrer votre nom"
+      "name_req": "Veuillez entrer votre nom",
+      "like_title": "J'aime !"
     },
     "del_hint": "Entrez la clé de suppression définie lors de la publication (laisser vide si aucune)",
     "del_key_ph": "Clé de suppression",
