@@ -145,7 +145,11 @@ document.addEventListener('DOMContentLoaded',()=>{
 </style>
 </head>
 <body>
-<a href="/" style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:60;background:#e8473f;color:#fff;font-weight:bold;font-size:13px;padding:6px 14px;border-radius:14px;text-decoration:none;box-shadow:0 3px 0 #bf3128;font-family:inherit;">&#127968; ホームへ</a>
+<style>
+#homeLink{position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:60;background:#e8473f;color:#fff;font-weight:bold;font-size:13px;padding:6px 14px;border-radius:14px;text-decoration:none;box-shadow:0 3px 0 #bf3128;font-family:inherit;}
+@media (min-aspect-ratio:1/1){ #homeLink{top:auto;bottom:10px;} }
+</style>
+<a href="/" id="homeLink">&#127968; ホームへ</a>
 <div id="app">
   <div id="stage">
     <!-- Left character: hamster -->
