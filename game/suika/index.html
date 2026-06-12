@@ -22,7 +22,7 @@ window.addEventListener('unhandledrejection', e=>{
 document.addEventListener('DOMContentLoaded',()=>{
   const s=document.createElement('div');
   s.style.cssText='position:fixed;right:8px;bottom:8px;z-index:9999;color:#a07f50;font:11px monospace;opacity:.7;';
-  s.textContent='suika v8';
+  s.textContent='suika v9';
   document.body.appendChild(s);
 });
 </script>
@@ -938,4 +938,61 @@ function stepChars(dt){
       rot = p*Math.PI*2;
       hipY = Math.sin(p*Math.PI)*0.14;
       armRaiseL=-1.4; armRaiseR=-1.4;
-      ex
+      expressHappy(vrm,1);
+      if(at>0.95){
+        // keep celebrating in bursts while celebrating timer active
+        if(celebrating>0){ s.animT=0; }
+        else { s.anim='idle'; expressHappy(vrm,0); }
+      }
+    } else if(a==='danger'){
+      sway=Math.sin(s.t*9)*0.10;
+      headHands=1; headTilt=Math.sin(s.t*9)*0.15;
+      if(at>0.4){ s.animT=0.3; if(!isInDanger()) s.anim='idle'; }
+    } else if(a==='sad'){
+      slump=0.5; headTilt=0.4; expressHappy(vrm,0);
+    }
+
+    if(hips){ s.baseHipY = (s.baseHipY!=null)?s.baseHipY:hips.position.y;
+              hips.position.y = s.baseHipY + bob + hipY;
+              hips.rotation.z = sway*0.3; hips.rotation.y = rot; }
+    if(spine){ spine.rotation.z = sway; spine.rotation.x = slump*0.4; }
+    if(head){ head.rotation.z = headTilt; head.rotation.x = slump*0.3 + (headHands?0.2:0); }
+    if(lUp){ lUp.rotation.z = 1.0 + (headHands?0.6:0) + armRaiseL*0.5; lUp.rotation.x=armRaiseL*0.4; }
+    if(rUp){ rUp.rotation.z = -1.0 - (headHands?0.6:0) - armRaiseR*0.5; rUp.rotation.x=armRaiseR*0.4; }
+    if(lLow && headHands){ lLow.rotation.x=-1.2; }
+    if(rLow && headHands){ rLow.rotation.x=-1.2; }
+
+    vrm.update(dt/1000);
+    s.render && s.render();
+  }
+}
+function isInDanger(){
+  if(gameState!=='playing') return false;
+  return overflowTimer>0;
+}
+function expressHappy(vrm,amt){
+  const em=vrm.expressionManager;
+  if(!em) return;
+  try{
+    if(em.getExpression && (em.getExpression('happy')||em.getExpression('joy'))){
+      em.setValue('happy',amt); em.setValue('joy',amt);
+    } else { em.setValue('happy',amt); }
+  }catch(e){}
+}
+
+// ---------- Boot ----------
+computeSize();
+buildEngine();          // engine exists so render() has something safe
+currentTier = pickDroppable();
+nextTier = pickDroppable();
+dropX = BW/2;
+drawNext();
+buildChainRail();
+gameState='title';
+updateHUD();
+requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>

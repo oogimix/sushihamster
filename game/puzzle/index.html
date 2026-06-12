@@ -22,7 +22,7 @@ window.addEventListener('unhandledrejection', e=>{
 document.addEventListener('DOMContentLoaded',()=>{
   const s=document.createElement('div');
   s.style.cssText='position:fixed;right:8px;bottom:8px;z-index:9999;color:#a07f50;font:11px monospace;opacity:.7;';
-  s.textContent='build v8';
+  s.textContent='build v9';
   document.body.appendChild(s);
 });
 </script>
@@ -1270,4 +1270,180 @@ function charNotify(kind, val){
   if(kind==='chain' && val>=2){ setAnim('ham','jump'); setAnim('fairy','jump'); }
   if(kind==='combo' && val>=4){ setAnim('ham','spin'); setAnim('fairy','spin'); }
 }
-functio
+function setAnim(who,anim){
+  const s=charState[who];
+  if(anim==='idle' && s.anim!=='idle' && s.animT<0) return;
+  if(['jump','spin'].includes(anim) || anim!==s.anim){
+    s.anim=anim; s.animT=0;
+  }
+}
+
+import('three').then(async (THREE)=>{
+  const {GLTFLoader}=await import('three/addons/loaders/GLTFLoader.js');
+  const vrmMod=await import('@pixiv/three-vrm');
+  const {VRMLoaderPlugin, VRMUtils}=vrmMod;
+
+  function setupChar(canvasId, spinId, fallbackId, vrmUrl, key, sign){
+    const canvas=document.getElementById(canvasId);
+    const renderer=new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    function size(){
+      const w=canvas.clientWidth||200, h=canvas.clientHeight||340;
+      renderer.setSize(w,h,false);
+      camera.aspect=w/h; camera.updateProjectionMatrix();
+      if(charState[key].frame) charState[key].frame(); // keep full-body framing on resize
+    }
+    const scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(28, 200/340, 0.1, 20);
+    camera.position.set(0,1.32,1.55);
+    const amb=new THREE.AmbientLight(0xffffff,0.9); scene.add(amb);
+    const dir=new THREE.DirectionalLight(0xffffff,1.0); dir.position.set(1,2,2); scene.add(dir);
+
+    const loader=new GLTFLoader();
+    loader.register(p=>new VRMLoaderPlugin(p));
+    loader.load(vrmUrl, gltf=>{
+      const vrm=gltf.userData.vrm;
+      VRMUtils.rotateVRM0(vrm);
+      scene.add(vrm.scene);
+      vrm.scene.traverse(o=>{o.frustumCulled=false;});
+      charState[key].vrm=vrm;
+      charState[key].sign=sign;
+      // normalize model scale so both characters appear the same size
+      const rawBox=new THREE.Box3().setFromObject(vrm.scene);
+      const rawSz=rawBox.getSize(new THREE.Vector3());
+      const TARGET_H=1.0;
+      vrm.scene.scale.setScalar(TARGET_H/rawSz.y);
+      vrm.scene.updateMatrixWorld(true);
+      // frame whole body: fit BOTH height and width, generous margin for jump/spin
+      charState[key].frame=()=>{
+        const box=new THREE.Box3().setFromObject(vrm.scene);
+        const sz=box.getSize(new THREE.Vector3());
+        const center=box.getCenter(new THREE.Vector3());
+        const fovRad=camera.fov*Math.PI/180;
+        const dH=(sz.y/2)/Math.tan(fovRad/2);
+        const dW=(sz.x*0.8/2)/(Math.tan(fovRad/2)*camera.aspect); // T-pose arms inflate width; 0.8 compensates
+        const dist=Math.max(dH,dW)*1.12 + sz.z/2;
+        camera.position.set(center.x, center.y + sz.y*0.04, center.z + dist);
+        camera.lookAt(center.x, center.y, center.z);
+      };
+      charState[key].frame();
+      // VRM loaded successfully: hide fallback emoji + spinner, show canvas
+      document.getElementById(fallbackId).classList.add('hidden');
+      document.getElementById(spinId).style.display='none';
+      canvas.style.display='';
+      size();
+    }, undefined, err=>{
+      // fallback
+      document.getElementById(spinId).style.display='none';
+      document.getElementById(fallbackId).classList.remove('hidden');
+      canvas.style.display='none';
+    });
+
+    window.addEventListener('resize',()=>setTimeout(size,150));
+    size();
+    charState[key].render=()=>{ renderer.render(scene,camera); };
+    charState[key].camera=camera; charState[key].scene=scene;
+  }
+
+  setupChar('hamCanvas','hamSpin','hamFallback','../vrm/shin_sushihamster.vrm','ham',-1);
+  setupChar('fairyCanvas','fairySpin','fairyFallback','../vrm/shin_sushifairy.vrm','fairy',1);
+}).catch(err=>{
+  // three failed entirely -> emoji fallback
+  ['hamSpin','fairySpin'].forEach(id=>{const e=document.getElementById(id); if(e)e.style.display='none';});
+  document.getElementById('hamFallback').classList.remove('hidden');
+  document.getElementById('fairyFallback').classList.remove('hidden');
+  document.getElementById('hamCanvas').style.display='none';
+  document.getElementById('fairyCanvas').style.display='none';
+});
+
+// Procedural character animation each frame
+function stepChars(dt){
+  for(const key of ['ham','fairy']){
+    const s=charState[key];
+    if(!s.vrm) continue;
+    s.t += dt/1000; s.animT += dt/1000;
+    const vrm=s.vrm;
+    const hum=vrm.humanoid;
+    if(!hum) { s.render && s.render(); continue; }
+    const getN=(n)=>hum.getNormalizedBoneNode ? hum.getNormalizedBoneNode(n) : null;
+    const hips=getN('hips'), spine=getN('spine'), head=getN('head'),
+          lUp=getN('leftUpperArm'), rUp=getN('rightUpperArm'),
+          lLow=getN('leftLowerArm'), rLow=getN('rightLowerArm');
+
+    // base idle sway
+    let sway=Math.sin(s.t*1.6)*0.05;
+    let bob=Math.sin(s.t*2.0)*0.012;
+    let armRaiseL=0, armRaiseR=0, headTilt=0, hipY=0, rot=0, headHands=0, slump=0;
+
+    const a=s.anim, at=s.animT;
+    if(a==='idle'){
+      // gentle
+    } else if(a==='jump'){
+      // jump + banzai for ~0.7s
+      const p=Math.min(1, at/0.7);
+      hipY = Math.sin(p*Math.PI)*0.18;
+      armRaiseL = -2.2*Math.sin(Math.min(1,at/0.25)*Math.PI/2);
+      armRaiseR = -2.2*Math.sin(Math.min(1,at/0.25)*Math.PI/2);
+      expressHappy(vrm,1);
+      if(at>0.75){ s.anim='idle'; expressHappy(vrm,0); }
+    } else if(a==='spin'){
+      const p=Math.min(1, at/0.8);
+      rot = p*Math.PI*2;
+      armRaiseL=-1.2; armRaiseR=-1.2;
+      expressHappy(vrm,1);
+      if(at>0.85){ s.anim='idle'; expressHappy(vrm,0); }
+    } else if(a==='danger'){
+      // fidget / hold head
+      sway=Math.sin(s.t*9)*0.10;
+      headHands = 1;
+      headTilt = Math.sin(s.t*9)*0.15;
+      if(at>0.25 && gameState!=='playing'){ s.anim='idle'; }
+      // auto-release when no longer notified: handled by re-notify each frame in danger
+      if(at>0.4){ s.animT=0.3; /* keep looping */ if(!isInDanger()) s.anim='idle'; }
+    } else if(a==='sad'){
+      slump=0.5; headTilt=0.5; expressHappy(vrm,0);
+    }
+
+    if(hips){ hips.position.y = (s.baseHipY||hips.position.y); s.baseHipY=s.baseHipY||hips.position.y;
+              hips.position.y = s.baseHipY + bob + hipY;
+              hips.rotation.z = sway*0.3; hips.rotation.y = rot; }
+    if(spine){ spine.rotation.z = sway; spine.rotation.x = slump*0.4; }
+    if(head){ head.rotation.z = headTilt; head.rotation.x = slump*0.3 + (headHands?0.2:0); }
+    // arms: VRM rest pose arms point down along -? We rotate to raise.
+    if(lUp){ lUp.rotation.z = 1.0 + (headHands?0.6:0) + armRaiseL*0.5; lUp.rotation.x=armRaiseL*0.4; }
+    if(rUp){ rUp.rotation.z = -1.0 - (headHands?0.6:0) - armRaiseR*0.5; rUp.rotation.x=armRaiseR*0.4; }
+    if(lLow && headHands){ lLow.rotation.x=-1.2; }
+    if(rLow && headHands){ rLow.rotation.x=-1.2; }
+
+    vrm.update(dt/1000);
+    s.render && s.render();
+  }
+}
+function isInDanger(){
+  // mirror handleDanger danger detection quickly
+  if(gameState!=='playing') return false;
+  for(let c=0;c<COLS;c++){ if(grid[1] && grid[1][c]) return true; }
+  return false;
+}
+function expressHappy(vrm,amt){
+  const em=vrm.expressionManager;
+  if(!em) return;
+  try{ if(em.getExpression && (em.getExpression('happy')||em.getExpression('joy'))){
+    em.setValue('happy',amt); em.setValue('joy',amt);
+  } else { em.setValue('happy',amt); } }catch(e){}
+}
+
+// ---------- Boot ----------
+computeCellSize();
+gameMode='stage';        // default selection highlighted on title
+stage=1; stageTarget=25+(stage-1)*10; stageRemain=stageTarget;
+initGrid();              // grid must exist before the first render() (title screen)
+nextRow = makeNextRow();
+gameState='title';
+updateHUD();
+requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>
