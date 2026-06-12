@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>にぎりっこ！〜sushihamster〜</title>
+<script>
+// Visible error reporter (debug aid): any uncaught error shows on screen
+window.addEventListener('error', e=>{
+  const d=document.createElement('div');
+  d.style.cssText='position:fixed;left:8px;bottom:8px;z-index:9999;background:#b00020;color:#fff;padding:8px 12px;border-radius:8px;font:12px monospace;max-width:90vw;white-space:pre-wrap;';
+  d.textContent='ERROR: '+e.message+' @'+(e.filename||'').split('/').pop()+':'+e.lineno;
+  document.body && document.body.appendChild(d);
+});
+window.addEventListener('unhandledrejection', e=>{
+  const d=document.createElement('div');
+  d.style.cssText='position:fixed;left:8px;bottom:60px;z-index:9999;background:#7a3a00;color:#fff;padding:8px 12px;border-radius:8px;font:12px monospace;max-width:90vw;white-space:pre-wrap;';
+  d.textContent='PROMISE ERROR: '+(e.reason && (e.reason.message||e.reason));
+  document.body && document.body.appendChild(d);
+});
+// Build stamp (debug aid): shows which file version the browser actually loaded
+document.addEventListener('DOMContentLoaded',()=>{
+  const s=document.createElement('div');
+  s.style.cssText='position:fixed;right:8px;bottom:8px;z-index:9999;color:#a07f50;font:11px monospace;opacity:.7;';
+  s.textContent='suika v8';
+  document.body.appendChild(s);
+});
+</script>
+<style>
+  :root{
+    --cream:#fff6e9; --cream2:#ffeccc; --wood:#caa472; --wood-d:#a07f50;
+    --aka:#e8473f; --aka-d:#bf3128; --ink:#5a4632; --panel-bg:#fff;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:"Hiragino Maru Gothic ProN","Rounded Mplus 1c","Segoe UI",system-ui,sans-serif;
+    background:repeating-linear-gradient(135deg,#f3d9ad 0 28px,#eccfa0 28px 56px);
+    color:var(--ink); overflow:hidden; touch-action:manipulation;
+    user-select:none; -webkit-user-select:none;
+  }
+  #app{position:fixed; inset:0; display:flex; align-items:center; justify-content:center;}
+
+  /* ---- Stage layout ---- */
+  #stage{
+    position:relative; display:flex; align-items:stretch; justify-content:center;
+    gap:10px; width:100%; height:100%; padding:10px;
+  }
+  .charcol{
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    width:230px; flex:0 0 auto;
+  }
+  .charwrap{position:relative; width:230px; height:460px;}
+  .charwrap canvas{width:100%; height:100%; display:block;}
+  .charfallback{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:120px; filter:drop-shadow(0 6px 6px rgba(0,0,0,.2));
+  }
+  .charspin{position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+    font-size:12px; background:rgba(0,0,0,.45); color:#fff; padding:3px 8px; border-radius:10px;}
+  .charname{margin-top:-44px; z-index:5; position:relative; background:var(--aka); color:#fff; padding:3px 14px;
+    border-radius:14px; font-weight:bold; font-size:14px; box-shadow:0 2px 0 var(--aka-d);}
+
+  #boardcol{display:flex; flex-direction:column; align-items:center; flex:0 0 auto;}
+  #hud{
+    width:100%; display:flex; justify-content:space-between; align-items:flex-end;
+    margin-bottom:6px; gap:8px;
+  }
+  .hudbox{background:var(--cream); border:3px solid var(--wood); border-radius:12px;
+    padding:4px 10px; box-shadow:0 3px 0 var(--wood-d); text-align:center; min-width:74px;}
+  .hudbox .lbl{font-size:10px; color:var(--wood-d); font-weight:bold; letter-spacing:1px;}
+  .hudbox .val{font-size:18px; font-weight:bold; line-height:1.1;}
+
+  /* NEXT display sits inside the score row */
+  #nextBox{display:flex; align-items:center; gap:6px; background:var(--cream);
+    border:3px solid var(--wood); border-radius:12px; padding:3px 8px; box-shadow:0 3px 0 var(--wood-d);}
+  #nextBox .lbl{font-size:10px; color:var(--wood-d); font-weight:bold;}
+  #nextCanvas{display:block; width:34px; height:34px;}
+
+  #boardframe{
+    position:relative; background:linear-gradient(#7a5a36,#5a4226);
+    border:6px solid var(--wood); border-radius:14px; padding:6px;
+    box-shadow:0 6px 0 var(--wood-d), inset 0 0 14px rgba(0,0,0,.4);
+  }
+  #board{display:block; background:#fbf2dd; border-radius:6px;}
+  #popLayer{position:absolute; inset:6px; pointer-events:none; overflow:hidden; border-radius:6px;}
+  .pop{position:absolute; font-weight:bold; color:#fff; text-shadow:0 0 4px #000,0 2px 3px #000;
+    transform:translate(-50%,-50%); animation:popUp .9s ease-out forwards; white-space:nowrap;}
+  @keyframes popUp{0%{opacity:0;transform:translate(-50%,-30%) scale(.5);}
+    18%{opacity:1;transform:translate(-50%,-60%) scale(1.15);}
+    100%{opacity:0;transform:translate(-50%,-160%) scale(1);}}
+
+  /* danger flash overlay */
+  #dangerFlash{position:absolute; inset:6px; border-radius:6px; pointer-events:none;
+    background:rgba(255,40,40,0); transition:background .12s;}
+
+  /* evolution chain side rail */
+  #chainRail{position:absolute; top:6px; right:-2px; transform:translateX(100%);
+    display:flex; flex-direction:column; gap:2px; padding-left:6px;}
+  .chainItem{display:flex; align-items:center; gap:4px;}
+  .chainDot{border-radius:50%; box-shadow:0 1px 2px rgba(0,0,0,.3); flex:0 0 auto;}
+  .chainName{font-size:9px; color:var(--ink); white-space:nowrap;}
+
+  /* ---- Overlays ---- */
+  .overlay{position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:16px; z-index:30;
+    background:rgba(255,246,233,.94); backdrop-filter:blur(2px); text-align:center; padding:20px;}
+  .overlay.hidden{display:none;}
+  .hidden{display:none !important;}
+  .title{font-size:40px; font-weight:bold; color:var(--aka); text-shadow:0 3px 0 #fff,0 5px 0 var(--wood-d);
+    line-height:1.1;}
+  .subtitle{font-size:15px; color:var(--wood-d);}
+  .bigbtn{font-size:24px; padding:16px 40px; border-radius:24px;}
+  .scoreBig{font-size:34px; font-weight:bold; color:var(--aka);}
+  .howto{max-width:380px; font-size:13px; line-height:1.7; background:var(--cream2);
+    border:3px solid var(--wood); border-radius:14px; padding:14px 18px; text-align:left;}
+  .howto b{color:var(--aka-d);}
+  .btn{font-family:inherit; font-weight:bold; border:none; cursor:pointer;
+    border-radius:16px; padding:12px 16px; font-size:15px; color:#fff;
+    background:var(--aka); box-shadow:0 4px 0 var(--aka-d); transition:transform .05s;}
+  .btn:active{transform:translateY(3px); box-shadow:0 1px 0 var(--aka-d);}
+  .btn.wood{background:var(--wood); box-shadow:0 4px 0 var(--wood-d);}
+
+  @media (max-aspect-ratio: 1/1){
+    /* portrait: the two chars share one row at the top, board below */
+    #stage{display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto 1fr;
+      gap:2px; padding:4px; justify-items:center; align-items:end;}
+    #leftChar{grid-column:1; grid-row:1;}
+    #rightChar{grid-column:2; grid-row:1;}
+    #boardcol{grid-column:1 / 3; grid-row:2;}
+    .charcol{width:auto;}
+    .charwrap{width:72px; height:80px;}
+    .charname{display:none;}
+    #chainRail{display:none;}
+    /* keep overlays (title/howto) inside the board even when content is tall */
+    .overlay{justify-content:flex-start; overflow-y:auto; gap:10px; padding:12px;}
+    .title{font-size:28px;}
+    .subtitle{font-size:13px;}
+    .howto{font-size:11.5px; line-height:1.55; padding:10px 12px;}
+    .bigbtn{font-size:20px; padding:12px 32px;}
+  }
+  @media (pointer:coarse) and (min-aspect-ratio:1/1){
+    .charwrap{width:150px; height:300px;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <!-- Left character: hamster -->
+    <div class="charcol" id="leftChar">
+      <div class="charwrap" id="hamWrap">
+        <canvas id="hamCanvas"></canvas>
+        <div class="charfallback hidden" id="hamFallback">🐹</div>
+        <div class="charspin" id="hamSpin">読込中…</div>
+      </div>
+      <div class="charname">sushihamster</div>
+    </div>
+
+    <!-- Center board -->
+    <div id="boardcol">
+      <div id="hud">
+        <div class="hudbox"><div class="lbl">SCORE</div><div class="val" id="scoreVal">0</div></div>
+        <div id="nextBox"><div class="lbl">NEXT</div><canvas id="nextCanvas" width="68" height="68"></canvas></div>
+        <div class="hudbox"><div class="lbl">HIGH</div><div class="val" id="highVal">0</div></div>
+      </div>
+      <div id="boardframe">
+        <canvas id="board"></canvas>
+        <div id="popLayer"></div>
+        <div id="dangerFlash"></div>
+        <div id="chainRail"></div>
+
+        <div class="overlay" id="titleScreen">
+          <div class="title">にぎりっこ！<br><span style="font-size:20px">〜sushihamster〜</span></div>
+          <div class="subtitle">寿司をころころ 合体パズル</div>
+          <button class="btn bigbtn" id="startBtn">スタート</button>
+          <div class="howto">
+            <b>あそびかた</b><br>
+            ・上から落ちる寿司を左右に動かして<b>ドロップ</b><br>
+            ・同じ寿司どうしがくっつくと<b>進化</b>して大きく！<br>
+            ・ガリ→かっぱ巻き→…→<b>特上トロ</b>を目指そう<br>
+            ・容器のラインを超えつづけると<b>ゲームオーバー</b><br>
+            <b>PC:</b> マウスで位置→クリックでドロップ<br>
+            <b>スマホ:</b> 指でなぞって位置→はなすとドロップ
+          </div>
+        </div>
+
+        <div class="overlay hidden" id="gameoverScreen">
+          <div class="title" style="font-size:34px">ゲームオーバー</div>
+          <div>スコア</div>
+          <div class="scoreBig" id="finalScore">0</div>
+          <div id="newHigh" class="subtitle hidden" style="color:var(--aka);font-weight:bold">🎉 ハイスコア更新！</div>
+          <button class="btn bigbtn" id="retryBtn">リトライ</button>
+          <button class="btn wood" id="toTitleBtn">タイトルへ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right character: fairy -->
+    <div class="charcol" id="rightChar">
+      <div class="charwrap" id="fairyWrap">
+        <canvas id="fairyCanvas"></canvas>
+        <div class="charfallback hidden" id="fairyFallback">🧚</div>
+        <div class="charspin" id="fairySpin">読込中…</div>
+      </div>
+      <div class="charname">sushifairy</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+<script type="importmap">
+{
+  "imports":{
+    "three":"https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+    "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/",
+    "@pixiv/three-vrm":"https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@2.1.1/lib/three-vrm.module.min.js"
+  }
+}
+</script>
+
+<script>
+/* =======================================================================
+   にぎりっこ！ — Suika-style sushi merge puzzle
+   Single-file vanilla JS + Matter.js physics. No localStorage.
+   ======================================================================= */
+(function(){
+'use strict';
+
+if(typeof Matter==='undefined'){
+  const d=document.createElement('div');
+  d.style.cssText='position:fixed;left:8px;top:8px;z-index:9999;background:#b00020;color:#fff;padding:8px 12px;border-radius:8px;font:12px monospace;';
+  d.textContent='Matter.js の読み込みに失敗しました';
+  document.body && document.body.appendChild(d);
+  return;
+}
+const {Engine, World, Bodies, Body, Composite, Events, Common} = Matter;
+
+// ---------- Sushi evolution chain (11 tiers, small -> big) ----------
+// radius is relative to board width (fraction), so it scales responsively.
+const TIERS = [
+  {key:'gari',   name:'ガリ',      color:'#f5e6c8', r:0.052},
+  {key:'kappa',  name:'かっぱ巻き', color:'#7bc86c', r:0.068},
+  {key:'inari',  name:'いなり',    color:'#c98a4b', r:0.090},
+  {key:'tamago', name:'たまご',    color:'#ffd34d', r:0.112},
+  {key:'ebi',    name:'えび',      color:'#ff9e7a', r:0.140},
+  {key:'ika',    name:'いか',      color:'#f4eee2', r:0.172},
+  {key:'tako',   name:'たこ',      color:'#c95d6e', r:0.205},
+  {key:'tai',    name:'たい',      color:'#f3c5c0', r:0.238},
+  {key:'salmon', name:'サーモン',  color:'#f6914a', r:0.275},
+  {key:'maguro', name:'マグロ',    color:'#e8473f', r:0.312},
+  {key:'toro',   name:'特上トロ',  color:'#ff7a8a', r:0.355}
+];
+const DROPPABLE_MAX = 4; // tiers 0..4 (ガリ〜エビ) can spawn
+
+// ---------- Custom image skins (optional) ----------
+// Drop transparent PNGs into ./img/ to replace the built-in art.
+// Accepted names per tier: img/<key>.png (e.g. img/maguro.png)
+//                       or img/sushi01.png .. img/sushi11.png (tier number)
+const SKIN = {};
+TIERS.forEach((t,i)=>{
+  const candidates=['./img/'+t.key+'.png', './img/sushi'+String(i+1).padStart(2,'0')+'.png'];
+  const tryLoad=()=>{
+    if(!candidates.length) return;
+    const im=new Image();
+    im.onload=()=>{ SKIN[t.key]=im; if(typeof drawNext==='function' && typeof nextTier!=='undefined') drawNext(); };
+    im.onerror=()=>{ candidates.shift(); if(candidates.length) tryLoad(); };
+    im.src=candidates[0];
+  };
+  tryLoad();
+});
+
+// ---------- DOM ----------
+const boardCanvas = document.getElementById('board');
+const ctx = boardCanvas.getContext('2d');
+const popLayer = document.getElementById('popLayer');
+const dangerFlash = document.getElementById('dangerFlash');
+const scoreVal = document.getElementById('scoreVal');
+const highVal  = document.getElementById('highVal');
+const nextCanvas = document.getElementById('nextCanvas');
+const nctx = nextCanvas.getContext('2d');
+const chainRail = document.getElementById('chainRail');
+
+// ---------- Sizing ----------
+// Logical board dimensions (CSS px). Physics & rendering use these.
+// World coordinates are FIXED; only the on-screen display scales.
+// This way the physics never needs rescaling when the window changes.
+const BW = 360, BH = 560;                    // world size (physics + drawing coords)
+const DEAD_LINE = Math.round(BH * 0.135);    // danger line y (world coords)
+let dpr = 1;
+let dispScale = 1;                           // world px -> display CSS px
+
+function computeSize(){
+  const portrait = window.matchMedia('(max-aspect-ratio: 1/1)').matches;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  let maxW, maxH;
+  if(portrait){
+    maxW = vw - 16;
+    maxH = vh - 165; // room for compact char row + hud
+  }else{
+    maxW = vw - 2*240 - 70;
+    maxH = vh - 130; // HUD + board frame chrome + stage padding
+  }
+  maxW = Math.max(160, maxW); maxH = Math.max(240, maxH);
+  // portrait: fill as much of the screen as possible (no upscale cap)
+  dispScale = portrait ? Math.min(maxW/BW, maxH/BH)
+                       : Math.min(maxW/BW, maxH/BH, 1.6);
+  const dw = Math.floor(BW*dispScale), dh = Math.floor(BH*dispScale);
+  dpr = Math.min(window.devicePixelRatio||1, 2);
+  boardCanvas.width = dw*dpr; boardCanvas.height = dh*dpr;
+  boardCanvas.style.width = dw+'px'; boardCanvas.style.height = dh+'px';
+  ctx.setTransform(dispScale*dpr,0,0,dispScale*dpr,0,0);
+}
+
+function radiusOf(tier){ return TIERS[tier].r * BW; }
+
+// ---------- Game state (all initialized) ----------
+let engine = null;
+let walls = [];
+let fruits = [];          // array of Matter bodies (each has .tier, .merging, .id)
+let score = 0, high = 0;
+let gameState = 'title';  // 'title','playing','over'
+let currentTier = 0;      // tier of the piece waiting to drop
+let nextTier = 0;         // tier shown in NEXT
+let dropX = 0;            // x position of the pending drop (CSS px)
+let canDrop = true;       // false briefly after a drop (cooldown)
+let dropCooldown = 0;     // ms remaining
+let overflowTimer = 0;    // ms accumulated above the dead line
+let particles = [];
+let lastTime = 0;
+let celebrating = 0;      // ms remaining of sushiham-celebration glow
+let pendingScorePops = [];
+
+const DROP_COOLDOWN_MS = 380;
+const OVERFLOW_GRACE = 2000; // ms above dead line before game over
+
+function rng(){ return Math.random(); }
+function pickDroppable(){ return (rng()*(DROPPABLE_MAX+1))|0; }
+
+// ---------- Engine setup ----------
+function buildEngine(){
+  if(engine){ World.clear(engine.world,false); Engine.clear(engine); }
+  engine = Engine.create();
+  engine.world.gravity.y = 1.0;
+  engine.positionIterations = 8;
+  engine.velocityIterations = 8;
+  const t = 60; // wall thickness (extends outside)
+  const wallOpts = {isStatic:true, restitution:0.1, friction:0.6};
+  walls = [
+    Bodies.rectangle(BW/2, BH + t/2, BW + t*2, t, wallOpts),       // floor
+    Bodies.rectangle(-t/2, BH/2, t, BH*2, wallOpts),               // left
+    Bodies.rectangle(BW + t/2, BH/2, t, BH*2, wallOpts)            // right
+  ];
+  Composite.add(engine.world, walls);
+  fruits = [];
+
+  Events.on(engine, 'collisionStart', onCollision);
+}
+
+function makeFruit(tier, x, y){
+  const r = radiusOf(tier);
+  const b = Bodies.circle(x, y, r, {
+    restitution: 0.12,
+    friction: 0.55,
+    frictionStatic: 0.7,
+    density: 0.0012,
+    slop: 0.02
+  });
+  b.tier = tier;
+  b.merging = false;
+  b.bornAt = performance.now();
+  Composite.add(engine.world, b);
+  fruits.push(b);
+  return b;
+}
+
+function removeFruit(b){
+  Composite.remove(engine.world, b);
+  const i = fruits.indexOf(b);
+  if(i>=0) fruits.splice(i,1);
+}
+
+// ---------- Collision -> merge ----------
+function onCollision(ev){
+  for(const pair of ev.pairs){
+    const a = pair.bodyA, b = pair.bodyB;
+    if(a.tier===undefined || b.tier===undefined) continue;
+    if(a.merging || b.merging) continue;
+    if(a.tier !== b.tier) continue;
+    if(a.tier >= TIERS.length-1){
+      // two sushiham collide -> annihilate with big bonus + celebration
+      a.merging = b.merging = true;
+      const mx=(a.position.x+b.position.x)/2, my=(a.position.y+b.position.y)/2;
+      removeFruit(a); removeFruit(b);
+      const gained = 3000;
+      score += gained;
+      spawnBurst(mx,my,'#f0b27a',26);
+      addPop(mx,my,'特上トロ合体！','#ffd34d',1.5);
+      addPop(mx,my+24,'+'+gained,'#fff',1.0);
+      celebrating = 2200;
+      charNotify('celebrate');
+      continue;
+    }
+    // normal merge -> next tier appears at contact midpoint
+    a.merging = b.merging = true;
+    const nt = a.tier + 1;
+    const mx=(a.position.x+b.position.x)/2, my=(a.position.y+b.position.y)/2;
+    removeFruit(a); removeFruit(b);
+    const nb = makeFruit(nt, mx, my);
+    // gentle pop velocity
+    Body.setVelocity(nb, {x:(rng()-0.5)*1.5, y:-1.5});
+    const gained = (nt+1)*(nt+1)*10;
+    score += gained;
+    spawnBurst(mx,my, TIERS[nt].color, 10);
+    addPop(mx,my,'+'+gained,'#fff', Math.min(1.4, 0.7+nt*0.08));
+    if(nt >= 6) charNotify('bigjump');
+    else charNotify('merge');
+    if(nt === TIERS.length-1){
+      addPop(mx,my-20,'特上トロ完成！','#ffd34d',1.4);
+      celebrating = 1600;
+      charNotify('celebrate');
+    }
+  }
+}
+
+// ---------- Particles ----------
+function spawnBurst(x,y,color,n){
+  for(let i=0;i<n;i++){
+    const a=rng()*Math.PI*2, sp=(rng()*3+1);
+    particles.push({x,y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp-1.5,
+      life:1, color, size:BW*0.012*(0.6+rng())});
+  }
+}
+function stepParticles(dt){
+  const g=0.12;
+  for(const p of particles){
+    p.x+=p.vx*dt/16; p.y+=p.vy*dt/16; p.vy+=g*dt/16; p.life-=dt/650;
+  }
+  particles = particles.filter(p=>p.life>0);
+}
+
+// ---------- Popups ----------
+function addPop(x,y,text,color,scale){
+  const el=document.createElement('div');
+  el.className='pop'; el.textContent=text;
+  el.style.left=(x*dispScale)+'px'; el.style.top=(y*dispScale)+'px'; // world -> display px
+  el.style.color=color; el.style.fontSize=(BW*0.05*(scale||1)*dispScale)+'px';
+  popLayer.appendChild(el);
+  setTimeout(()=>el.remove(),950);
+}
+
+// ---------- Game flow ----------
+function startGame(){
+  computeSize();
+  buildEngine();
+  score=0; overflowTimer=0; particles=[]; celebrating=0;
+  currentTier = pickDroppable();
+  nextTier = pickDroppable();
+  dropX = BW/2;
+  canDrop = true; dropCooldown = 0;
+  gameState='playing';
+  high = Math.max(high, high); // unchanged; high persists in variable
+  hideAll();
+  drawNext();
+  updateHUD();
+  buildChainRail();
+  charNotify('reset');
+  lastTime = 0;
+}
+
+function gameOver(){
+  if(gameState==='over') return;
+  gameState='over';
+  if(score>high){ high=score; document.getElementById('newHigh').classList.remove('hidden'); }
+  else document.getElementById('newHigh').classList.add('hidden');
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('gameoverScreen').classList.remove('hidden');
+  updateHUD();
+  charNotify('gameover');
+}
+
+function hideAll(){
+  ['titleScreen','gameoverScreen'].forEach(id=>
+    document.getElementById(id).classList.add('hidden'));
+}
+function backToTitle(){
+  gameState='title';
+  hideAll();
+  document.getElementById('titleScreen').classList.remove('hidden');
+  charNotify('reset');
+}
+
+// ---------- Drop ----------
+function doDrop(){
+  if(gameState!=='playing' || !canDrop) return;
+  const r = radiusOf(currentTier);
+  const x = Math.max(r+2, Math.min(BW-r-2, dropX));
+  const b = makeFruit(currentTier, x, DEAD_LINE*0.4);
+  Body.setVelocity(b, {x:0, y:0.5});
+  currentTier = nextTier;
+  nextTier = pickDroppable();
+  drawNext();
+  canDrop = false;
+  dropCooldown = DROP_COOLDOWN_MS;
+}
+
+function setDropX(clientX){
+  const rect = boardCanvas.getBoundingClientRect();
+  let x = (clientX - rect.left) * (BW / rect.width); // client px -> world coords
+  const r = radiusOf(currentTier);
+  dropX = Math.max(r+2, Math.min(BW-r-2, x));
+}
+
+// ---------- Update ----------
+function update(dt){
+  if(gameState!=='playing') return;
+  if(dropCooldown>0){
+    dropCooldown -= dt;
+    if(dropCooldown<=0){ dropCooldown=0; canDrop=true; }
+  }
+  Engine.update(engine, Math.min(dt, 32));
+
+  // sleep/settle clamp: stop tiny jitter from never settling (optional safety)
+  stepParticles(dt);
+
+  // overflow detection: a settled fruit whose top crosses the dead line
+  let overflow=false, nearDanger=false;
+  for(const b of fruits){
+    const r = b.circleRadius || radiusOf(b.tier);
+    const top = b.position.y - r;
+    const speed = Math.hypot(b.velocity.x, b.velocity.y);
+    const settled = speed < 0.9 && (performance.now()-b.bornAt) > 500;
+    if(top < DEAD_LINE && settled){ overflow=true; }
+    if(settled && top < DEAD_LINE + r*0.6){ nearDanger=true; } // ignore pieces still falling (e.g. just dropped)
+  }
+  if(overflow){ overflowTimer += dt; }
+  else { overflowTimer = Math.max(0, overflowTimer - dt*1.5); }
+
+  if(nearDanger){
+    const f = 0.18 + 0.22*Math.abs(Math.sin(performance.now()/130));
+    dangerFlash.style.background = 'rgba(255,40,40,'+f.toFixed(2)+')';
+    if(overflow) charNotify('danger');
+  }else{
+    dangerFlash.style.background = 'rgba(255,40,40,0)';
+  }
+
+  if(overflowTimer >= OVERFLOW_GRACE){ gameOver(); }
+  if(celebrating>0) celebrating -= dt;
+}
+
+// ---------- Rendering ----------
+function render(){
+  ctx.clearRect(0,0,BW,BH);
+  // container background (cutting-board cream with subtle grain)
+  ctx.fillStyle = '#fbf2dd';
+  ctx.fillRect(0,0,BW,BH);
+  // inner shading
+  const g = ctx.createLinearGradient(0,0,0,BH);
+  g.addColorStop(0,'rgba(0,0,0,0.05)'); g.addColorStop(0.1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,BW,BH);
+
+  // dead line
+  ctx.save();
+  ctx.setLineDash([8,6]);
+  ctx.strokeStyle = overflowTimer>0 ? 'rgba(232,71,63,0.9)' : 'rgba(160,127,80,0.55)';
+  ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(0,DEAD_LINE); ctx.lineTo(BW,DEAD_LINE); ctx.stroke();
+  ctx.restore();
+
+  // celebration glow
+  if(celebrating>0){
+    const a = 0.15*Math.abs(Math.sin(performance.now()/90));
+    ctx.fillStyle='rgba(255,215,90,'+a.toFixed(2)+')';
+    ctx.fillRect(0,0,BW,BH);
+  }
+
+  // pending drop guide + preview piece
+  if(gameState==='playing' && canDrop){
+    const r=radiusOf(currentTier);
+    ctx.save();
+    ctx.strokeStyle='rgba(160,127,80,0.4)'; ctx.lineWidth=2; ctx.setLineDash([4,5]);
+    ctx.beginPath(); ctx.moveTo(dropX,DEAD_LINE*0.4+r); ctx.lineTo(dropX,BH); ctx.stroke();
+    ctx.restore();
+    drawSushi(dropX, DEAD_LINE*0.4, r, currentTier, 0.95);
+  }
+
+  // fruits
+  for(const b of fruits){
+    const r = b.circleRadius || radiusOf(b.tier);
+    drawSushi(b.position.x, b.position.y, r, b.tier, 1, b.angle);
+  }
+
+  // particles
+  for(const p of particles){
+    ctx.globalAlpha = Math.max(0,p.life);
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,7); ctx.fill();
+  }
+  ctx.globalAlpha=1;
+}
+
+// draw a cute round sushi at (x,y) radius r, tier index
+function drawSushi(x,y,r,tier,alpha,angle){
+  const T = TIERS[tier];
+  const col = T.color;
+  ctx.save();
+  ctx.globalAlpha = alpha==null?1:alpha;
+  ctx.translate(x,y);
+  if(angle) ctx.rotate(angle);
+
+  // custom image skin (if provided in ./img/)
+  const skin=SKIN[T.key];
+  if(skin){
+    ctx.beginPath(); ctx.arc(0,0,r,0,7); ctx.clip(); // round clip (safe for non-transparent images)
+    ctx.drawImage(skin, -r, -r, r*2, r*2);
+    ctx.restore();
+    return;
+  }
+
+  // body
+  const grad=ctx.createRadialGradient(-r*0.3,-r*0.35,r*0.1, 0,0,r);
+  grad.addColorStop(0, lighten(col,0.3));
+  grad.addColorStop(1, col);
+  ctx.beginPath(); ctx.arc(0,0,r,0,7);
+  ctx.fillStyle=grad; ctx.fill();
+  ctx.lineWidth=Math.max(1.5,r*0.06); ctx.strokeStyle=darken(col,0.22); ctx.stroke();
+
+  // tier-specific decoration
+  drawDecor(r, tier, col);
+
+  // shine
+  ctx.globalAlpha=(alpha==null?1:alpha)*0.4;
+  ctx.beginPath(); ctx.ellipse(-r*0.32,-r*0.4,r*0.28,r*0.16,-0.5,0,7);
+  ctx.fillStyle='#fff'; ctx.fill();
+  ctx.globalAlpha=(alpha==null?1:alpha);
+
+  // face
+  drawFace(r, tier);
+
+  ctx.restore();
+}
+
+function drawDecor(r, tier, col){
+  const k = TIERS[tier].key;
+  if(k==='tamago'){
+    ctx.fillStyle='#3a3a44';
+    ctx.fillRect(-r*0.55, r*0.10, r*1.1, r*0.28);
+  } else if(k==='kappa' || k==='gunkan'){
+    // maki ring
+    ctx.lineWidth=Math.max(3,r*0.22);
+    ctx.strokeStyle = k==='gunkan' ? '#1c1c24' : '#256b2c';
+    ctx.beginPath(); ctx.arc(0,0,r*0.78,0,7); ctx.stroke();
+    ctx.fillStyle='#fdf6e3';
+    ctx.beginPath(); ctx.arc(0,r*0.05,r*0.4,0,7); ctx.fill();
+    ctx.fillStyle = k==='kappa' ? '#6db95a' : '#7a3a3a';
+    ctx.beginPath(); ctx.arc(0,r*0.05,r*0.16,0,7); ctx.fill();
+  } else if(k==='inari'){
+    ctx.fillStyle=darken(col,0.12);
+    ctx.beginPath(); ctx.arc(0,r*0.1,r*0.62,0.1,Math.PI-0.1); ctx.fill();
+  } else if(k==='ebi' || k==='salmon' || k==='maguro' || k==='otoro'){
+    // nigiri stripe (topping over rice)
+    ctx.fillStyle='#fdf6e3';
+    ctx.beginPath(); ctx.arc(0,r*0.38,r*0.72,0,Math.PI); ctx.fill();
+    ctx.fillStyle = darken(col,0.04);
+    ctx.beginPath(); ctx.ellipse(0,-r*0.12,r*0.78,r*0.5,0,0,7); ctx.fill();
+    ctx.strokeStyle=darken(col,0.2); ctx.lineWidth=Math.max(1,r*0.04);
+    for(let i=-1;i<=1;i++){ ctx.beginPath(); ctx.moveTo(-r*0.5,i*r*0.18-r*0.12); ctx.lineTo(r*0.5,i*r*0.18-r*0.05); ctx.stroke(); }
+  } else if(k==='ika'){
+    ctx.fillStyle='#fdf6e3';
+    ctx.beginPath(); ctx.arc(0,r*0.4,r*0.7,0,Math.PI); ctx.fill();
+  } else if(k==='sushiham'){
+    // big hamster face — rounder ears
+    ctx.fillStyle=col;
+    ctx.beginPath(); ctx.arc(-r*0.6,-r*0.55,r*0.32,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc( r*0.6,-r*0.55,r*0.32,0,7); ctx.fill();
+    ctx.fillStyle=lighten(col,0.3);
+    ctx.beginPath(); ctx.arc(-r*0.6,-r*0.55,r*0.16,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc( r*0.6,-r*0.55,r*0.16,0,7); ctx.fill();
+  }
+}
+
+function drawFace(r, tier){
+  const big = TIERS[tier].key==='sushiham';
+  const eyeY = -r*0.05, eo=r*0.34, er=Math.max(1.6, r*(big?0.10:0.11));
+  ctx.fillStyle='#2a1f16';
+  ctx.beginPath(); ctx.arc(-eo,eyeY,er,0,7); ctx.fill();
+  ctx.beginPath(); ctx.arc( eo,eyeY,er,0,7); ctx.fill();
+  ctx.fillStyle='#fff';
+  ctx.beginPath(); ctx.arc(-eo+er*0.35,eyeY-er*0.35,er*0.36,0,7); ctx.fill();
+  ctx.beginPath(); ctx.arc( eo+er*0.35,eyeY-er*0.35,er*0.36,0,7); ctx.fill();
+  // mouth
+  ctx.strokeStyle='#2a1f16'; ctx.lineWidth=Math.max(1.2,r*0.04);
+  ctx.beginPath(); ctx.arc(0,eyeY+r*0.18,r*0.16,0.15*Math.PI,0.85*Math.PI); ctx.stroke();
+  // cheeks
+  ctx.fillStyle='rgba(255,120,120,0.4)';
+  ctx.beginPath(); ctx.arc(-eo*1.35,eyeY+r*0.14,er*0.95,0,7); ctx.fill();
+  ctx.beginPath(); ctx.arc( eo*1.35,eyeY+r*0.14,er*0.95,0,7); ctx.fill();
+}
+
+// ---------- NEXT preview ----------
+function drawNext(){
+  const W=nextCanvas.width, H=nextCanvas.height;
+  nctx.clearRect(0,0,W,H);
+  const r = Math.min(W,H)*0.40;
+  // draw using main drawSushi but on nextCanvas context: temporarily swap ctx? simpler: inline
+  drawSushiOn(nctx, W/2, H/2, r, nextTier);
+}
+function drawSushiOn(c, x, y, r, tier){
+  const saved = window.__ctxref; // not used; we call helper directly
+  // Reuse drawSushi by temporarily pointing module ctx — instead duplicate minimal:
+  const T=TIERS[tier], col=T.color;
+  c.save(); c.translate(x,y);
+  const skin=SKIN[T.key];
+  if(skin){ c.beginPath(); c.arc(0,0,r,0,7); c.clip(); c.drawImage(skin,-r,-r,r*2,r*2); c.restore(); return; }
+  const grad=c.createRadialGradient(-r*0.3,-r*0.35,r*0.1,0,0,r);
+  grad.addColorStop(0,lighten(col,0.3)); grad.addColorStop(1,col);
+  c.beginPath(); c.arc(0,0,r,0,7); c.fillStyle=grad; c.fill();
+  c.lineWidth=Math.max(1.5,r*0.06); c.strokeStyle=darken(col,0.22); c.stroke();
+  // simple eyes
+  const eo=r*0.34, eyeY=-r*0.05, er=r*0.12;
+  c.fillStyle='#2a1f16';
+  c.beginPath(); c.arc(-eo,eyeY,er,0,7); c.fill();
+  c.beginPath(); c.arc(eo,eyeY,er,0,7); c.fill();
+  c.fillStyle='rgba(255,120,120,0.4)';
+  c.beginPath(); c.arc(-eo*1.3,eyeY+r*0.14,er*0.9,0,7); c.fill();
+  c.beginPath(); c.arc(eo*1.3,eyeY+r*0.14,er*0.9,0,7); c.fill();
+  c.restore();
+}
+
+// ---------- Chain rail (evolution chart) ----------
+function buildChainRail(){
+  chainRail.innerHTML='';
+  for(let i=0;i<TIERS.length;i++){
+    const d=Math.max(8, Math.min(22, 6 + i*1.6));
+    const item=document.createElement('div'); item.className='chainItem';
+    const dot=document.createElement('div'); dot.className='chainDot';
+    dot.style.width=d+'px'; dot.style.height=d+'px';
+    dot.style.background=TIERS[i].color;
+    const nm=document.createElement('div'); nm.className='chainName';
+    nm.textContent=(i+1)+'. '+TIERS[i].name;
+    item.appendChild(dot); item.appendChild(nm);
+    chainRail.appendChild(item);
+  }
+}
+
+// ---------- HUD ----------
+function updateHUD(){
+  scoreVal.textContent = score;
+  highVal.textContent = high;
+}
+
+// ---------- Color helpers ----------
+function lighten(hex,amt){ return mix(hex,'#ffffff',amt); }
+function darken(hex,amt){ return mix(hex,'#000000',amt); }
+function mix(a,b,t){
+  const ca=hx(a), cb=hx(b);
+  const r=Math.round(ca[0]+(cb[0]-ca[0])*t);
+  const g=Math.round(ca[1]+(cb[1]-ca[1])*t);
+  const bl=Math.round(ca[2]+(cb[2]-ca[2])*t);
+  return 'rgb('+r+','+g+','+bl+')';
+}
+function hx(h){
+  if(h[0]==='#') h=h.slice(1);
+  if(h.length===3) h=h.split('').map(x=>x+x).join('');
+  return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];
+}
+
+// ---------- Main loop ----------
+function loop(now){
+  if(!lastTime) lastTime=now;
+  let dt = now-lastTime; lastTime=now;
+  if(dt>60) dt=60;
+  if(gameState==='playing'){ update(dt); updateHUD(); }
+  render();
+  stepChars(dt);
+  requestAnimationFrame(loop);
+}
+
+// ---------- Input ----------
+boardCanvas.addEventListener('mousemove', e=>{
+  if(gameState!=='playing') return;
+  setDropX(e.clientX);
+});
+boardCanvas.addEventListener('click', e=>{
+  if(gameState!=='playing') return;
+  setDropX(e.clientX);
+  doDrop();
+});
+boardCanvas.addEventListener('touchstart', e=>{
+  if(gameState!=='playing') return;
+  setDropX(e.touches[0].clientX);
+  e.preventDefault();
+},{passive:false});
+boardCanvas.addEventListener('touchmove', e=>{
+  if(gameState!=='playing') return;
+  setDropX(e.touches[0].clientX);
+  e.preventDefault();
+},{passive:false});
+boardCanvas.addEventListener('touchend', e=>{
+  if(gameState!=='playing') return;
+  doDrop();
+  e.preventDefault();
+},{passive:false});
+
+document.getElementById('startBtn').onclick = ()=> startGame();
+document.getElementById('retryBtn').onclick = ()=> startGame();
+document.getElementById('toTitleBtn').onclick = backToTitle;
+
+let resizeTO=0;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTO);
+  resizeTO=setTimeout(()=>{
+    computeSize(); // world is fixed, so resizing mid-play is always safe now
+  },150);
+});
+
+// =======================================================================
+//  VRM Characters (async, non-blocking). Falls back to emoji on failure.
+// =======================================================================
+const charState = {
+  ham:{ vrm:null, t:0, anim:'idle', animT:0 },
+  fairy:{ vrm:null, t:0, anim:'idle', animT:0 }
+};
+function charNotify(kind){
+  if(kind==='danger'){ setAnim('ham','danger'); setAnim('fairy','danger'); return; }
+  if(kind==='gameover'){ setAnim('ham','sad'); setAnim('fairy','sad'); return; }
+  if(kind==='reset'){ setAnim('ham','idle'); setAnim('fairy','idle'); return; }
+  if(kind==='merge'){ /* subtle: small nod, no full anim swap */ return; }
+  if(kind==='bigjump'){ setAnim('ham','jump'); setAnim('fairy','jump'); return; }
+  if(kind==='celebrate'){ setAnim('ham','spin'); setAnim('fairy','spin'); return; }
+}
+function setAnim(who,anim){
+  const s=charState[who];
+  if(['jump','spin'].includes(anim) || anim!==s.anim){ s.anim=anim; s.animT=0; }
+}
+
+import('three').then(async (THREE)=>{
+  const {GLTFLoader}=await import('three/addons/loaders/GLTFLoader.js');
+  const vrmMod=await import('@pixiv/three-vrm');
+  const {VRMLoaderPlugin, VRMUtils}=vrmMod;
+
+  function setupChar(canvasId, spinId, fallbackId, vrmUrl, key){
+    const canvas=document.getElementById(canvasId);
+    const renderer=new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    const scene=new THREE.Scene();
+    const camera=new THREE.PerspectiveCamera(28, 200/340, 0.1, 20);
+    camera.position.set(0,1.32,1.55);
+    function size(){
+      const w=canvas.clientWidth||200, h=canvas.clientHeight||340;
+      renderer.setSize(w,h,false);
+      camera.aspect=w/h; camera.updateProjectionMatrix();
+      if(charState[key].frame) charState[key].frame();
+    }
+    const amb=new THREE.AmbientLight(0xffffff,0.9); scene.add(amb);
+    const dir=new THREE.DirectionalLight(0xffffff,1.0); dir.position.set(1,2,2); scene.add(dir);
+
+    const loader=new GLTFLoader();
+    loader.register(p=>new VRMLoaderPlugin(p));
+    loader.load(vrmUrl, gltf=>{
+      const vrm=gltf.userData.vrm;
+      VRMUtils.rotateVRM0(vrm);
+      scene.add(vrm.scene);
+      vrm.scene.traverse(o=>{o.frustumCulled=false;});
+      charState[key].vrm=vrm;
+      const rawBox=new THREE.Box3().setFromObject(vrm.scene);
+      const rawSz=rawBox.getSize(new THREE.Vector3());
+      const TARGET_H=1.0;
+      vrm.scene.scale.setScalar(TARGET_H/rawSz.y);
+      vrm.scene.updateMatrixWorld(true);
+      charState[key].frame=()=>{
+        const box=new THREE.Box3().setFromObject(vrm.scene);
+        const sz=box.getSize(new THREE.Vector3());
+        const center=box.getCenter(new THREE.Vector3());
+        const fovRad=camera.fov*Math.PI/180;
+        const dH=(sz.y/2)/Math.tan(fovRad/2);
+        const dW=(sz.x*0.8/2)/(Math.tan(fovRad/2)*camera.aspect);
+        const dist=Math.max(dH,dW)*1.12 + sz.z/2;
+        camera.position.set(center.x, center.y + sz.y*0.04, center.z + dist);
+        camera.lookAt(center.x, center.y, center.z);
+      };
+      charState[key].frame();
+      document.getElementById(fallbackId).classList.add('hidden');
+      document.getElementById(spinId).style.display='none';
+      canvas.style.display='';
+      size();
+    }, undefined, err=>{
+      document.getElementById(spinId).style.display='none';
+      document.getElementById(fallbackId).classList.remove('hidden');
+      canvas.style.display='none';
+    });
+
+    window.addEventListener('resize',()=>setTimeout(size,150));
+    size();
+    charState[key].render=()=>{ renderer.render(scene,camera); };
+    charState[key].camera=camera; charState[key].scene=scene;
+  }
+
+  setupChar('hamCanvas','hamSpin','hamFallback','../vrm/shin_sushihamster.vrm','ham');
+  setupChar('fairyCanvas','fairySpin','fairyFallback','../vrm/shin_sushifairy.vrm','fairy');
+}).catch(err=>{
+  ['hamSpin','fairySpin'].forEach(id=>{const e=document.getElementById(id); if(e)e.style.display='none';});
+  document.getElementById('hamFallback').classList.remove('hidden');
+  document.getElementById('fairyFallback').classList.remove('hidden');
+  document.getElementById('hamCanvas').style.display='none';
+  document.getElementById('fairyCanvas').style.display='none';
+});
+
+function stepChars(dt){
+  for(const key of ['ham','fairy']){
+    const s=charState[key];
+    if(!s.vrm){ continue; }
+    s.t += dt/1000; s.animT += dt/1000;
+    const vrm=s.vrm; const hum=vrm.humanoid;
+    if(!hum){ s.render && s.render(); continue; }
+    const getN=(n)=>hum.getNormalizedBoneNode ? hum.getNormalizedBoneNode(n) : null;
+    const hips=getN('hips'), spine=getN('spine'), head=getN('head'),
+          lUp=getN('leftUpperArm'), rUp=getN('rightUpperArm'),
+          lLow=getN('leftLowerArm'), rLow=getN('rightLowerArm');
+
+    let sway=Math.sin(s.t*1.6)*0.05;
+    let bob=Math.sin(s.t*2.0)*0.012;
+    let armRaiseL=0, armRaiseR=0, headTilt=0, hipY=0, rot=0, headHands=0, slump=0;
+
+    const a=s.anim, at=s.animT;
+    if(a==='idle'){
+      // gentle sway only
+    } else if(a==='jump'){
+      const p=Math.min(1, at/0.7);
+      hipY = Math.sin(p*Math.PI)*0.18;
+      armRaiseL = -2.2*Math.sin(Math.min(1,at/0.25)*Math.PI/2);
+      armRaiseR = -2.2*Math.sin(Math.min(1,at/0.25)*Math.PI/2);
+      expressHappy(vrm,1);
+      if(at>0.75){ s.anim='idle'; expressHappy(vrm,0); }
+    } else if(a==='spin'){
+      const p=Math.min(1, at/0.9);
+      rot = p*Math.PI*2;
+      hipY = Math.sin(p*Math.PI)*0.14;
+      armRaiseL=-1.4; armRaiseR=-1.4;
+      ex

@@ -16,7 +16,8 @@
     "music": "Musique",
     "gallery": "Galerie",
     "bbs": "Forums",
-    "links": "Liens"
+    "links": "Liens",
+    "game": "Jeux"
   },
   "home": {
     "hero_alt": "Image de Sushiham",
@@ -182,6 +183,23 @@
         "name": "SoundCloud de oogimix",
         "desc": "Écoutez les morceaux et mixes DJ de oogimix."
       }
+    }
+  },
+  "game": {
+    "title": "🎮 Coin des jeux",
+    "subtitle": "Jouez aux jeux de sushihamster !",
+    "play_btn": "🎮 Jouer !",
+    "badge_pc": "💻 PC",
+    "badge_sp": "📱 Mobile",
+    "puzzle": {
+      "name": "SushiPon !",
+      "genre": "Puzzle",
+      "desc": "Puzzle de sushis style Panel de Pon ! Alignez 3 sushis identiques pour les effacer. Enchaînez les combos pour le meilleur score♪"
+    },
+    "suika": {
+      "name": "Nigiriko !",
+      "genre": "Puzzle",
+      "desc": "Puzzle de fusion style Suika Game ! Assemblez les mêmes sushis pour les faire évoluer et visez le toro suprême♪"
     }
   }
 }

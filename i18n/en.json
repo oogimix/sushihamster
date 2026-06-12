@@ -16,7 +16,8 @@
     "music": "Music",
     "gallery": "Gallery",
     "bbs": "BBS",
-    "links": "Links"
+    "links": "Links",
+    "game": "Games"
   },
   "home": {
     "hero_alt": "Sushiham image",
@@ -182,6 +183,23 @@
         "name": "oogimix on SoundCloud",
         "desc": "Play oogimix's tracks and DJ mixes."
       }
+    }
+  },
+  "game": {
+    "title": "🎮 Game Corner",
+    "subtitle": "Play sushihamster's games!",
+    "play_btn": "🎮 Play!",
+    "badge_pc": "💻 PC",
+    "badge_sp": "📱 Mobile",
+    "puzzle": {
+      "name": "SushiPon!",
+      "genre": "Puzzle",
+      "desc": "Panel de Pon-style sushi puzzle! Line up 3+ matching sushi to clear them. Chain combos for a high score♪"
+    },
+    "suika": {
+      "name": "Nigiriko!",
+      "genre": "Puzzle",
+      "desc": "Suika-game-style merge puzzle! Connect matching sushi to evolve them and aim for the premium toro♪"
     }
   }
 }

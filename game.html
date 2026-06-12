@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ゲームコーナー | sushihamster</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/game.css" />
+</head>
+<body>
+  <div class="game-wrap">
+    <h2 data-i18n="game.title">🎮 ゲームコーナー</h2>
+    <p class="game-subtitle" data-i18n="game.subtitle">スシハムスターのゲームで遊ぼう！</p>
+
+    <div class="game-grid">
+
+      <!-- すしポン！ -->
+      <div class="game-card">
+        <div class="game-card-icon">🍣🐹</div>
+        <div class="game-card-body">
+          <h3 class="game-card-name" data-i18n="game.puzzle.name">すしポン！</h3>
+          <p class="game-card-genre" data-i18n="game.puzzle.genre">パズル</p>
+          <p class="game-card-desc" data-i18n="game.puzzle.desc">
+            パネルでポン式の寿司パズル！同じ寿司を3つ以上並べて消そう。連鎖を決めて高得点を目指せ♪
+          </p>
+          <div class="game-card-platforms">
+            <span class="platform-badge" data-i18n="game.badge_pc">💻 PC</span>
+            <span class="platform-badge" data-i18n="game.badge_sp">📱 スマホ</span>
+          </div>
+        </div>
+        <a class="game-play-btn" href="game/puzzle/" target="_blank" rel="noopener"
+           data-i18n="game.play_btn">🎮 あそぶ！</a>
+      </div>
+
+      <!-- にぎりっこ！ -->
+      <div class="game-card">
+        <div class="game-card-icon">🍱🐹</div>
+        <div class="game-card-body">
+          <h3 class="game-card-name" data-i18n="game.suika.name">にぎりっこ！</h3>
+          <p class="game-card-genre" data-i18n="game.suika.genre">パズル</p>
+          <p class="game-card-desc" data-i18n="game.suika.desc">
+            スイカゲーム風の合体パズル！同じ寿司をくっつけて進化させ、特上トロを目指そう♪
+          </p>
+          <div class="game-card-platforms">
+            <span class="platform-badge" data-i18n="game.badge_pc">💻 PC</span>
+            <span class="platform-badge" data-i18n="game.badge_sp">📱 スマホ</span>
+          </div>
+        </div>
+        <a class="game-play-btn" href="game/suika/" target="_blank" rel="noopener"
+           data-i18n="game.play_btn">🎮 あそぶ！</a>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

@@ -16,7 +16,8 @@
     "music": "뮤직",
     "gallery": "갤러리",
     "bbs": "BBS",
-    "links": "링크"
+    "links": "링크",
+    "game": "게임"
   },
   "home": {
     "hero_alt": "스시햄 이미지",
@@ -182,6 +183,23 @@
         "name": "oogimix SoundCloud",
         "desc": "oogimix의 곡과 DJ 믹스를 재생 가능."
       }
+    }
+  },
+  "game": {
+    "title": "🎮 게임 코너",
+    "subtitle": "스시햄스터 게임을 즐겨보자!",
+    "play_btn": "🎮 플레이！",
+    "badge_pc": "💻 PC",
+    "badge_sp": "📱 스마트폰",
+    "puzzle": {
+      "name": "스시퐁！",
+      "genre": "퍼즐",
+      "desc": "패널 드 퐁 스타일의 스시 퍼즐! 같은 스시 3개 이상을 나란히 없애자. 연쇄로 고득점을 노려봐♪"
+    },
+    "suika": {
+      "name": "니기리코！",
+      "genre": "퍼즐",
+      "desc": "수박게임 스타일의 합체 퍼즐! 같은 스시를 붙여서 진화시키고 특상 참치를 목표로 하자♪"
     }
   }
 }
