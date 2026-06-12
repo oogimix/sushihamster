@@ -22,7 +22,7 @@ window.addEventListener('unhandledrejection', e=>{
 document.addEventListener('DOMContentLoaded',()=>{
   const s=document.createElement('div');
   s.style.cssText='position:fixed;right:8px;bottom:8px;z-index:9999;color:#a07f50;font:11px monospace;opacity:.7;';
-  s.textContent='build v9';
+  s.textContent='build v10';
   document.body.appendChild(s);
 });
 </script>
@@ -123,18 +123,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     #rightChar{grid-column:2; grid-row:1;}
     #boardcol{grid-column:1 / 3; grid-row:2;}
     .charcol{width:auto;}
-    .charwrap{width:110px; height:120px;}
+    .charwrap{width:72px; height:80px;}
     .charname{display:none;}
-    #controls{display:flex;}
   }
   @media (pointer:coarse) and (min-aspect-ratio:1/1){
-    #controls{display:flex;}
     .charwrap{width:150px; height:260px;}
   }
 </style>
 </head>
 <body>
-<a href="/" style="position:fixed;top:8px;left:8px;z-index:60;background:#e8473f;color:#fff;font-weight:bold;font-size:13px;padding:6px 14px;border-radius:14px;text-decoration:none;box-shadow:0 3px 0 #bf3128;font-family:inherit;">&#127968; ホームへ</a>
+<a href="/" style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:60;background:#e8473f;color:#fff;font-weight:bold;font-size:13px;padding:6px 14px;border-radius:14px;text-decoration:none;box-shadow:0 3px 0 #bf3128;font-family:inherit;">&#127968; ホームへ</a>
 <div id="app">
   <div id="stage">
     <!-- Left character: hamster -->
@@ -294,15 +292,15 @@ function computeCellSize(){
   const vw = window.innerWidth, vh = window.innerHeight;
   let maxW, maxH;
   if(portrait){
-    maxW = vw - 30;
-    maxH = vh - 290; // leave room for char row + hud + controls
+    maxW = vw - 16;
+    maxH = vh - 170; // compact char row + hud (no on-screen controls)
   }else{
     maxW = vw - 2*270 - 80;
-    maxH = vh - 90;
+    maxH = vh - 130;
   }
   const cw = Math.floor(maxW / COLS);
   const ch = Math.floor(maxH / ROWS_VISIBLE);
-  CELL = Math.max(26, Math.min(54, Math.min(cw, ch)));
+  CELL = Math.max(26, Math.min(80, Math.min(cw, ch)));
   const W = CELL*COLS, H = CELL*ROWS_VISIBLE;
   const dpr = Math.min(window.devicePixelRatio||1, 2);
   boardCanvas.width = W*dpr; boardCanvas.height = H*dpr;
