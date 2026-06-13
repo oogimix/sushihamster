@@ -22,7 +22,7 @@ window.addEventListener('unhandledrejection', e=>{
 document.addEventListener('DOMContentLoaded',()=>{
   const s=document.createElement('div');
   s.style.cssText='position:fixed;right:8px;bottom:8px;z-index:9999;color:#a07f50;font:11px monospace;opacity:.7;';
-  s.textContent='suika v10';
+  s.textContent='nigiriko v11';
   document.body.appendChild(s);
 });
 </script>
@@ -338,7 +338,7 @@ let celebrating = 0;      // ms remaining of sushiham-celebration glow
 let pendingScorePops = [];
 
 const DROP_COOLDOWN_MS = 380;
-const OVERFLOW_GRACE = 3500; // ms above dead line before game over
+const OVERFLOW_GRACE = 120; // tiny physics-jitter buffer (functionally instant)
 
 function rng(){ return Math.random(); }
 function pickDroppable(){ return (rng()*(DROPPABLE_MAX+1))|0; }
@@ -529,26 +529,21 @@ function update(dt){
   // sleep/settle clamp: stop tiny jitter from never settling (optional safety)
   stepParticles(dt);
 
-  // overflow detection: a settled fruit whose top crosses the dead line
+  // overflow detection: game over when a settled fruit's CENTER crosses the dead line
+  // (= more than half the fruit is above the line). nearDanger triggers char fidget only.
   let overflow=false, nearDanger=false;
   for(const b of fruits){
     const r = b.circleRadius || radiusOf(b.tier);
     const top = b.position.y - r;
     const speed = Math.hypot(b.velocity.x, b.velocity.y);
     const settled = speed < 0.9 && (performance.now()-b.bornAt) > 800;
-    if(top < DEAD_LINE && settled){ overflow=true; }
-    if(settled && top < DEAD_LINE + r*0.6){ nearDanger=true; } // ignore pieces still falling (e.g. just dropped)
+    if(b.position.y < DEAD_LINE && settled){ overflow=true; }
+    if(settled && top < DEAD_LINE + r*1.5){ nearDanger=true; }
   }
   if(overflow){ overflowTimer += dt; }
   else { overflowTimer = Math.max(0, overflowTimer - dt*2.5); }
 
-  if(nearDanger){
-    const f = 0.18 + 0.22*Math.abs(Math.sin(performance.now()/130));
-    dangerFlash.style.background = 'rgba(255,40,40,'+f.toFixed(2)+')';
-    if(overflow) charNotify('danger');
-  }else{
-    dangerFlash.style.background = 'rgba(255,40,40,0)';
-  }
+  if(nearDanger){ charNotify('danger'); }
 
   if(overflowTimer >= OVERFLOW_GRACE){ gameOver(); }
   if(celebrating>0) celebrating -= dt;

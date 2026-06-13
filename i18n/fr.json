@@ -194,12 +194,12 @@
     "puzzle": {
       "name": "SushiPon !",
       "genre": "Puzzle",
-      "desc": "Puzzle de sushis style Panel de Pon ! Alignez 3 sushis identiques pour les effacer. Enchaînez les combos pour le meilleur score♪"
+      "desc": "Échangez les panneaux de sushi pour en aligner 3 ou plus ! Enchaînez les combos pour le meilleur score♪"
     },
     "suika": {
       "name": "Nigiriko !",
       "genre": "Puzzle",
-      "desc": "Puzzle de fusion style Suika Game ! Assemblez les mêmes sushis pour les faire évoluer et visez le toro suprême♪"
+      "desc": "Lancez et faites rouler les sushis pour les fusionner ! Assemblez les mêmes pour les faire évoluer et visez le toro suprême♪"
     }
   }
 }

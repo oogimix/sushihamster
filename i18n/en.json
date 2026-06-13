@@ -194,12 +194,12 @@
     "puzzle": {
       "name": "SushiPon!",
       "genre": "Puzzle",
-      "desc": "Panel de Pon-style sushi puzzle! Line up 3+ matching sushi to clear them. Chain combos for a high score♪"
+      "desc": "Swap sushi panels to line up 3 or more! Chain combos for a massive high score♪"
     },
     "suika": {
       "name": "Nigiriko!",
       "genre": "Puzzle",
-      "desc": "Suika-game-style merge puzzle! Connect matching sushi to evolve them and aim for the premium toro♪"
+      "desc": "Drop and roll sushi to merge them! Combine matching sushi to evolve and aim for the premium toro♪"
     }
   }
 }
