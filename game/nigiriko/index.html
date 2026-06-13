@@ -959,8 +959,8 @@ function stepChars(dt){
     if(head){ head.rotation.z = headTilt; head.rotation.x = slump*0.3 + (headHands?0.2:0); }
     if(lUp){ lUp.rotation.z = 1.0 + (headHands?0.6:0) + armRaiseL*0.5; lUp.rotation.x=armRaiseL*0.4; }
     if(rUp){ rUp.rotation.z = -1.0 - (headHands?0.6:0) - armRaiseR*0.5; rUp.rotation.x=armRaiseR*0.4; }
-    if(lLow && headHands){ lLow.rotation.x=-1.2; }
-    if(rLow && headHands){ rLow.rotation.x=-1.2; }
+    if(lLow){ lLow.rotation.x = headHands ? -1.2 : 0; }
+    if(rLow){ rLow.rotation.x = headHands ? -1.2 : 0; }
 
     vrm.update(dt/1000);
     s.render && s.render();
