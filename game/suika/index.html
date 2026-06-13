@@ -22,7 +22,7 @@ window.addEventListener('unhandledrejection', e=>{
 document.addEventListener('DOMContentLoaded',()=>{
   const s=document.createElement('div');
   s.style.cssText='position:fixed;right:8px;bottom:8px;z-index:9999;color:#a07f50;font:11px monospace;opacity:.7;';
-  s.textContent='suika v9';
+  s.textContent='suika v10';
   document.body.appendChild(s);
 });
 </script>
@@ -245,17 +245,17 @@ const {Engine, World, Bodies, Body, Composite, Events, Common} = Matter;
 // ---------- Sushi evolution chain (11 tiers, small -> big) ----------
 // radius is relative to board width (fraction), so it scales responsively.
 const TIERS = [
-  {key:'gari',   name:'ガリ',      color:'#f5e6c8', r:0.052},
-  {key:'kappa',  name:'かっぱ巻き', color:'#7bc86c', r:0.068},
-  {key:'inari',  name:'いなり',    color:'#c98a4b', r:0.090},
-  {key:'tamago', name:'たまご',    color:'#ffd34d', r:0.112},
-  {key:'ebi',    name:'えび',      color:'#ff9e7a', r:0.140},
-  {key:'ika',    name:'いか',      color:'#f4eee2', r:0.172},
-  {key:'tako',   name:'たこ',      color:'#c95d6e', r:0.205},
-  {key:'tai',    name:'たい',      color:'#f3c5c0', r:0.238},
-  {key:'salmon', name:'サーモン',  color:'#f6914a', r:0.275},
-  {key:'maguro', name:'マグロ',    color:'#e8473f', r:0.312},
-  {key:'toro',   name:'特上トロ',  color:'#ff7a8a', r:0.355}
+  {key:'gari',   name:'ガリ',      color:'#f5e6c8', r:0.042},
+  {key:'kappa',  name:'かっぱ巻き', color:'#7bc86c', r:0.054},
+  {key:'inari',  name:'いなり',    color:'#c98a4b', r:0.072},
+  {key:'tamago', name:'たまご',    color:'#ffd34d', r:0.090},
+  {key:'ebi',    name:'えび',      color:'#ff9e7a', r:0.112},
+  {key:'ika',    name:'いか',      color:'#f4eee2', r:0.138},
+  {key:'tako',   name:'たこ',      color:'#c95d6e', r:0.164},
+  {key:'tai',    name:'たい',      color:'#f3c5c0', r:0.190},
+  {key:'salmon', name:'サーモン',  color:'#f6914a', r:0.220},
+  {key:'maguro', name:'マグロ',    color:'#e8473f', r:0.250},
+  {key:'toro',   name:'特上トロ',  color:'#ff7a8a', r:0.284}
 ];
 const DROPPABLE_MAX = 4; // tiers 0..4 (ガリ〜エビ) can spawn
 
@@ -338,7 +338,7 @@ let celebrating = 0;      // ms remaining of sushiham-celebration glow
 let pendingScorePops = [];
 
 const DROP_COOLDOWN_MS = 380;
-const OVERFLOW_GRACE = 2000; // ms above dead line before game over
+const OVERFLOW_GRACE = 3500; // ms above dead line before game over
 
 function rng(){ return Math.random(); }
 function pickDroppable(){ return (rng()*(DROPPABLE_MAX+1))|0; }
@@ -535,12 +535,12 @@ function update(dt){
     const r = b.circleRadius || radiusOf(b.tier);
     const top = b.position.y - r;
     const speed = Math.hypot(b.velocity.x, b.velocity.y);
-    const settled = speed < 0.9 && (performance.now()-b.bornAt) > 500;
+    const settled = speed < 0.9 && (performance.now()-b.bornAt) > 800;
     if(top < DEAD_LINE && settled){ overflow=true; }
     if(settled && top < DEAD_LINE + r*0.6){ nearDanger=true; } // ignore pieces still falling (e.g. just dropped)
   }
   if(overflow){ overflowTimer += dt; }
-  else { overflowTimer = Math.max(0, overflowTimer - dt*1.5); }
+  else { overflowTimer = Math.max(0, overflowTimer - dt*2.5); }
 
   if(nearDanger){
     const f = 0.18 + 0.22*Math.abs(Math.sin(performance.now()/130));
