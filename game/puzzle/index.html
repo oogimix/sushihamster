@@ -303,14 +303,14 @@ function computeCellSize(){
   let maxW, maxH;
   if(portrait){
     maxW = vw - 16;
-    maxH = vh - 170; // compact char row + hud (no on-screen controls)
+    maxH = vh - 130; // compact char row + hud
   }else{
-    maxW = vw - 2*270 - 80;
+    maxW = vw - 2*240 - 70;
     maxH = vh - 130;
   }
   const cw = Math.floor(maxW / COLS);
   const ch = Math.floor(maxH / ROWS_VISIBLE);
-  CELL = Math.max(26, Math.min(80, Math.min(cw, ch)));
+  CELL = Math.max(26, Math.min(100, Math.min(cw, ch)));
   const W = CELL*COLS, H = CELL*ROWS_VISIBLE;
   const dpr = Math.min(window.devicePixelRatio||1, 2);
   boardCanvas.width = W*dpr; boardCanvas.height = H*dpr;
