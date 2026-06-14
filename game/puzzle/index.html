@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 // ---------- Constants ----------
 const COLS = 6;
-const ROWS_VISIBLE = 12;     // visible rows
+const ROWS_VISIBLE = 10;     // visible rows
 const ROWS = ROWS_VISIBLE + 1; // +1 incoming row at bottom (partial)
 const TYPES = ['maguro','salmon','tamago','ebi','kappa','nori']; // 6 types
 const TYPE_COLORS = {
@@ -303,7 +303,7 @@ function computeCellSize(){
   let maxW, maxH;
   if(portrait){
     maxW = vw - 16;
-    maxH = vh - 130; // compact char row + hud
+    maxH = vh - 170; // compact char row + hud
   }else{
     maxW = vw - 2*240 - 70;
     maxH = vh - 130;
