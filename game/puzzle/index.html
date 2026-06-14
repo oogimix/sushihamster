@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   .dpad .sp{visibility:hidden;}
 
   /* ---- Overlays ---- */
-  .overlay{position:absolute; inset:0; display:flex; flex-direction:column;
+  .overlay{position:fixed; inset:0; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:18px; z-index:30;
     background:rgba(255,246,233,.92); backdrop-filter:blur(2px); text-align:center; padding:20px;}
   .overlay.hidden{display:none;}
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 // ---------- Constants ----------
 const COLS = 6;
-const ROWS_VISIBLE = 10;     // visible rows
+const ROWS_VISIBLE = 9;      // visible rows
 const ROWS = ROWS_VISIBLE + 1; // +1 incoming row at bottom (partial)
 const TYPES = ['maguro','salmon','tamago','ebi','kappa','nori']; // 6 types
 const TYPE_COLORS = {
