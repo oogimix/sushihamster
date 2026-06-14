@@ -302,15 +302,14 @@ function computeSize(){
   let maxW, maxH;
   if(portrait){
     maxW = vw - 16;
-    maxH = vh - 165; // room for compact char row + hud
+    maxH = vh - 130; // compact char row + hud (same as sushipon)
   }else{
     maxW = vw - 2*240 - 70;
-    maxH = vh - 130; // HUD + board frame chrome + stage padding
+    maxH = vh - 130;
   }
   maxW = Math.max(160, maxW); maxH = Math.max(240, maxH);
-  // portrait: fill as much of the screen as possible (no upscale cap)
-  dispScale = portrait ? Math.min(maxW/BW, maxH/BH)
-                       : Math.min(maxW/BW, maxH/BH, 1.6);
+  // no arbitrary upscale cap: available area determines the scale naturally
+  dispScale = Math.min(maxW/BW, maxH/BH);
   const dw = Math.floor(BW*dispScale), dh = Math.floor(BH*dispScale);
   dpr = Math.min(window.devicePixelRatio||1, 2);
   boardCanvas.width = dw*dpr; boardCanvas.height = dh*dpr;
