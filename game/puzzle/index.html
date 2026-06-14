@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   /* ---- Overlays ---- */
   .overlay{position:fixed; inset:0; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:18px; z-index:30;
-    background:rgba(255,246,233,.92); backdrop-filter:blur(2px); text-align:center; padding:20px;}
+    background:rgba(255,246,233,.92); backdrop-filter:blur(2px); text-align:center; padding:50px 20px 20px;}
   .overlay.hidden{display:none;}
   .hidden{display:none !important;}
   .title{font-size:44px; font-weight:bold; color:var(--aka); text-shadow:0 3px 0 #fff,0 5px 0 var(--wood-d);
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     .charwrap{width:72px; height:80px;}
     .charname{display:none;}
     /* keep title/overlay content inside the board even when tall */
-    .overlay{justify-content:flex-start; overflow-y:auto; gap:10px; padding:12px;}
+    .overlay{justify-content:flex-start; overflow-y:auto; gap:10px; padding:50px 12px 12px;}
     .title{font-size:28px;}
     .subtitle{font-size:13px;}
     .howto{font-size:11.5px; line-height:1.55; padding:10px 12px;}
@@ -170,13 +170,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 
         <div class="overlay" id="titleScreen">
           <div class="title">すしポン！<br><span style="font-size:22px">〜sushihamster〜</span></div>
-          <div class="subtitle">パネルでポン式 寿司アクションパズル</div>
+          <div class="subtitle">パネルでポン式 鮨アクションパズル</div>
           <button class="btn bigbtn" id="startStageBtn">ステージクリア</button>
           <button class="btn wood" id="startEndlessBtn" style="font-size:15px;padding:10px 24px;">エンドレス</button>
           <div class="howto">
             <b>あそびかた</b><br>
             ・カーソル(白枠2マス)で隣り合うパネルを入れ替え<br>
-            ・タテかヨコに同じ寿司が3つ以上で消える<br>
+            ・タテかヨコに同じ鮨が3つ以上で消える<br>
             ・消えて落ちたパネルがまた揃うと<b>連鎖</b>！<br>
             <b>PC:</b> 矢印=移動 / Space/Z/X=入替 / Shift=せり上げ / P=ポーズ<br>
             <b>スマホ:</b> パネルをタップして左右フリック、下のボタンでも操作
@@ -1421,8 +1421,8 @@ function stepChars(dt){
     // arms: VRM rest pose arms point down along -? We rotate to raise.
     if(lUp){ lUp.rotation.z = 1.0 + (headHands?0.6:0) + armRaiseL*0.5; lUp.rotation.x=armRaiseL*0.4; }
     if(rUp){ rUp.rotation.z = -1.0 - (headHands?0.6:0) - armRaiseR*0.5; rUp.rotation.x=armRaiseR*0.4; }
-    if(lLow && headHands){ lLow.rotation.x=-1.2; }
-    if(rLow && headHands){ rLow.rotation.x=-1.2; }
+    if(lLow){ lLow.rotation.x = headHands ? -1.2 : 0; }
+    if(rLow){ rLow.rotation.x = headHands ? -1.2 : 0; }
 
     vrm.update(dt/1000);
     s.render && s.render();
