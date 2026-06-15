@@ -8,6 +8,9 @@
 
 .game-wrap h2 {
   margin-bottom: 4px;
+  color: #9933cc;
+  text-shadow: 1px 1px 2px #cc99ff;
+  font-size: clamp(10px, 4.8vw, 40px);
 }
 
 .game-subtitle {
