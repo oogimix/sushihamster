@@ -148,8 +148,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 <style>
 #homeLink{position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:60;background:#e8473f;color:#fff;font-weight:bold;font-size:13px;padding:6px 14px;border-radius:14px;text-decoration:none;box-shadow:0 3px 0 #bf3128;font-family:inherit;}
 @media (min-aspect-ratio:1/1){ #homeLink{top:auto;bottom:10px;} }
+#bgmBtn{position:fixed;top:8px;right:8px;z-index:60;background:var(--wood);color:#fff;border:none;cursor:pointer;font-size:16px;width:34px;height:34px;border-radius:50%;box-shadow:0 3px 0 var(--wood-d);display:flex;align-items:center;justify-content:center;font-family:inherit;}
+#bgmBtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--wood-d);}
 </style>
 <a href="/" id="homeLink">&#127968; ホームへ</a>
+<audio id="bgmAudio" src="../bgm.mp3" loop preload="auto"></audio>
+<button id="bgmBtn" onclick="toggleBGM()" title="BGM">🔊</button>
 <div id="app">
   <div id="stage">
     <!-- Left character: hamster -->
@@ -499,6 +503,24 @@ function playTokujoToro(){
   }catch(e){}
 }
 
+// --- BGM ---
+let bgmOn = true;
+function startBGM(){
+  if(!bgmOn) return;
+  const a=document.getElementById('bgmAudio');
+  if(a) a.play().catch(()=>{});
+}
+function stopBGM(){
+  const a=document.getElementById('bgmAudio');
+  if(a){ a.pause(); a.currentTime=0; }
+}
+window.toggleBGM = function(){
+  bgmOn=!bgmOn;
+  const btn=document.getElementById('bgmBtn');
+  if(btn) btn.textContent=bgmOn?'🔊':'🔇';
+  if(bgmOn) startBGM(); else stopBGM();
+};
+
 // ---------- Particles ----------
 function spawnBurst(x,y,color,n){
   for(let i=0;i<n;i++){
@@ -541,6 +563,7 @@ function startGame(){
   updateHUD();
   buildChainRail();
   charNotify('reset');
+  startBGM();
   lastTime = 0;
 }
 
@@ -552,6 +575,7 @@ function gameOver(){
   document.getElementById('finalScore').textContent = score;
   document.getElementById('gameoverScreen').classList.remove('hidden');
   updateHUD();
+  stopBGM();
   charNotify('gameover');
 }
 
@@ -564,6 +588,7 @@ function backToTitle(){
   hideAll();
   document.getElementById('titleScreen').classList.remove('hidden');
   charNotify('reset');
+  startBGM();
 }
 
 // ---------- Drop ----------
