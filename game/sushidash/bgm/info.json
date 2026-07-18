@@ -1,68 +1,69 @@
 {
   "songs": [
     {
-      "file": "A-bug & Oogimix - Gloop Cube.mp3",
+      "file": "bgm01.mp3",
       "title": "Gloop Cube",
       "artist": "A-bug & oogimix"
     },
     {
-      "file": "Beluga Swell.mp3",
+      "file": "bgm02.mp3",
       "title": "Beluga Swell",
       "artist": "oogimix"
     },
     {
-      "file": "Coral Hijinx (w-Whitely).mp3",
+      "file": "bgm03.mp3",
       "title": "Coral Hijinx (w/Whitely)",
       "artist": "oogimix"
     },
     {
-      "file": "ICE CANDY,STEREO,DRAW BALL.mp3",
+      "file": "bgm04.mp3",
       "title": "ICE CANDY,STEREO,DRAW BALL",
       "artist": "Water Maze"
     },
     {
-      "file": "Kapsel.mp3",
+      "file": "bgm05.mp3",
       "title": "Kapsel",
       "artist": "Water Maze"
     },
     {
-      "file": "Kisarazu Disco Music All Night Long.mp3",
+      "file": "bgm06.mp3",
       "title": "Kisarazu Disco Music All Night Long",
       "artist": "oogimix"
     },
     {
-      "file": "Mermaid.mp3",
+      "file": "bgm07.mp3",
       "title": "Mermaid",
       "artist": "Water Maze"
     },
     {
-      "file": "Motion.mp3",
+      "file": "bgm08.mp3",
       "title": "Motion",
       "artist": "Water Maze"
     },
     {
-      "file": "MUGEN BIRYANI.mp3",
+      "file": "bgm09.mp3",
       "title": "MUGEN BIRYANI",
       "artist": "oogimix"
     },
     {
-      "file": "Orca Vibes.mp3",
+      "file": "bgm10.mp3",
       "title": "Orca Vibes",
       "artist": "oogimix"
     },
     {
-      "file": "SuperMelonman.mp3",
+      "file": "bgm11.mp3",
       "title": "SuperMelonman",
       "artist": "oogimix"
     },
     {
-      "file": "Tumblr Decade (w-trmsc.).mp3",
+      "file": "bgm12.mp3",
       "title": "Tumblr Decade (w/trmsc.)",
       "artist": "oogimix"
     },
     {
-      "file": "You Wasted Youth.mp3",
+      "file": "bgm13.mp3",
       "title": "You Wasted Youth",
       "artist": "Water Maze"
     }
-  
+  ]
+}
