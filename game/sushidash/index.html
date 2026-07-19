@@ -148,6 +148,17 @@ const sfx = {
   }
 };
 
+// 最初のユーザー操作でオーディオを解禁(自動再生ポリシー対策)。ゲート/タイトルのタップ含む
+function unlockAudio(){
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state === "suspended") audioCtx.resume();
+  }catch(e){}
+}
+addEventListener("pointerdown", unlockAudio, true);
+addEventListener("touchstart", unlockAudio, true);
+addEventListener("keydown", unlockAudio, true);
+
 // ================= BGM =================
 // 曲は fetch + WebAudioデコードで再生(ストリーミング起因の無音を根絶)。
 // bgm/info.json の songs 配列に全曲を列挙。表示名は info.json > ID3タグ > ファイル名
