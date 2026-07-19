@@ -33,6 +33,38 @@
 </script>
 </head>
 <body>
+<!-- ===== アクセスゲート(テスト用・不要になったらこの<!-- ..gate.. -->ブロックごと削除) ===== -->
+<div id="authGate" style="position:fixed;inset:0;z-index:99999;background:#1a2238;display:flex;align-items:center;justify-content:center;font-family:sans-serif;">
+  <div style="background:#fff;border-radius:16px;padding:28px 26px;width:min(88vw,320px);box-shadow:0 10px 40px rgba(0,0,0,.4);text-align:center;">
+    <div style="font-size:22px;font-weight:bold;color:#ff7a1a;margin-bottom:4px;">SUSHI DASH!!</div>
+    <div style="font-size:13px;color:#888;margin-bottom:18px;">ログインしてください</div>
+    <input id="agId" placeholder="ID" autocomplete="username"
+      style="width:100%;box-sizing:border-box;padding:12px;margin-bottom:10px;border:2px solid #ddd;border-radius:10px;font-size:16px;">
+    <input id="agPw" type="password" placeholder="パスワード" autocomplete="current-password"
+      style="width:100%;box-sizing:border-box;padding:12px;margin-bottom:6px;border:2px solid #ddd;border-radius:10px;font-size:16px;">
+    <div id="agErr" style="color:#e8434e;font-size:13px;height:18px;margin-bottom:8px;"></div>
+    <button id="agBtn"
+      style="width:100%;padding:12px;border:none;border-radius:10px;background:#ff8c1a;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;">はいる</button>
+  </div>
+</div>
+<script>
+(function(){
+  var OK_ID="sushiham", OK_PW="8686";
+  var g=document.getElementById("authGate");
+  if(sessionStorage.getItem("sushidash_auth")==="1"){ g.remove(); return; }
+  function tryLogin(){
+    if(document.getElementById("agId").value.trim()===OK_ID && document.getElementById("agPw").value===OK_PW){
+      sessionStorage.setItem("sushidash_auth","1"); g.remove();
+    } else {
+      document.getElementById("agErr").textContent="IDまたはパスワードが違います";
+    }
+  }
+  document.getElementById("agBtn").addEventListener("click", tryLogin);
+  document.getElementById("agPw").addEventListener("keydown", function(e){ if(e.key==="Enter") tryLogin(); });
+  document.getElementById("agId").addEventListener("keydown", function(e){ if(e.key==="Enter") document.getElementById("agPw").focus(); });
+})();
+</script>
+<!-- ===== /アクセスゲート ここまで ===== -->
 <div id="wrap"><div id="stage"><canvas id="game"></canvas><canvas id="vrm3d"></canvas></div></div>
 <script>
 "use strict";
@@ -46,21 +78,24 @@ const ctx = canvas.getContext("2d");
 function fitCanvas(){
   const iw = innerWidth, ih = innerHeight;
   const portrait = ih > iw;
-  let newW, newH;
+  let newW, newH, newGroundY;
   if(portrait){
-    // 縦持ち: 視界560pxで先を見せつつ、縦に長い世界で全画面表示
-    newW = 560;
-    newH = Math.max(700, Math.min(1200, Math.round(newW * ih / iw)));
+    // 縦持ち: マリオラン風に少し引き(視界広め)で表示し、
+    // 地面を画面下から上げて下側に余白(カウンター)を作る
+    newW = 780;
+    newH = Math.max(760, Math.min(1600, Math.round(newW * ih / iw)));
+    newGroundY = Math.round(newH * 0.72); // 走行ラインを画面の72%位置に。下28%が余白(マリオラン風)
   } else {
     newW = Math.max(430, Math.min(1200, Math.round(540 * iw / ih)));
     newH = 540;
+    newGroundY = newH - 100;
   }
   W = newW;
   try{
-    if(newH !== H){
+    if(newH !== H || newGroundY !== GROUND_Y){
       const oldG = GROUND_Y;
       H = newH;
-      GROUND_Y = H - 100;
+      GROUND_Y = newGroundY;
       const dy = GROUND_Y - oldG;
       for(const g of grounds) g.y += dy;
       for(const o of obstacles) o.y += dy;
@@ -641,15 +676,17 @@ function genChunk(){
 }
 
 // ================= 入力 =================
-function startGame(newMode, sNum){
+function startGame(newMode, sNum, carryLives){
   // 選択キャラのVRM読み込み中はスタートさせない(失敗時は2D絵で遊べるので許可)
   if(window.VRM3D && !VRM3D.failed && !(VRM3D.loaded && VRM3D.loaded[selChar])){
     beep(300,.12,"square",.05); return;
   }
   mode = newMode || mode || "endless";
   if(mode === "stage"){
-    if(sNum){ stageNum = sNum; cpResume = null; lives = 3; } // ステージ選択からは最初から
-    if(lives <= 0) lives = 3; // 残機切れ後のリトライは残機も仕切り直し
+    // 残機はステージ選択・ステージ移動をまたいで持ち越す(低レベルで稼いで高レベルに挑戦できる)。
+    // 3にリセットされるのは「タイトルに戻った時」と「残機0後の再挑戦」だけ。
+    if(sNum){ stageNum = sNum; cpResume = null; }
+    if(lives <= 0) lives = 3;
     stageP = stageParams(stageNum);
     stageGoalPx = stageP.goalM * 10;
     // シード固定(チェックポイント再開時はcpごとのシード=再開後の地形もリトライで毎回同じ)
@@ -663,7 +700,7 @@ function startGame(newMode, sNum){
   BGM.start(mode==="stage" ? stageP.mood : 0);
 }
 function advanceStage(){
-  if(stageNum < STAGE_MAX) startGame("stage", stageNum+1);
+  if(stageNum < STAGE_MAX) startGame("stage", stageNum+1, true); // 残機を次ステージへ持ち越し
   else state = "select";
 }
 function pressJump(){
@@ -723,15 +760,32 @@ function selectZones(){
 }
 function deadSelectZone(){
   const bw = Math.min(220, (W-56)/2);
-  return {x: W/2 - bw - 8, y: H/2+186, w: bw, h: 46};
+  return {x: W/2 - bw - 8, y: H/2+196, w: bw, h: 46};
 }
 function deadHomeZone(){
   const bw = Math.min(220, (W-56)/2);
   return mode==="stage"
-    ? {x: W/2 + 8, y: H/2+186, w: bw, h: 46}
-    : {x: W/2 - bw/2, y: H/2+186, w: bw, h: 46};
+    ? {x: W/2 + 8, y: H/2+196, w: bw, h: 46}
+    : {x: W/2 - bw/2, y: H/2+196, w: bw, h: 46};
 }
 function inZ(mx,my,z){ return mx>=z.x && mx<=z.x+z.w && my>=z.y && my<=z.y+z.h; }
+// キャラ選択アイコン(ゲームオーバー/クリア画面)。3Dモデルを枠内に表示してタップで選択
+const ICON_SZ = 88;            // アイコン枠のサイズ(正方形・固定)
+function deadIconY(){ return H/2 + 26; }
+function clearIconY(){ return H/2 + 34; }
+function charIconZones(topY){
+  const bw = Math.min(ICON_SZ, Math.floor((W-96)/2)), bh = bw;
+  const gap = 30;
+  return {
+    ham:  {x: Math.round(W/2 - bw - gap/2), y: topY, w: bw, h: bh},
+    fairy:{x: Math.round(W/2 + gap/2),      y: topY, w: bw, h: bh}
+  };
+}
+function activeCharIconY(){
+  if(state==="dead" && deadTimer>0.6) return deadIconY();
+  if(state==="clear" && clearTimer>0.8) return clearIconY();
+  return null;
+}
 
 let fsTried = false;
 canvas.addEventListener("pointerdown", e=>{
@@ -771,13 +825,29 @@ canvas.addEventListener("pointerdown", e=>{
         return;
       }
     }
-    if(inZ(mx,my,zs.back)){ state="title"; beep(440,.06,"square",.05); }
+    if(inZ(mx,my,zs.back)){ state="title"; lives = 3; beep(440,.06,"square",.05); }
     return;
   }
-  if(state==="clear"){ if(clearTimer>0.8) advanceStage(); return; }
+  // キャラアイコンのタップ(ゲームオーバー/クリアの選択UI)
+  function tapCharIcon(){
+    const iy = activeCharIconY(); if(iy===null) return false;
+    const z = charIconZones(iy);
+    for(const k of ["ham","fairy"]){
+      if(inZ(mx,my,z[k])){ if(selChar!==k){ selChar=k; beep(520,.06,"square",.05); } return true; }
+    }
+    return false;
+  }
+  if(state==="clear"){
+    if(clearTimer>0.8){
+      if(tapCharIcon()) return;
+      advanceStage();
+    }
+    return;
+  }
   if(state==="dead" && deadTimer>0.6){
+    if(tapCharIcon()) return;
     if(inZ(mx,my,deadHomeZone())){
-      state = "title"; beep(440,.06,"square",.05);
+      state = "title"; lives = 3; beep(440,.06,"square",.05);
       if(window.VRM3D && VRM3D.reset) VRM3D.reset(); // やられ回転を解除
       return;
     }
@@ -1323,7 +1393,9 @@ function drawGround(){
 // rail.png を使った回転寿司レール地面(足場ごとの高さに対応)
 function drawRailGround(){
   const strip = railCanvas;
-  const baseGh = H - GROUND_Y;             // 基準の高さでタイル幅を固定(段差でも見た目が揃う)
+  // レール(プレート+カウンター)の見た目の厚みは固定。
+  // 縦画面で地面を上げても巨大化せず、下の余白は木のカウンター前面で埋める。
+  const baseGh = Math.min(H - GROUND_Y, 150);
   const tw = strip.width * (baseGh / strip.height);
   // 画像内のベルト帯(プレートが流れる部分)のおおよその割合
   const BELT_TOP = 0.08, BELT_BOT = 0.47;
@@ -1343,8 +1415,14 @@ function drawRailGround(){
       ctx.drawImage(strip, x, top, tw, baseGh);
     }
     if(gh > baseGh){
-      // 高い段: 下側をカウンター最下段の色で延長
-      ctx.drawImage(strip, 0, strip.height-4, strip.width, 4, -off1 - tw, top+baseGh-1, tw*8, gh-baseGh+1);
+      // レールの下: 木のカウンター前面(グラデ)で余白を自然に埋める
+      const wy = top + baseGh;
+      const wgrad = ctx.createLinearGradient(0, wy, 0, H);
+      wgrad.addColorStop(0, "#a9734a");
+      wgrad.addColorStop(0.12, "#8b5a33");
+      wgrad.addColorStop(1, "#6e4626");
+      ctx.fillStyle = wgrad;
+      ctx.fillRect(g.x, wy, g.w, H - wy);
     }
     // 2周目: ベルト帯は地形よりゆっくり流す=進行方向(右)へ流れて見える
     const sy = strip.height * BELT_TOP;
@@ -1370,11 +1448,17 @@ function drawObstacle(o){
   ctx.shadowColor = "rgba(0,0,0,.30)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3;
   const sp = SPRITES["obs_" + o.type];
   if(sp){
-    // 画像スプライト版: 当たり判定の枠に高さフィット・底辺中央合わせ
-    // わさび(ウニ)は見栄え優先で大きめ表示(判定は変えないのでプレイヤー有利)
-    const scale = o.type === "wasabi" ? 1.55 : 1.06;
-    const h = o.h * scale, w = h * sp.width / sp.height;
-    ctx.drawImage(sp, o.w/2 - w/2, o.h - h, w, h);
+    // 画像スプライト版: 当たり判定の枠に高さフィット・底辺中央合わせ。
+    // 存在感UP: わずかな脈動・ゆらぎ(判定は不変)。わさびは1.55倍のまま控えめに動かす
+    const isWasabi = o.type === "wasabi";
+    const pulse = 1 + Math.sin(animT*5 + o.h)*(isWasabi?0.03:0.05);   // ゆっくり息づく
+    const sway  = Math.sin(animT*3.2 + o.w)*(isWasabi?0.03:0.05);     // ゆらり揺れる
+    const h = o.h * (isWasabi?1.55:1.5) * pulse, w = h * sp.width / sp.height;
+    ctx.save();
+    ctx.translate(o.w/2, o.h);   // 底辺中央を軸に
+    ctx.rotate(sway);
+    ctx.drawImage(sp, -w/2, -h, w, h);
+    ctx.restore();
     ctx.restore();
     return;
   }
@@ -1768,42 +1852,43 @@ function draw(){
   }
   if(state==="dead" && deadTimer>0.6){
     const base = H/2;
-    ctx.fillStyle="rgba(0,0,0,.45)"; ctx.fillRect(0,0,W,H);
-    centerText("ゲームオーバー", base-70, fz(56,34), "#ff6b6b", "#5a1010");
+    ctx.fillStyle="rgba(0,0,0,.5)"; ctx.fillRect(0,0,W,H);
+    centerText("ゲームオーバー", base-92, fz(54,32), "#ff6b6b", "#5a1010");
     if(mode==="stage"){
-      centerText("STAGE " + stageNum + "　" + (dist/10|0) + "/" + stageP.goalM + "m ／ 🍣×" + sushiCnt, base, fz(28,17), "#fff", null);
-      if(lives <= 0)
-        centerText("残機ゼロ！セーブが消えて最初から…", base+48, fz(24,15), "#ffb0b0", null);
-      else
-        centerText("のこり ❤×" + lives, base+48, fz(24,15), "#ffd", null);
+      centerText("STAGE " + stageNum + "　" + (dist/10|0) + "/" + stageP.goalM + "m ／ 🍣×" + sushiCnt, base-46, fz(24,15), "#fff", null);
+      centerText(lives<=0 ? "残機ゼロ！セーブが消えて最初から…" : "のこり ❤×" + lives,
+                 base-18, fz(20,13), lives<=0?"#ffb0b0":"#ffd", null);
     } else {
-      centerText("SCORE " + score + (score>=best?"　★ベスト更新！":""), base, fz(34,20), "#fff", null);
-      centerText((dist/10|0) + "m ／ 🍣×" + sushiCnt, base+45, fz(24,15), "#ffd", null);
+      centerText("SCORE " + score + (score>=best?"　★ベスト更新！":""), base-46, fz(28,17), "#fff", null);
+      centerText((dist/10|0) + "m ／ 🍣×" + sushiCnt, base-18, fz(20,13), "#ffd", null);
     }
+    // キャラ選択アイコン(枠)。中の3DモデルはVRMレイヤーが描く。名前は枠の下に出る
+    drawCharIcons(deadIconY());
     if((animT*2|0)%2===0)
       centerText(mode==="stage" && cpResume ? "▶ 💾チェックポイントから再開" : "▶ タップでリトライ",
-                 base+105, fz(30,20), "#fff", "#333");
+                 base+162, fz(24,16), "#fff", "#333");
     if(mode==="stage"){
       const z = deadSelectZone();
-      ctx.fillStyle="rgba(255,255,255,.85)"; rr(z.x,z.y,z.w,z.h,12); ctx.fill();
-      centerTextAt("ステージせんたくへ", z.x+z.w/2, z.y+30, fz(20,14), "#333", null);
+      ctx.fillStyle="rgba(255,255,255,.9)"; rr(z.x,z.y,z.w,z.h,12); ctx.fill();
+      centerTextAt("ステージせんたくへ", z.x+z.w/2, z.y+30, fz(19,13), "#333", null);
     }
     const hz = deadHomeZone();
-    ctx.fillStyle="rgba(255,255,255,.85)"; rr(hz.x,hz.y,hz.w,hz.h,12); ctx.fill();
-    centerTextAt("タイトルへ", hz.x+hz.w/2, hz.y+30, fz(20,14), "#333", null);
+    ctx.fillStyle="rgba(255,255,255,.9)"; rr(hz.x,hz.y,hz.w,hz.h,12); ctx.fill();
+    centerTextAt("タイトルへ", hz.x+hz.w/2, hz.y+30, fz(19,13), "#333", null);
   }
   // ステージクリア画面
   if(state==="clear"){
     const base = H/2;
     ctx.fillStyle="rgba(0,0,0,.45)"; ctx.fillRect(0,0,W,H);
-    centerText("ステージ " + stageNum + " クリア！", base-95, fz(52,30), "#ffd93b", "#7a4a12");
+    centerText("ステージ " + stageNum + " クリア！", base-104, fz(50,28), "#ffd93b", "#7a4a12");
     let starStr = "";
     for(let i=1;i<=3;i++) starStr += (i<=earnedStars ? "★" : "☆");
-    ctx.font = "bold " + fz(60,42) + "px sans-serif"; ctx.textAlign = "center";
-    ctx.fillStyle = "#ffb400"; ctx.fillText(starStr, W/2, base-15);
-    centerText("🍣 ×" + sushiCnt + "　　SCORE " + score, base+40, fz(24,15), "#fff", null);
+    ctx.font = "bold " + fz(56,40) + "px sans-serif"; ctx.textAlign = "center";
+    ctx.fillStyle = "#ffb400"; ctx.fillText(starStr, W/2, base-42);
+    centerText("🍣 ×" + sushiCnt + "　　SCORE " + score, base+2, fz(22,14), "#fff", null);
+    if(clearTimer>0.8) drawCharIcons(clearIconY());
     if(clearTimer>0.8 && (animT*2|0)%2===0)
-      centerText(stageNum < STAGE_MAX ? "▶ タップでつぎのステージへ" : "▶ 全ステージクリア！タップでもどる", base+130, fz(26,17), "#fff", "#333");
+      centerText(stageNum < STAGE_MAX ? "▶ タップでつぎのステージへ" : "▶ 全ステージクリア！タップでもどる", base+170, fz(23,15), "#fff", "#333");
   }
   // ステージ選択画面
   if(state==="select"){
@@ -1830,6 +1915,23 @@ function draw(){
   drawMute();
   ctx.restore();
 }
+// キャラ選択アイコンの枠+名前を描画(3DモデルはVRMレイヤーが枠内に描く)
+function drawCharIcons(topY){
+  const z = charIconZones(topY);
+  const fz2 = Math.max(11, Math.round(14 * Math.min(1, W/760)));
+  for(const k of ["ham","fairy"]){
+    const b = z[k], sel = selChar===k;
+    ctx.fillStyle = sel ? "rgba(255,236,170,.96)" : "rgba(255,255,255,.55)";
+    rr(b.x, b.y, b.w, b.h, 14); ctx.fill();
+    if(sel){ ctx.lineWidth=4; ctx.strokeStyle="#ff8c1a"; rr(b.x, b.y, b.w, b.h, 14); ctx.stroke(); ctx.lineWidth=1; }
+    const loaded = window.VRM3D && VRM3D.loaded && VRM3D.loaded[k];
+    if(!loaded){ // VRM未読込は絵文字で代用
+      ctx.font = Math.round(b.h*0.5)+"px sans-serif"; ctx.textAlign="center";
+      ctx.fillText(k==="ham"?"🐹":"🧚", b.x+b.w/2, b.y+b.h*0.64);
+    }
+    centerTextAt(CHAR_NAMES[k], b.x+b.w/2, b.y+b.h+15, fz2, sel?"#7a4a12":"#fff", sel?null:"#333");
+  }
+}
 function centerTextAt(txt, x, y, size, color, stroke){
   ctx.font = "bold " + size + "px sans-serif"; ctx.textAlign="center";
   if(stroke){ ctx.lineWidth = size/8; ctx.strokeStyle = stroke; ctx.strokeText(txt, x, y); }
@@ -1845,11 +1947,22 @@ function loop(t){
   tPrev = t;
   update(dt);
   draw();
+  // キャラ選択アイコン表示中は、その2枠の位置をVRMレイヤーに渡す
+  let charIcons = null;
+  const _iy = activeCharIconY();
+  if(_iy !== null){
+    const z = charIconZones(_iy);
+    charIcons = {};
+    for(const k of ["ham","fairy"]){
+      const b = z[k];
+      charIcons[k] = { cx:b.x+b.w/2, footY:b.y+b.h-8, size:b.h*0.82 };
+    }
+  }
   if(window.VRM3D && VRM3D.update) VRM3D.update(dt, {
     state, selChar, panels:PANELS, animT,
     px:player.x+player.w/2, pfoot:player.y+player.h,
     onGround:player.onGround, vy:player.vy, dead:player.dead, deadRot:player.deadRot,
-    shake
+    shake, charIcons
   });
   requestAnimationFrame(loop);
 }
@@ -2056,6 +2169,22 @@ try{
 
   VRM3D.update = (dt, g)=>{
     VRM3D._sel = g.selChar;
+    // キャラ選択アイコン: 2枠に3Dモデルを並べて表示(ゲームオーバー/クリア)
+    if(g.charIcons){
+      for(const k in chars){
+        const c = chars[k], ic = g.charIcons[k];
+        if(!ic){ c.root.visible = false; continue; }
+        c.root.visible = true;
+        c.root.rotation.y = 0.15; // 正面
+        c._bob = 0;
+        const s = (ic.size / K) * (c.prof.size || 1) * (k===g.selChar ? 1.0 : 0.88);
+        c.root.scale.setScalar(s);
+        c.root.position.set(gx2w(ic.cx), gy2w(ic.footY), 0);
+        pose(c, dt, {state:'title', selChar:g.selChar, dead:false, onGround:true, vy:0}, k===g.selChar);
+      }
+      renderer.render(scene, camera);
+      return;
+    }
     const shx = g.shake ? (Math.random()-.5)*g.shake : 0;
     const shy = g.shake ? (Math.random()-.5)*g.shake : 0;
     for(const k in chars){
