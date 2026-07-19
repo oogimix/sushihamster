@@ -154,7 +154,7 @@ const sfx = {
 const BGM = (()=>{
   let playing=false, step=0, nextT=0, mood=0, muted=false, timer=null;
   let curKey=null, curSrc=null, bgmGain=null, reqId=0;
-  try{ muted = localStorage.getItem("sushiran_mute")==="1"; }catch(e){}
+  muted = false; // ミュートはデフォルトOFF・保存しない(毎回音ありで開始)
   const deadKeys = new Set();  // 読込/デコードに失敗した曲
   const bufCache = new Map();  // key -> AudioBuffer(直近2曲のみ保持)
   const id3 = {};
@@ -367,7 +367,7 @@ const BGM = (()=>{
     },
     toggleMute(){
       muted = !muted;
-      try{ localStorage.setItem("sushiran_mute", muted?"1":"0"); }catch(e){}
+      // ミュート状態は保存しない(セッション内のみ)
       if(bgmGain) bgmGain.gain.value = muted ? 0 : 0.5; // 再生中の曲は音量0で継続(解除で続きから)
       if(!muted && playing){
         if(!curSrc && !(curKey && !curKey.startsWith("chip"))) playRandom();
