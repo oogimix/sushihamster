@@ -398,14 +398,19 @@ const DJUMP_V = -780;          // 2段ジャンプ初速
 let state = "title";           // title / play / dead
 let selChar = "ham";           // ham / fairy
 const CHAR_NAMES = { ham:"sushihamster", fairy:"sushifairy" };
+// 縦画面(引き表示で画面が縮小されるぶん)はUIを拡大する係数
+function uiK(){ return H > W*1.15 ? 1.5 : 1; }
 // タイトルのキャラパネル位置(fitCanvasで更新)
 const PANELS = { ham:{x:0, y:300, w:250, h:205}, fairy:{x:0, y:300, w:250, h:205} };
 function layoutPanels(){
-  const pw = W < 600 ? 196 : 250;
+  const k = uiK();
+  const pk = k>1 ? 1.28 : 1;   // パネル箱はやや控えめに拡大(横に収めるため)
+  const pw = Math.round((W < 600 ? 196 : 250) * pk);
   PANELS.ham.w = PANELS.fairy.w = pw;
-  PANELS.ham.x = Math.round(W/2 - (pw/2 + 9));
-  PANELS.fairy.x = Math.round(W/2 + (pw/2 + 9));
-  PANELS.ham.y = PANELS.fairy.y = Math.round(H/2 + 58); // ロゴと被らないよう下げる
+  PANELS.ham.h = PANELS.fairy.h = Math.round(205 * pk);
+  PANELS.ham.x = Math.round(W/2 - (pw/2 + 9*k));
+  PANELS.fairy.x = Math.round(W/2 + (pw/2 + 9*k));
+  PANELS.ham.y = PANELS.fairy.y = Math.round(H/2 + 62*k); // ロゴと被らないよう下げる
 }
 layoutPanels();
 let speed, dist, score, sushiCnt, best = 0;
@@ -746,9 +751,9 @@ addEventListener("keyup", e=>{
 });
 // ---- 画面レイアウト(タイトルのモードボタン / ステージ選択) ----
 function titleBtnZones(){
-  const base = H/2;
-  const bw = Math.min(230, (W-60)/2), bh = 56;
-  const y = base + 138;
+  const base = H/2, k = uiK();
+  const bw = Math.min(230*k, (W-60)/2), bh = 56*k;
+  const y = base + 150*k;
   return {
     stage:  {x: W/2 - bw - 12, y, w:bw, h:bh},
     endless:{x: W/2 + 12,      y, w:bw, h:bh}
@@ -770,27 +775,34 @@ function selectZones(){
   return { stages, back:{x:16, y:H-64, w:150, h:46} };
 }
 function deadSelectZone(){
-  const bw = Math.min(220, (W-56)/2);
-  return {x: W/2 - bw - 8, y: H/2+196, w: bw, h: 46};
+  const k = uiK(), bw = Math.min(220*k, (W-56)/2);
+  return {x: W/2 - bw - 8, y: H/2+204*k, w: bw, h: 46*k};
 }
 function deadHomeZone(){
-  const bw = Math.min(220, (W-56)/2);
+  const k = uiK(), bw = Math.min(220*k, (W-56)/2);
   return mode==="stage"
-    ? {x: W/2 + 8, y: H/2+196, w: bw, h: 46}
-    : {x: W/2 - bw/2, y: H/2+196, w: bw, h: 46};
+    ? {x: W/2 + 8, y: H/2+204*k, w: bw, h: 46*k}
+    : {x: W/2 - bw/2, y: H/2+204*k, w: bw, h: 46*k};
 }
 function inZ(mx,my,z){ return mx>=z.x && mx<=z.x+z.w && my>=z.y && my<=z.y+z.h; }
 // キャラ選択アイコン(ゲームオーバー/クリア画面)。3Dモデルを枠内に表示してタップで選択
-const ICON_SZ = 88;            // アイコン枠のサイズ(正方形・固定)
-function deadIconY(){ return H/2 + 26; }
-function clearIconY(){ return H/2 + 34; }
+const ICON_SZ = 88;            // アイコン枠の基準サイズ(縦画面ではuiKで拡大)
+function iconSz(){ return Math.min(Math.round(ICON_SZ*uiK()), Math.floor((W-96)/2)); }
+function deadIconY(){ return H/2 + 26*uiK(); }
+function clearIconY(){ return H/2 + 34*uiK(); }
 function charIconZones(topY){
-  const bw = Math.min(ICON_SZ, Math.floor((W-96)/2)), bh = bw;
-  const gap = 30;
+  const bw = iconSz(), bh = bw, gap = 30*uiK();
   return {
     ham:  {x: Math.round(W/2 - bw - gap/2), y: topY, w: bw, h: bh},
     fairy:{x: Math.round(W/2 + gap/2),      y: topY, w: bw, h: bh}
   };
+}
+// キャラアイコンのタップ判定は上下に少し広げる(見えているモデルの頭までタップ可)
+function charIconHit(topY){
+  const z = charIconZones(topY), pad = 24*uiK();
+  const out = {};
+  for(const k of ["ham","fairy"]) out[k] = {x:z[k].x-6, y:z[k].y-pad, w:z[k].w+12, h:z[k].h+pad+22};
+  return out;
 }
 function activeCharIconY(){
   if(state==="dead" && deadTimer>0.6) return deadIconY();
@@ -817,7 +829,7 @@ canvas.addEventListener("pointerdown", e=>{
     // キャラパネルをタップ→選択
     for(const k of ["ham","fairy"]){
       const p = PANELS[k];
-      if(Math.abs(mx-p.x)<p.w/2+5 && my>p.y-160 && my<p.y+60){
+      if(Math.abs(mx-p.x)<p.w/2+5 && my>p.y-p.h*0.8 && my<p.y+p.h*0.32){
         if(selChar!==k){ selChar=k; beep(520,.06,"square",.05); }
         return;
       }
@@ -842,7 +854,7 @@ canvas.addEventListener("pointerdown", e=>{
   // キャラアイコンのタップ(ゲームオーバー/クリアの選択UI)
   function tapCharIcon(){
     const iy = activeCharIconY(); if(iy===null) return false;
-    const z = charIconZones(iy);
+    const z = charIconHit(iy); // 見えているモデルの頭まで含む広めの判定
     for(const k of ["ham","fairy"]){
       if(inZ(mx,my,z[k])){ if(selChar!==k){ selChar=k; beep(520,.06,"square",.05); } return true; }
     }
@@ -1808,13 +1820,14 @@ function draw(){
     }
   }
 
-  const fz = (n, min)=>Math.max(min, Math.round(n * Math.min(1, W/760))); // 狭い画面は文字を縮小
+  const K = uiK(); // 縦画面はUI拡大
+  const fz = (n, min)=> K>1 ? Math.round(n*K) : Math.max(min, Math.round(n * Math.min(1, W/760)));
   if(state==="title"){
     const base = H/2;
     ctx.fillStyle="rgba(0,0,0,.4)"; ctx.fillRect(0,0,W,H);
     // タイトルロゴ: SUSHI DASH!!
     ctx.save();
-    ctx.translate(W/2, base-125);
+    ctx.translate(W/2, base-132*K);
     ctx.transform(1, 0, -0.14, 1, 0, 0); // 前傾イタリックでスピード感
     const ts = fz(84, 46);
     ctx.font = ts + "px 'Bangers', 'Arial Black', sans-serif";
@@ -1836,18 +1849,18 @@ function draw(){
     ctx.restore();
     // キャラ選択パネル
     for(const k of ["ham","fairy"]){
-      const p = PANELS[k], sel = selChar===k, hw = p.w/2;
+      const p = PANELS[k], sel = selChar===k, hw = p.w/2, top = p.y - p.h*0.756;
       ctx.fillStyle = sel ? "rgba(255,236,170,.95)" : "rgba(255,255,255,.55)";
-      rr(p.x-hw, p.y-155, p.w, p.h, 18); ctx.fill();
-      if(sel){ ctx.lineWidth=5; ctx.strokeStyle="#ff8c1a"; rr(p.x-hw, p.y-155, p.w, p.h, 18); ctx.stroke(); ctx.lineWidth=1; }
+      rr(p.x-hw, top, p.w, p.h, 18); ctx.fill();
+      if(sel){ ctx.lineWidth=5; ctx.strokeStyle="#ff8c1a"; rr(p.x-hw, top, p.w, p.h, 18); ctx.stroke(); ctx.lineWidth=1; }
       const loaded = window.VRM3D && VRM3D.loaded && VRM3D.loaded[k];
       if(!loaded){ // VRM未読込時は絵文字で代用
-        ctx.font="64px sans-serif"; ctx.textAlign="center";
-        ctx.fillText(k==="ham"?"🐹":"🧚", p.x, p.y-50);
+        ctx.font=Math.round(64*K)+"px sans-serif"; ctx.textAlign="center";
+        ctx.fillText(k==="ham"?"🐹":"🧚", p.x, p.y-p.h*0.24);
         const l = window.VRM3D && !VRM3D.failed ? "よみこみ中…" : "";
-        if(l){ ctx.font="14px sans-serif"; ctx.fillStyle="#555"; ctx.fillText(l, p.x, p.y-15); }
+        if(l){ ctx.font=fz(14,11)+"px sans-serif"; ctx.fillStyle="#555"; ctx.fillText(l, p.x, p.y-p.h*0.07); }
       }
-      centerTextAt(CHAR_NAMES[k], p.x, p.y+12, fz(24,17), sel?"#7a4a12":"#eee", sel?null:"#333");
+      centerTextAt(CHAR_NAMES[k], p.x, p.y+p.h*0.06, fz(24,17), sel?"#7a4a12":"#eee", sel?null:"#333");
     }
     // モードボタン
     const bz = titleBtnZones();
@@ -1856,50 +1869,50 @@ function draw(){
       ctx.fillStyle = "rgba(255,255,255,.92)";
       rr(z.x, z.y, z.w, z.h, 14); ctx.fill();
       ctx.lineWidth = 3; ctx.strokeStyle = "#ff8c1a"; rr(z.x, z.y, z.w, z.h, 14); ctx.stroke(); ctx.lineWidth = 1;
-      centerTextAt(label, z.x+z.w/2, z.y+26, fz(22,16), "#7a4a12", null);
-      centerTextAt(sub, z.x+z.w/2, z.y+46, fz(14,11), "#996", null);
+      centerTextAt(label, z.x+z.w/2, z.y+z.h*0.47, fz(22,16), "#7a4a12", null);
+      centerTextAt(sub, z.x+z.w/2, z.y+z.h*0.82, fz(14,11), "#996", null);
     }
-    centerText("タップ / スペース でジャンプ・2段ジャンプOK", base+230, fz(18,12), "#ffd", null);
+    centerText("タップ / スペース でジャンプ・2段ジャンプOK", base+250*K, fz(18,12), "#ffd", null);
   }
   if(state==="dead" && deadTimer>0.6){
     const base = H/2;
     ctx.fillStyle="rgba(0,0,0,.5)"; ctx.fillRect(0,0,W,H);
-    centerText("ゲームオーバー", base-92, fz(54,32), "#ff6b6b", "#5a1010");
+    centerText("ゲームオーバー", base-92*K, fz(54,32), "#ff6b6b", "#5a1010");
     if(mode==="stage"){
-      centerText("STAGE " + stageNum + "　" + (dist/10|0) + "/" + stageP.goalM + "m ／ 🍣×" + sushiCnt, base-46, fz(24,15), "#fff", null);
+      centerText("STAGE " + stageNum + "　" + (dist/10|0) + "/" + stageP.goalM + "m ／ 🍣×" + sushiCnt, base-46*K, fz(24,15), "#fff", null);
       centerText(lives<=0 ? "残機ゼロ！セーブが消えて最初から…" : "のこり ❤×" + lives,
-                 base-18, fz(20,13), lives<=0?"#ffb0b0":"#ffd", null);
+                 base-18*K, fz(20,13), lives<=0?"#ffb0b0":"#ffd", null);
     } else {
-      centerText("SCORE " + score + (score>=best?"　★ベスト更新！":""), base-46, fz(28,17), "#fff", null);
-      centerText((dist/10|0) + "m ／ 🍣×" + sushiCnt, base-18, fz(20,13), "#ffd", null);
+      centerText("SCORE " + score + (score>=best?"　★ベスト更新！":""), base-46*K, fz(28,17), "#fff", null);
+      centerText((dist/10|0) + "m ／ 🍣×" + sushiCnt, base-18*K, fz(20,13), "#ffd", null);
     }
     // キャラ選択アイコン(枠)。中の3DモデルはVRMレイヤーが描く。名前は枠の下に出る
     drawCharIcons(deadIconY());
     if((animT*2|0)%2===0)
       centerText(mode==="stage" && cpResume ? "▶ 💾チェックポイントから再開" : "▶ タップでリトライ",
-                 base+162, fz(24,16), "#fff", "#333");
+                 base+170*K, fz(24,16), "#fff", "#333");
     if(mode==="stage"){
       const z = deadSelectZone();
       ctx.fillStyle="rgba(255,255,255,.9)"; rr(z.x,z.y,z.w,z.h,12); ctx.fill();
-      centerTextAt("ステージせんたくへ", z.x+z.w/2, z.y+30, fz(19,13), "#333", null);
+      centerTextAt("ステージせんたくへ", z.x+z.w/2, z.y+z.h*0.65, fz(19,13), "#333", null);
     }
     const hz = deadHomeZone();
     ctx.fillStyle="rgba(255,255,255,.9)"; rr(hz.x,hz.y,hz.w,hz.h,12); ctx.fill();
-    centerTextAt("タイトルへ", hz.x+hz.w/2, hz.y+30, fz(19,13), "#333", null);
+    centerTextAt("タイトルへ", hz.x+hz.w/2, hz.y+hz.h*0.65, fz(19,13), "#333", null);
   }
   // ステージクリア画面
   if(state==="clear"){
     const base = H/2;
     ctx.fillStyle="rgba(0,0,0,.45)"; ctx.fillRect(0,0,W,H);
-    centerText("ステージ " + stageNum + " クリア！", base-104, fz(50,28), "#ffd93b", "#7a4a12");
+    centerText("ステージ " + stageNum + " クリア！", base-108*K, fz(50,28), "#ffd93b", "#7a4a12");
     let starStr = "";
     for(let i=1;i<=3;i++) starStr += (i<=earnedStars ? "★" : "☆");
     ctx.font = "bold " + fz(56,40) + "px sans-serif"; ctx.textAlign = "center";
-    ctx.fillStyle = "#ffb400"; ctx.fillText(starStr, W/2, base-42);
-    centerText("🍣 ×" + sushiCnt + "　　SCORE " + score, base+2, fz(22,14), "#fff", null);
+    ctx.fillStyle = "#ffb400"; ctx.fillText(starStr, W/2, base-44*K);
+    centerText("🍣 ×" + sushiCnt + "　　SCORE " + score, base+2*K, fz(22,14), "#fff", null);
     if(clearTimer>0.8) drawCharIcons(clearIconY());
     if(clearTimer>0.8 && (animT*2|0)%2===0)
-      centerText(stageNum < STAGE_MAX ? "▶ タップでつぎのステージへ" : "▶ 全ステージクリア！タップでもどる", base+170, fz(23,15), "#fff", "#333");
+      centerText(stageNum < STAGE_MAX ? "▶ タップでつぎのステージへ" : "▶ 全ステージクリア！タップでもどる", base+178*K, fz(23,15), "#fff", "#333");
   }
   // ステージ選択画面
   if(state==="select"){
@@ -1973,7 +1986,7 @@ function loop(t){
     state, selChar, panels:PANELS, animT,
     px:player.x+player.w/2, pfoot:player.y+player.h,
     onGround:player.onGround, vy:player.vy, dead:player.dead, deadRot:player.deadRot,
-    shake, charIcons
+    shake, charIcons, uiK:uiK()
   });
   requestAnimationFrame(loop);
 }
@@ -2213,11 +2226,12 @@ try{
         continue;
       }
       if(g.state==='title'){
+        const uk = g.uiK || 1;
         c.root.visible = true;
         c._bob = 0;
         c.root.rotation.y = 0.15; // 正面向き
-        c.root.position.set(gx2w(g.panels[k].x), gy2w(g.panels[k].y - 26), 0);
-        const s = isSel ? 1.1 : 0.92; // タイトルでは等倍(sizeは走行中のみ適用)
+        c.root.position.set(gx2w(g.panels[k].x), gy2w(g.panels[k].y - 26*uk), 0);
+        const s = (isSel ? 1.1 : 0.92) * uk; // 縦画面ではパネルに合わせて拡大
         c.root.scale.setScalar(s);
         pose(c, dt, g, isSel);
       } else if(isSel){
