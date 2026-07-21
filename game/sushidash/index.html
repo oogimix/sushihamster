@@ -826,6 +826,17 @@ function charIconHit(topY){
 // ボタンのタップ判定に余裕を持たせる(端末差で少しズレても押せるように)
 function inZP(mx,my,z){ const p = 28*uiK();
   return mx>=z.x-p && mx<=z.x+z.w+p && my>=z.y-p && my<=z.y+z.h+p; }
+// タイトルのモードボタンも帯を左右に分けた大きな判定にする
+function titleBtnHit(){
+  const k = uiK(), z = titleBtnZones().stage;
+  const y = z.y - 36*k, h = z.h + 72*k;
+  return { stage:{x:0, y, w:W/2-2, h}, endless:{x:W/2+2, y, w:W/2-2, h} };
+}
+// ステージ選択の「もどる」も広めに
+function selectBackHit(){
+  const k = uiK(), b = selectZones().back;
+  return {x:0, y: b.y - 30*k, w: Math.max(b.w*2, W*0.5), h: b.h + 60*k};
+}
 // ゲームオーバー下部ボタンは、その高さの帯を左右に分けた大きな判定にする
 function deadBtnHit(){
   const k = uiK(), z = deadSelectZone();
@@ -840,6 +851,9 @@ function activeCharIconY(){
   return null;
 }
 
+// ===== 一時デバッグ: URLに ?debug=1 を付けるとタップ位置と判定枠を表示 =====
+const DEBUG_TAP = /[?&]debug=1/.test(location.search);
+let lastTap = null;
 let fsTried = false;
 canvas.addEventListener("pointerdown", e=>{
   e.preventDefault();
@@ -851,6 +865,8 @@ canvas.addEventListener("pointerdown", e=>{
   const r = canvas.getBoundingClientRect();
   const mx = (e.clientX - r.left) * W / r.width;
   const my = (e.clientY - r.top) * H / r.height;
+  if(DEBUG_TAP) lastTap = {mx, my, cx:e.clientX, cy:e.clientY,
+                           rl:r.left, rt:r.top, rw:r.width, rh:r.height, t:performance.now()};
 
   // ミュートボタン(全画面共通)
   if(inZ(mx,my,muteZone())){ BGM.toggleMute(); return; }
@@ -864,9 +880,9 @@ canvas.addEventListener("pointerdown", e=>{
         return;
       }
     }
-    const bz = titleBtnZones();
-    if(inZP(mx,my,bz.stage)){ state="select"; beep(660,.08,"triangle",.07); return; }
-    if(inZP(mx,my,bz.endless)){ startGame("endless"); return; }
+    const bz = titleBtnHit();
+    if(inZ(mx,my,bz.stage)){ state="select"; beep(660,.08,"triangle",.07); return; }
+    if(inZ(mx,my,bz.endless)){ startGame("endless"); return; }
     return;
   }
   if(state==="select"){
@@ -878,7 +894,7 @@ canvas.addEventListener("pointerdown", e=>{
         return;
       }
     }
-    if(inZP(mx,my,zs.back)){ state="title"; lives = 3; beep(440,.06,"square",.05); }
+    if(inZ(mx,my,selectBackHit())){ state="title"; lives = 3; beep(440,.06,"square",.05); }
     return;
   }
   // キャラアイコンのタップ(ゲームオーバー/クリアの選択UI)
@@ -1968,6 +1984,51 @@ function draw(){
     centerTextAt("← もどる", b.x+b.w/2, b.y+30, fz(20,15), "#333", null);
   }
   drawMute();
+  if(DEBUG_TAP) drawDebugTap();
+  ctx.restore();
+}
+// 一時デバッグ描画: 判定枠(緑)とタップ位置(赤)を表示
+function drawDebugTap(){
+  const boxes = [];
+  const add = (z,label)=>{ if(z) boxes.push([z,label]); };
+  add(muteZone(), "mute");
+  if(state==="title"){
+    for(const k of ["ham","fairy"]){
+      const p = PANELS[k];
+      add({x:p.x-p.w/2, y:p.y-p.h*0.8, w:p.w, h:p.h*1.12}, k);
+    }
+    const b = titleBtnHit(); add(b.stage,"stage"); add(b.endless,"endless");
+  } else if(state==="select"){
+    for(const z of selectZones().stages) add(z, "");
+    add(selectBackHit(), "back");
+  } else if((state==="dead" && deadTimer>0.6) || (state==="clear" && clearTimer>0.8)){
+    const iy = activeCharIconY();
+    if(iy!==null){ const z = charIconHit(iy); add(z.ham,"ham"); add(z.fairy,"fairy"); }
+    if(state==="dead"){ const d = deadBtnHit(); add(d.select,"select"); add(d.home,"home"); }
+  }
+  ctx.save();
+  ctx.lineWidth = 2; ctx.strokeStyle = "rgba(0,255,80,.9)"; ctx.font = "12px monospace"; ctx.textAlign="left";
+  for(const [z,label] of boxes){
+    ctx.strokeRect(z.x, z.y, z.w, z.h);
+    if(label){ ctx.fillStyle="rgba(0,255,80,.9)"; ctx.fillText(label, z.x+3, z.y+13); }
+  }
+  if(lastTap){
+    ctx.fillStyle="rgba(255,0,0,.85)";
+    ctx.beginPath(); ctx.arc(lastTap.mx, lastTap.my, 9, 0, 7); ctx.fill();
+    ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.stroke();
+  }
+  // 数値の読み出し
+  const L = [
+    "W,H="+W+","+H+"  state="+state,
+    "canvasCSS="+(lastTap?Math.round(lastTap.rw)+"x"+Math.round(lastTap.rh):"-")+
+      "  rectTL="+(lastTap?Math.round(lastTap.rl)+","+Math.round(lastTap.rt):"-"),
+    "client="+(lastTap?Math.round(lastTap.cx)+","+Math.round(lastTap.cy):"-")+
+      "  ->  mx,my="+(lastTap?Math.round(lastTap.mx)+","+Math.round(lastTap.my):"-"),
+    "inner="+innerWidth+"x"+innerHeight+"  dpr="+(devicePixelRatio||1)
+  ];
+  ctx.fillStyle="rgba(0,0,0,.65)"; ctx.fillRect(8, H-78, Math.min(W-16, 430), 70);
+  ctx.fillStyle="#0f0"; ctx.font="13px monospace";
+  L.forEach((s,i)=>ctx.fillText(s, 14, H-60+i*16));
   ctx.restore();
 }
 // キャラ選択アイコンの枠+名前を描画(3DモデルはVRMレイヤーが枠内に描く)
