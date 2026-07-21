@@ -862,11 +862,23 @@ canvas.addEventListener("pointerdown", e=>{
     fsTried = true;
     try{ document.documentElement.requestFullscreen().catch(()=>{}); }catch(err){}
   }
+  // 座標変換: iOSのPWA横持ちでは getBoundingClientRect が誤った値を返すことがあるため、
+  // ブラウザが算出するキャンバス相対座標(offsetX/offsetY)を優先して使う
+  const cw = canvas.clientWidth || 1, ch = canvas.clientHeight || 1;
   const r = canvas.getBoundingClientRect();
-  const mx = (e.clientX - r.left) * W / r.width;
-  const my = (e.clientY - r.top) * H / r.height;
-  if(DEBUG_TAP) lastTap = {mx, my, cx:e.clientX, cy:e.clientY,
-                           rl:r.left, rt:r.top, rw:r.width, rh:r.height, t:performance.now()};
+  let lx, ly, src;
+  if(typeof e.offsetX === "number" && typeof e.offsetY === "number"){
+    lx = e.offsetX; ly = e.offsetY; src = "offset";
+  } else {
+    lx = e.clientX - r.left; ly = e.clientY - r.top; src = "rect";
+  }
+  const mx = lx * W / cw;
+  const my = ly * H / ch;
+  if(DEBUG_TAP) lastTap = {mx, my, cx:e.clientX, cy:e.clientY, src, cw, ch,
+                           rl:r.left, rt:r.top, rw:r.width, rh:r.height,
+                           mxRect:(e.clientX-r.left)*W/(r.width||1), myRect:(e.clientY-r.top)*H/(r.height||1),
+                           mxInner:(e.clientX-(innerWidth-cw)/2)*W/cw, myInner:(e.clientY-(innerHeight-ch)/2)*H/ch,
+                           t:performance.now()};
 
   // ミュートボタン(全画面共通)
   if(inZ(mx,my,muteZone())){ BGM.toggleMute(); return; }
@@ -2018,17 +2030,16 @@ function drawDebugTap(){
     ctx.strokeStyle="#fff"; ctx.lineWidth=2; ctx.stroke();
   }
   // 数値の読み出し
+  const t = lastTap, R = v=>Math.round(v);
   const L = [
-    "W,H="+W+","+H+"  state="+state,
-    "canvasCSS="+(lastTap?Math.round(lastTap.rw)+"x"+Math.round(lastTap.rh):"-")+
-      "  rectTL="+(lastTap?Math.round(lastTap.rl)+","+Math.round(lastTap.rt):"-"),
-    "client="+(lastTap?Math.round(lastTap.cx)+","+Math.round(lastTap.cy):"-")+
-      "  ->  mx,my="+(lastTap?Math.round(lastTap.mx)+","+Math.round(lastTap.my):"-"),
-    "inner="+innerWidth+"x"+innerHeight+"  dpr="+(devicePixelRatio||1)
+    "W,H="+W+","+H+" state="+state+" cssCanvas="+(t?R(t.cw)+"x"+R(t.ch):"-"),
+    "rectTL="+(t?R(t.rl)+","+R(t.rt):"-")+"  inner="+innerWidth+"x"+innerHeight+" dpr="+(devicePixelRatio||1),
+    "client="+(t?R(t.cx)+","+R(t.cy):"-")+"  USED("+(t?t.src:"-")+")="+(t?R(t.mx)+","+R(t.my):"-"),
+    "rect="+(t?R(t.mxRect)+","+R(t.myRect):"-")+"   inner="+(t?R(t.mxInner)+","+R(t.myInner):"-")
   ];
-  ctx.fillStyle="rgba(0,0,0,.65)"; ctx.fillRect(8, H-78, Math.min(W-16, 430), 70);
+  ctx.fillStyle="rgba(0,0,0,.7)"; ctx.fillRect(8, H-84, Math.min(W-16, 560), 76);
   ctx.fillStyle="#0f0"; ctx.font="13px monospace";
-  L.forEach((s,i)=>ctx.fillText(s, 14, H-60+i*16));
+  L.forEach((s,i)=>ctx.fillText(s, 14, H-66+i*16));
   ctx.restore();
 }
 // キャラ選択アイコンの枠+名前を描画(3DモデルはVRMレイヤーが枠内に描く)
