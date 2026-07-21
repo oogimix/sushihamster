@@ -824,26 +824,12 @@ function charIconHit(topY){
   };
 }
 // ボタンのタップ判定に余裕を持たせる(端末差で少しズレても押せるように)
-function inZP(mx,my,z){ const p = 28*uiK();
+function inZP(mx,my,z){ const p = 12*uiK();
   return mx>=z.x-p && mx<=z.x+z.w+p && my>=z.y-p && my<=z.y+z.h+p; }
-// タイトルのモードボタンも帯を左右に分けた大きな判定にする
-function titleBtnHit(){
-  const k = uiK(), z = titleBtnZones().stage;
-  const y = z.y - 36*k, h = z.h + 72*k;
-  return { stage:{x:0, y, w:W/2-2, h}, endless:{x:W/2+2, y, w:W/2-2, h} };
-}
 // ステージ選択の「もどる」も広めに
 function selectBackHit(){
   const k = uiK(), b = selectZones().back;
   return {x:0, y: b.y - 30*k, w: Math.max(b.w*2, W*0.5), h: b.h + 60*k};
-}
-// ゲームオーバー下部ボタンは、その高さの帯を左右に分けた大きな判定にする
-function deadBtnHit(){
-  const k = uiK(), z = deadSelectZone();
-  const y = z.y - 36*k, h = z.h + 72*k;
-  return mode==="stage"
-    ? { select:{x:0, y, w:W/2-2, h}, home:{x:W/2+2, y, w:W/2-2, h} }
-    : { home:{x:0, y, w:W, h} };
 }
 function activeCharIconY(){
   if(state==="dead" && deadTimer>0.6) return deadIconY();
@@ -890,9 +876,9 @@ canvas.addEventListener("pointerdown", e=>{
         return;
       }
     }
-    const bz = titleBtnHit();
-    if(inZ(mx,my,bz.stage)){ state="select"; beep(660,.08,"triangle",.07); return; }
-    if(inZ(mx,my,bz.endless)){ startGame("endless"); return; }
+    const bz = titleBtnZones();
+    if(inZP(mx,my,bz.stage)){ state="select"; beep(660,.08,"triangle",.07); return; }
+    if(inZP(mx,my,bz.endless)){ startGame("endless"); return; }
     return;
   }
   if(state==="select"){
@@ -925,13 +911,12 @@ canvas.addEventListener("pointerdown", e=>{
   }
   if(state==="dead" && deadTimer>0.6){
     if(tapCharIcon()) return;
-    const dz = deadBtnHit();
-    if(dz.home && inZ(mx,my,dz.home)){
+    if(inZP(mx,my,deadHomeZone())){
       state = "title"; lives = 3; beep(440,.06,"square",.05);
       if(window.VRM3D && VRM3D.reset) VRM3D.reset(); // やられ回転を解除
       return;
     }
-    if(dz.select && inZ(mx,my,dz.select)){
+    if(mode==="stage" && inZP(mx,my,deadSelectZone())){
       state = "select"; beep(440,.06,"square",.05);
       if(window.VRM3D && VRM3D.reset) VRM3D.reset();
       return;
@@ -2007,14 +1992,14 @@ function drawDebugTap(){
       const p = PANELS[k];
       add({x:p.x-p.w/2, y:p.y-p.h*0.8, w:p.w, h:p.h*1.12}, k);
     }
-    const b = titleBtnHit(); add(b.stage,"stage"); add(b.endless,"endless");
+    const b = titleBtnZones(); add(b.stage,"stage"); add(b.endless,"endless");
   } else if(state==="select"){
     for(const z of selectZones().stages) add(z, "");
     add(selectBackHit(), "back");
   } else if((state==="dead" && deadTimer>0.6) || (state==="clear" && clearTimer>0.8)){
     const iy = activeCharIconY();
     if(iy!==null){ const z = charIconHit(iy); add(z.ham,"ham"); add(z.fairy,"fairy"); }
-    if(state==="dead"){ const d = deadBtnHit(); add(d.select,"select"); add(d.home,"home"); }
+    if(state==="dead"){ add(deadHomeZone(),"home"); if(mode==="stage") add(deadSelectZone(),"select"); }
   }
   ctx.save();
   ctx.lineWidth = 2; ctx.strokeStyle = "rgba(0,255,80,.9)"; ctx.font = "12px monospace"; ctx.textAlign="left";
