@@ -20,7 +20,7 @@
   html,body { width:100%; height:100%; overflow:hidden; background:#1a2238; touch-action:none; }
   #wrap { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; }
   #stage { position:relative; }
-  canvas { display:block; }
+  canvas { display:block; touch-action:none; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; }
   #game { background:#87ceeb; }
   #vrm3d { position:absolute; left:0; top:0; pointer-events:none; background:transparent; }
 </style>
@@ -238,12 +238,20 @@ const BGM = (()=>{
     for(let s=1; s<=10; s++) slot("stage"+s, "stage"+s);
     MOOD_NAMES.forEach((n,i)=>slot("mood"+i, n));
   }
+  // 起動時に1曲だけ先読みしてHTTPキャッシュを温める(初回の無音を短くする)
+  let firstKey = null;
+  function prewarm(){
+    if(!pool.length) return;
+    const e = pool[(Math.random()*pool.length)|0];
+    firstKey = e.key;
+    fetch(e.urls[0]).catch(()=>{});
+  }
   // info.json を読んでから曲リストを構築
   fetch("./bgm/info.json")
     .then(r=>r.ok?r.json():null)
     .then(j=>{ if(j) infoJson=j; })
     .catch(()=>{})
-    .then(()=>buildPool());
+    .then(()=>{ buildPool(); prewarm(); });
   function metaFor(key){
     if(key.startsWith("chip")) return CHIP_META[+key.slice(4)] || CHIP_META[0];
     const j = key.startsWith("song")
@@ -312,7 +320,10 @@ const BGM = (()=>{
       return;
     }
     const cand = avail.length > 1 ? avail.filter(p=>p.key!==curKey) : avail;
-    const entry = cand[(Math.random()*cand.length)|0];
+    // 初回は先読み済みの曲を選ぶ(ダウンロード待ちを最小化)
+    let entry = null;
+    if(!curKey && firstKey) entry = cand.find(p=>p.key===firstKey) || null;
+    if(!entry) entry = cand[(Math.random()*cand.length)|0];
     stopSrc();
     curKey = entry.key;
     announce(entry.key);
@@ -346,6 +357,7 @@ const BGM = (()=>{
     // 曲が使えるようになったらチップチューンから乗り換え
     if(pool.some(p=>!deadKeys.has(p.key))){ playRandom(); return; }
     const p = P[mood], spb = 60/p.t/2; // 8分音符
+    if(nextT < audioCtx.currentTime) nextT = audioCtx.currentTime + 0.05; // 再開時の追いつき防止
     while(nextT < audioCtx.currentTime + 0.3){
       const i = step % 16;
       note(p.mel[i], nextT, spb*0.9, "square", 0.032);
@@ -740,6 +752,10 @@ function releaseJump(){ player.holding = false; }
 
 addEventListener("keydown", e=>{
   if(e.repeat) return;
+  // 入力欄(アクセスゲートのID/PW等)への入力はゲーム操作として拾わない。
+  // ※IDの"sushiham"に含まれる m がミュート切替を誤爆していた
+  const t = e.target;
+  if(t && (t.tagName==="INPUT" || t.tagName==="TEXTAREA" || t.isContentEditable)) return;
   if(e.code==="KeyM"){ BGM.toggleMute(); return; }
   if(state==="title" && (e.code==="ArrowLeft"||e.code==="ArrowRight")){
     selChar = (selChar==="ham") ? "fairy" : "ham"; beep(520,.06,"square",.05); return;
@@ -882,8 +898,8 @@ canvas.addEventListener("pointerdown", e=>{
   }
   pressJump();
 });
-canvas.addEventListener("pointerup", e=>{ e.preventDefault(); releaseJump(); });
-canvas.addEventListener("pointercancel", ()=>releaseJump());
+addEventListener("pointerup", e=>{ releaseJump(); }, {passive:true});
+addEventListener("pointercancel", ()=>releaseJump(), {passive:true});
 
 // ================= エフェクト =================
 const SPARK_COLORS = ["#ffffff", "#ffe08a", "#ffd1ec", "#bff3ff"];
