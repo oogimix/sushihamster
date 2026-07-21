@@ -893,7 +893,12 @@ function selectZones(){
   for(let i=0;i<STAGE_MAX;i++){
     stages.push({s:i+1, x:x0 + (i%cols)*(bw+gx), y:y0 + ((i/cols)|0)*(bh+gy2), w:bw, h:bh});
   }
-  return { stages, back:{x:16, y:H-64, w:150, h:46} };
+  // 「もどる」はグリッドの真下に中央配置(画面最下部だと遠すぎるため)
+  const k = uiK();
+  const gridBottom = y0 + rows*bh + (rows-1)*gy2;
+  const bkW = 190*k, bkH = 56*k;
+  const bkY = Math.min(H - bkH - 24*k, gridBottom + 44*k);
+  return { stages, back:{x: Math.round(W/2 - bkW/2), y: bkY, w: bkW, h: bkH} };
 }
 function deadSelectZone(){
   const k = uiK(), bw = Math.min(220*k, (W-56)/2);
@@ -1848,31 +1853,32 @@ function drawHamster(){
   ctx.restore();
 }
 
-function muteZone(){ return {x:W-58, y:12, w:46, h:46}; }
+function muteZone(){ const k=uiK(); return {x:W-58*k, y:12*k, w:46*k, h:46*k}; }
 function drawMute(){
-  const mz = muteZone();
-  ctx.fillStyle="rgba(255,255,255,.7)"; rr(mz.x,mz.y,mz.w,mz.h,10); ctx.fill();
-  ctx.font="24px sans-serif"; ctx.textAlign="center";
-  ctx.fillText(BGM.isMuted() ? "🔇" : "🔊", mz.x+mz.w/2, mz.y+32);
+  const mz = muteZone(), k = uiK();
+  ctx.fillStyle="rgba(255,255,255,.7)"; rr(mz.x,mz.y,mz.w,mz.h,10*k); ctx.fill();
+  ctx.font=Math.round(24*k)+"px sans-serif"; ctx.textAlign="center";
+  ctx.fillText(BGM.isMuted() ? "🔇" : "🔊", mz.x+mz.w/2, mz.y+mz.h*0.72);
 }
 function drawHUD(){
+  const k = uiK();
   ctx.textAlign="left";
   const line1 = "SCORE " + score;
   const line2 = (mode === "stage")
     ? "STAGE " + stageNum + "　" + (dist/10|0) + "/" + stageP.goalM + "m　🍣×" + sushiCnt + "　❤×" + Math.max(0, lives)
     : (dist/10|0) + "m　🍣×" + sushiCnt + "　BEST " + best;
-  // 文字幅に合わせて箱の幅を自動調整(はみ出し防止)
-  ctx.font = "bold 26px sans-serif";
+  const f1 = Math.round(26*k), f2 = Math.round(15*k);
+  ctx.font = "bold " + f1 + "px sans-serif";
   const w1 = ctx.measureText(line1).width;
-  ctx.font = "15px sans-serif";
+  ctx.font = f2 + "px sans-serif";
   const w2 = ctx.measureText(line2).width;
-  const bw = Math.min(W - 80, Math.max(240, Math.max(w1, w2) + 26));
-  ctx.fillStyle="rgba(255,255,255,.75)"; rr(14,12,bw,66,12); ctx.fill();
+  const bw = Math.min(W - 80*k, Math.max(240*k, Math.max(w1, w2) + 26*k));
+  ctx.fillStyle="rgba(255,255,255,.75)"; rr(14*k, 12*k, bw, 66*k, 12*k); ctx.fill();
   ctx.fillStyle="#333";
-  ctx.font = "bold 26px sans-serif";
-  ctx.fillText(line1, 26, 40);
-  ctx.font = "15px sans-serif";
-  ctx.fillText(line2, 26, 66);
+  ctx.font = "bold " + f1 + "px sans-serif";
+  ctx.fillText(line1, 26*k, 12*k + f1*1.1);
+  ctx.font = f2 + "px sans-serif";
+  ctx.fillText(line2, 26*k, 12*k + f1*1.1 + f2*1.6);
 }
 
 function centerText(txt, y, size, color, stroke){
@@ -1964,30 +1970,32 @@ function draw(){
       else if(el2 < IN+HOLD) k = 1;
       else k = 1 - ease((el2-IN-HOLD)/OUT);
       const hasArtist = !!nowPlaying.artist;
-      ctx.font = "bold 19px sans-serif";
+      const u = uiK();
+      const fT = Math.round(19*u), fA = Math.round(13*u), fL = Math.round(11*u);
+      ctx.font = "bold " + fT + "px sans-serif";
       const tw1 = ctx.measureText(nowPlaying.title).width;
-      ctx.font = "13px sans-serif";
+      ctx.font = fA + "px sans-serif";
       const tw2 = hasArtist ? ctx.measureText(nowPlaying.artist).width : 0;
-      const bw = Math.min(W-40, Math.max(tw1, tw2) + 92);
-      const bx = -bw + k*(bw + 20);
-      const by = 92, bh = hasArtist ? 64 : 50;
+      const bw = Math.min(W-40*u, Math.max(tw1, tw2) + 92*u);
+      const bx = -bw + k*(bw + 20*u);
+      const by = 100*u, bh = (hasArtist ? 64 : 50)*u;
       ctx.save();
       ctx.globalAlpha = Math.min(1, k*1.2);
       ctx.fillStyle = "rgba(18,22,40,.88)";
-      rr(bx, by, bw, bh, 12); ctx.fill();
+      rr(bx, by, bw, bh, 12*u); ctx.fill();
       ctx.fillStyle = "#ff8c1a";
-      rr(bx, by, 6, bh, 3); ctx.fill();
+      rr(bx, by, 6*u, bh, 3*u); ctx.fill();
       ctx.textAlign = "left";
       ctx.fillStyle = "#ffd93b";
-      ctx.font = "bold 11px sans-serif";
-      ctx.fillText("♪ NOW PLAYING", bx+20, by+17);
+      ctx.font = "bold " + fL + "px sans-serif";
+      ctx.fillText("♪ NOW PLAYING", bx+20*u, by+17*u);
       ctx.fillStyle = "#fff";
-      ctx.font = "bold 19px sans-serif";
-      ctx.fillText(nowPlaying.title, bx+20, by+38);
+      ctx.font = "bold " + fT + "px sans-serif";
+      ctx.fillText(nowPlaying.title, bx+20*u, by+38*u);
       if(hasArtist){
         ctx.fillStyle = "#9fb3d9";
-        ctx.font = "13px sans-serif";
-        ctx.fillText(nowPlaying.artist, bx+20, by+56);
+        ctx.font = fA + "px sans-serif";
+        ctx.fillText(nowPlaying.artist, bx+20*u, by+56*u);
       }
       ctx.restore();
     }
@@ -2090,7 +2098,7 @@ function draw(){
   // ステージ選択画面
   if(state==="select"){
     ctx.fillStyle="rgba(0,0,0,.55)"; ctx.fillRect(0,0,W,H);
-    centerText("ステージをえらぶ", 70, fz(40,26), "#ffd93b", "#7a4a12");
+    centerText("ステージをえらぶ", 96*K, fz(40,26), "#ffd93b", "#7a4a12");
     const zs = selectZones();
     for(const z of zs.stages){
       const un = stageUnlocked(z.s), st = stageStars[z.s]|0;
@@ -2107,7 +2115,7 @@ function draw(){
     }
     const b = zs.back;
     ctx.fillStyle="rgba(255,255,255,.85)"; rr(b.x,b.y,b.w,b.h,12); ctx.fill();
-    centerTextAt("← もどる", b.x+b.w/2, b.y+30, fz(20,15), "#333", null);
+    centerTextAt("← もどる", b.x+b.w/2, b.y+b.h*0.64, fz(20,15), "#333", null);
   }
   drawMute();
   if(DEBUG_TAP) drawDebugTap();
