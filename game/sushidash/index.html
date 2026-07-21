@@ -494,6 +494,7 @@ function reset(){
   player.onGround = true; player.jumps = 0; player.dead = false; player.deadRot = 0;
   grounds = [{x:-100, w:1900, y:GROUND_Y}]; obstacles = []; items = []; particles = []; popups = [];
   zone = "hills"; zoneLeft = 3; elevLvl = 0; prevTop = GROUND_Y;
+  sushiBag = []; sushiMaxX = -1e9;
   genX = 1800; deadTimer = 0; shake = 0;
   // チェックポイント設定(ステージのみ): 易1個 / 中2個 / 難3個
   cpEnts = []; cpFlags = []; cpList = [];
@@ -522,12 +523,21 @@ const SUSHI_KINDS = [
   {name:"toro",   neta:"#f2917e"}
 ];
 
-function randSushi(){ return SUSHI_KINDS[(rng()*SUSHI_KINDS.length)|0]; }
+let sushiBag = [];
+function randSushi(){
+  if(!sushiBag.length){                       // 全種を1回ずつ使い切ってから補充
+    sushiBag = SUSHI_KINDS.slice();
+    for(let i=sushiBag.length-1;i>0;i--){ const j=(rng()*(i+1))|0; const t=sushiBag[i]; sushiBag[i]=sushiBag[j]; sushiBag[j]=t; }
+  }
+  return sushiBag.pop();
+}
+let sushiMaxX = -1e9;                          // 直近に置いた寿司の右端(重ね置き防止)
 // 寿司を追加(星評価用に、ゴール手前までの出現数をカウント)
 function addItem(x, y, kind){
   // 保険: 生成済みの地面に埋まる・接地しすぎる位置なら上に持ち上げる
   const gt = groundTopAt(x-5, x+5);
   if(gt < Infinity && y > gt - 30) y = gt - 55;
+  if(x > sushiMaxX) sushiMaxX = x;             // 重ね置き防止のため右端を記録
   items.push({x, y, r:20, kind, taken:false});
   if(mode !== "stage" || dist + (x - player.x) < stageGoalPx - 60) sushiSpawned++;
 }
@@ -587,7 +597,7 @@ function obstacleConflict(x){
 // 走るだけで取れる地上ライン
 function placeRunLine(g, gy){
   const kind = randSushi(), y = gy - 52, step = 58;
-  const sx = g.x + 80, ex = g.x + g.w - 150;
+  const sx = Math.max(g.x + 80, sushiMaxX + 140), ex = g.x + g.w - 150;
   if(ex - sx < step*2) return;
   let x = sx + rng()*(ex - sx - step*2);
   let n = 0;
@@ -602,7 +612,7 @@ function placeRunLine(g, gy){
 function placeFlatArc(g, gy){
   const apex = jumpApexDx(speed);
   const span = apex * 2;                       // 踏み切り〜着地の水平距離
-  const sx = g.x + 90, ex = g.x + g.w - 120 - span;
+  const sx = Math.max(g.x + 90, sushiMaxX + 140), ex = g.x + g.w - 120 - span;
   if(ex <= sx) return false;                   // 直線が短ければ置かない
   for(let tries = 0; tries < 6; tries++){
     const t0 = sx + rng()*(ex - sx);
@@ -620,31 +630,19 @@ function placeFlatArc(g, gy){
   }
   return false;
 }
-// 2段目のジャンプ(初速DJUMP_V)による相対的な高さ
-function jumpH2(dx, spd){
-  const th = 0.18, g1 = GRAV*0.55, t = dx/spd;
-  if(t <= 0) return 0;
-  if(t <= th) return -DJUMP_V*t - 0.5*g1*t*t;
-  const h1 = -DJUMP_V*th - 0.5*g1*th*th, v1 = -DJUMP_V - g1*th, t2 = t - th;
-  return h1 + v1*t2 - 0.5*GRAV*t2*t2;
-}
-// 2段ジャンプ込みの軌道(1段目の頂点で2段目を出す前提=自然な跳び方)
-function dblH(dx, spd){
-  const a = jumpApexDx(spd);
-  return dx <= a ? jumpH(dx, spd) : jumpH(a, spd) + jumpH2(dx - a, spd);
-}
 // 高さが0(着地)に戻るまでの水平距離
 function pathSpan(fn, spd){
   let dx = 0; const step = spd*0.02;
   for(let i=0;i<400;i++){ dx += step; if(fn(dx, spd) <= 0) break; }
   return dx;
 }
-// 穴を跳ぶ軌道に沿って放物線状に置く。通常穴=1段ジャンプ、大穴=2段ジャンプの実軌道
-function placeJumpArc(takeoffX, groundTop, huge){
-  const fn = huge ? dblH : jumpH;
+// 穴を跳ぶ1段ジャンプの軌道に沿って放物線状に置く(大穴には置かない)
+function placeJumpArc(takeoffX, groundTop){
+  if(takeoffX < sushiMaxX + 140) return;   // 直前の配置と近すぎる場合は置かない(重ね置き防止)
+  const fn = jumpH;
   const span = pathSpan(fn, speed);
   const kind = randSushi();
-  const n = huge ? 7 : 5;
+  const n = 5;
   for(let i=0;i<=n;i++){
     const dx = span * (i/n);
     const h = Math.max(0, fn(dx, speed) * 0.85);  // 少し低めにして踏み切りのブレを吸収
@@ -695,8 +693,9 @@ function genChunk(){
       ox += gapMin + rng()*140;
     }
     // 障害物を避けて配置。長い直線では「跳んで取る弧」も置く
-    if(rng() < 0.55) placeFlatArc(g, gy);
-    if(rng() < 0.7) placeRunLine(g, gy);
+    // 1か所につき「跳んで取る弧」か「地上ライン」のどちらか一方だけ(重ね置き防止)
+    if(rng() < 0.5){ if(!placeFlatArc(g, gy)) placeRunLine(g, gy); }
+    else placeRunLine(g, gy);
     prevTop = gy; genX = g.x + g.w;
     return;
   }
@@ -712,7 +711,7 @@ function genChunk(){
     gw = Math.min(gw, dir > 0 ? speed*0.42 : speed*0.55);
     const gapStart = genX;
     genX += gw;
-    if(rng() < 0.6) placeJumpArc(gapStart - 40, Math.min(prevTop, gy), false);
+    if(rng() < 0.6) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
     const g = {x:genX, w: Math.max(240, speed*0.32) + rng()*200, y:gy};
     grounds.push(g);
     // 段の上は走るだけで取れる地上ライン
@@ -733,7 +732,7 @@ function genChunk(){
     const gapStart = genX;
     genX += gw;
     // アーチの基準は高い側の地面(段差地帯の直後でも足場に埋まらない)
-    if(rng() < 0.7) placeJumpArc(gapStart - 40, Math.min(prevTop, gy), huge);
+    if(!huge && rng() < 0.7) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
   }
   // 足場: 通常の台と小島(幅はスピード比例で着地猶予0.4秒以上)
   const small = rng() < 0.22;
@@ -761,8 +760,9 @@ function genChunk(){
   }
 
   // 地上ライン。広い足場では「跳んで取る弧」も置く
-  if(!small && g.w > 620 && rng() < 0.45) placeFlatArc(g, gy);
-  if(rng() < (small ? 0.3 : 0.55)) placeRunLine(g, gy);
+  // 1か所につき弧か直線のどちらか一方だけ(重ね置き防止)
+  if(!small && g.w > 620 && rng() < 0.4){ if(!placeFlatArc(g, gy)) placeRunLine(g, gy); }
+  else if(rng() < (small ? 0.3 : 0.55)) placeRunLine(g, gy);
   prevTop = gy;
   genX = g.x + g.w;
 }
