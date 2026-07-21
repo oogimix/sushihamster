@@ -824,8 +824,16 @@ function charIconHit(topY){
   };
 }
 // ボタンのタップ判定に余裕を持たせる(端末差で少しズレても押せるように)
-function inZP(mx,my,z){ const p = 16*uiK();
+function inZP(mx,my,z){ const p = 28*uiK();
   return mx>=z.x-p && mx<=z.x+z.w+p && my>=z.y-p && my<=z.y+z.h+p; }
+// ゲームオーバー下部ボタンは、その高さの帯を左右に分けた大きな判定にする
+function deadBtnHit(){
+  const k = uiK(), z = deadSelectZone();
+  const y = z.y - 36*k, h = z.h + 72*k;
+  return mode==="stage"
+    ? { select:{x:0, y, w:W/2-2, h}, home:{x:W/2+2, y, w:W/2-2, h} }
+    : { home:{x:0, y, w:W, h} };
+}
 function activeCharIconY(){
   if(state==="dead" && deadTimer>0.6) return deadIconY();
   if(state==="clear" && clearTimer>0.8) return clearIconY();
@@ -891,12 +899,13 @@ canvas.addEventListener("pointerdown", e=>{
   }
   if(state==="dead" && deadTimer>0.6){
     if(tapCharIcon()) return;
-    if(inZP(mx,my,deadHomeZone())){
+    const dz = deadBtnHit();
+    if(dz.home && inZ(mx,my,dz.home)){
       state = "title"; lives = 3; beep(440,.06,"square",.05);
       if(window.VRM3D && VRM3D.reset) VRM3D.reset(); // やられ回転を解除
       return;
     }
-    if(mode==="stage" && inZP(mx,my,deadSelectZone())){
+    if(dz.select && inZ(mx,my,dz.select)){
       state = "select"; beep(440,.06,"square",.05);
       if(window.VRM3D && VRM3D.reset) VRM3D.reset();
       return;
