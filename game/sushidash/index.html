@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>SUSHI DASH!!</title>
-<meta name="description" content="sushihamsterのワンボタン・ランアクション！VRMのすしハムたちと回転寿司レーンを駆け抜けろ！全30ステージ+エンドレス。">
+<meta name="description" content="sushihamster達と駆け抜ける超VIBESワンボタン・ランアクション!!! 鮨を求めて僕たちは走り続ける…">
 <meta property="og:title" content="SUSHI DASH!!">
-<meta property="og:description" content="すしハムと駆け抜けるワンボタン・ランアクション！全30ステージ+エンドレス">
+<meta property="og:description" content="sushihamster達と駆け抜ける超VIBESワンボタン・ランアクション!!! 鮨を求めて僕たちは走り続ける…">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sushihamster.com/game/sushidash/">
 <meta property="og:image" content="https://sushihamster.com/game/sushidash/ogp.png">
@@ -68,7 +68,7 @@
 <div id="wrap"><div id="stage"><canvas id="game"></canvas><canvas id="vrm3d"></canvas></div></div>
 <script>
 "use strict";
-// すしハムラン v2 (VRM対応)
+// SUSHI DASH!! v2 (VRM対応)
 // ================= 基本設定 =================
 let W = 960;                   // 視界(横)
 let H = 540;                   // 世界の縦(縦持ちのみ拡張)
@@ -173,10 +173,10 @@ const BGM = (()=>{
   let pool = [];               // [{key, urls:[..]}]
   const MOOD_NAMES = ["day","evening","night","weird"];
   const CHIP_META = [
-    {title:"おすしマーチ",        artist:"すしハムバンド"},
-    {title:"ゆうやけ醤油",        artist:"すしハムバンド"},
-    {title:"よふかしのシャリ",    artist:"すしフェアリーズ"},
-    {title:"ワサビ・ディメンション", artist:"すしハムバンド"}
+    {title:"おすしマーチ",        artist:"sushihamster"},
+    {title:"ゆうやけ醤油",        artist:"sushihamster"},
+    {title:"よふかしのシャリ",    artist:"sushifairy"},
+    {title:"ワサビ・ディメンション", artist:"sushihamster"}
   ];
   // mp3のID3v2タグ(TIT2/TPE1)を軽量パース。日本語(UTF-8/UTF-16/Shift_JIS)対応
   function readId3Buf(buf, key){
@@ -620,14 +620,34 @@ function placeFlatArc(g, gy){
   }
   return false;
 }
-// 穴を跳ぶ軌道(踏み切り〜頂点)に沿って置く。2段ジャンプでも共通の区間なので必ず通過する
-function placeJumpArc(takeoffX, groundTop){
+// 2段目のジャンプ(初速DJUMP_V)による相対的な高さ
+function jumpH2(dx, spd){
+  const th = 0.18, g1 = GRAV*0.55, t = dx/spd;
+  if(t <= 0) return 0;
+  if(t <= th) return -DJUMP_V*t - 0.5*g1*t*t;
+  const h1 = -DJUMP_V*th - 0.5*g1*th*th, v1 = -DJUMP_V - g1*th, t2 = t - th;
+  return h1 + v1*t2 - 0.5*GRAV*t2*t2;
+}
+// 2段ジャンプ込みの軌道(1段目の頂点で2段目を出す前提=自然な跳び方)
+function dblH(dx, spd){
+  const a = jumpApexDx(spd);
+  return dx <= a ? jumpH(dx, spd) : jumpH(a, spd) + jumpH2(dx - a, spd);
+}
+// 高さが0(着地)に戻るまでの水平距離
+function pathSpan(fn, spd){
+  let dx = 0; const step = spd*0.02;
+  for(let i=0;i<400;i++){ dx += step; if(fn(dx, spd) <= 0) break; }
+  return dx;
+}
+// 穴を跳ぶ軌道に沿って放物線状に置く。通常穴=1段ジャンプ、大穴=2段ジャンプの実軌道
+function placeJumpArc(takeoffX, groundTop, huge){
+  const fn = huge ? dblH : jumpH;
+  const span = pathSpan(fn, speed);
   const kind = randSushi();
-  const apex = jumpApexDx(speed);
-  const n = 3 + (rng()*2|0);
-  for(let i=1;i<=n;i++){
-    const dx = apex * (i/(n+0.5));
-    const h = jumpH(dx, speed) * 0.8;   // 少し低めにしてジャンプ時点のブレを吸収
+  const n = huge ? 7 : 5;
+  for(let i=0;i<=n;i++){
+    const dx = span * (i/n);
+    const h = Math.max(0, fn(dx, speed) * 0.85);  // 少し低めにして踏み切りのブレを吸収
     addItem(takeoffX + dx, groundTop - 45 - h, kind);
   }
 }
@@ -692,7 +712,7 @@ function genChunk(){
     gw = Math.min(gw, dir > 0 ? speed*0.42 : speed*0.55);
     const gapStart = genX;
     genX += gw;
-    if(rng() < 0.6) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
+    if(rng() < 0.6) placeJumpArc(gapStart - 40, Math.min(prevTop, gy), false);
     const g = {x:genX, w: Math.max(240, speed*0.32) + rng()*200, y:gy};
     grounds.push(g);
     // 段の上は走るだけで取れる地上ライン
@@ -713,7 +733,7 @@ function genChunk(){
     const gapStart = genX;
     genX += gw;
     // アーチの基準は高い側の地面(段差地帯の直後でも足場に埋まらない)
-    if(rng() < 0.7) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
+    if(rng() < 0.7) placeJumpArc(gapStart - 40, Math.min(prevTop, gy), huge);
   }
   // 足場: 通常の台と小島(幅はスピード比例で着地猶予0.4秒以上)
   const small = rng() < 0.22;
@@ -1950,7 +1970,7 @@ function draw(){
     }
     // モードボタン
     const bz = titleBtnZones();
-    const btns = [[bz.stage, "ステージ", "🚩 1〜" + STAGE_MAX + "面"], [bz.endless, "エンドレス", "🏃 スコアアタック"]];
+    const btns = [[bz.stage, "ステージ", "🚩 コースを攻略"], [bz.endless, "エンドレス", "🏃 スコアアタック"]];
     for(const [z, label, sub] of btns){
       ctx.fillStyle = "rgba(255,255,255,.92)";
       rr(z.x, z.y, z.w, z.h, 14); ctx.fill();
@@ -2278,7 +2298,7 @@ try{
     if(head) head.rotation.x = headX;
 
     // 宙返り / 前傾(tilt)
-    // すしハム: 初期モーションの側転風スピン(画面軸) / フェアリー: 前方宙返り(前後ピッチ軸)
+    // sushihamster: 側転風スピン(画面軸) / sushifairy: 前方宙返り(前後ピッチ軸)
     const sideSpin = !P.float;
     if(c.flipT >= 0){
       c.flipT += dt;
