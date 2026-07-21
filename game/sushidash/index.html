@@ -557,17 +557,78 @@ function makeObstacle(ox, top){
   obstacles.push(o);
   return ow;
 }
-// 穴の上の寿司アーチ(ジャンプ軌道の道しるべ)
-function sushiArch(gapStart, gw, baseTop, high){
+// ===== 寿司の配置 =====
+// 方針: 寿司は「走るだけで取れる地上ライン」か「必ず行うジャンプの軌道上」にしか置かない。
+// これで理論上すべての寿司が回収可能になる(空中の密集配置・障害物の直前直上は廃止)。
+
+// ジャンプ軌道: 踏み切りからの水平距離dxにおける高さ(上向き正px)
+// 最初の0.18秒はボタン長押しで重力0.55倍(ゲーム本体の物理と同じ)
+function jumpH(dx, spd){
+  const th = 0.18, g1 = GRAV*0.55, t = dx/spd;
+  if(t <= 0) return 0;
+  if(t <= th) return -JUMP_V*t - 0.5*g1*t*t;
+  const h1 = -JUMP_V*th - 0.5*g1*th*th, v1 = -JUMP_V - g1*th, t2 = t - th;
+  return h1 + v1*t2 - 0.5*GRAV*t2*t2;
+}
+// 頂点までの水平距離
+function jumpApexDx(spd){
+  const th = 0.18, g1 = GRAV*0.55, v1 = -JUMP_V - g1*th;
+  return spd*(th + v1/GRAV);
+}
+// 障害物の手前・直後は寿司を置かない(取ると必ずぶつかる配置を防ぐ)
+function obstacleConflict(x){
+  for(const o of obstacles){
+    const bx = (o.bx !== undefined) ? o.bx : o.x;      // 動く敵は基準位置で判定
+    const sw = (o.amp || 0);                            // 往復幅ぶんも避ける
+    if(x > bx - 130 - sw && x < bx + o.w + 70 + sw) return true;
+  }
+  return false;
+}
+// 走るだけで取れる地上ライン
+function placeRunLine(g, gy){
+  const kind = randSushi(), y = gy - 52, step = 58;
+  const sx = g.x + 80, ex = g.x + g.w - 150;
+  if(ex - sx < step*2) return;
+  let x = sx + rng()*(ex - sx - step*2);
+  let n = 0;
+  const max = 3 + (rng()*3|0);
+  while(x < ex && n < max){
+    if(!obstacleConflict(x)){ addItem(x, y, kind); n++; }
+    x += step;
+  }
+}
+// 長い直線に置く「跳んで取る弧」。踏み切り〜着地までの完全なジャンプ軌道に沿って置くので、
+// 両端は走行中の高さ=どこから跳べばいいか一目で分かる。地面が続くのでジャンプは任意
+function placeFlatArc(g, gy){
+  const apex = jumpApexDx(speed);
+  const span = apex * 2;                       // 踏み切り〜着地の水平距離
+  const sx = g.x + 90, ex = g.x + g.w - 120 - span;
+  if(ex <= sx) return false;                   // 直線が短ければ置かない
+  for(let tries = 0; tries < 6; tries++){
+    const t0 = sx + rng()*(ex - sx);
+    let clear = true;
+    for(let d = 0; d <= span; d += 40) if(obstacleConflict(t0 + d)){ clear = false; break; }
+    if(!clear) continue;                       // 障害物にかかる場所は避ける
+    const kind = randSushi();
+    const n = 5 + (rng()*2|0);
+    for(let i = 0; i <= n; i++){
+      const dx = span * (i/n);
+      const h = Math.max(0, jumpH(dx, speed) * 0.85);
+      addItem(t0 + dx, gy - 45 - h, kind);
+    }
+    return true;
+  }
+  return false;
+}
+// 穴を跳ぶ軌道(踏み切り〜頂点)に沿って置く。2段ジャンプでも共通の区間なので必ず通過する
+function placeJumpArc(takeoffX, groundTop){
   const kind = randSushi();
-  const n = 4 + (rng()*2|0);
-  for(let i=0;i<n;i++){
-    const t = i/(n-1);
-    addItem(
-      gapStart - 30 + t*(gw+60),
-      baseTop - 90 - Math.sin(t*Math.PI)*(110 + (high?50:0)),
-      kind
-    );
+  const apex = jumpApexDx(speed);
+  const n = 3 + (rng()*2|0);
+  for(let i=1;i<=n;i++){
+    const dx = apex * (i/(n+0.5));
+    const h = jumpH(dx, speed) * 0.8;   // 少し低めにしてジャンプ時点のブレを吸収
+    addItem(takeoffX + dx, groundTop - 45 - h, kind);
   }
 }
 
@@ -611,10 +672,11 @@ function genChunk(){
     let ox = g.x + edgeM + (prevTop < gy ? speed*0.7 : 0);
     while(ox < g.x + g.w - edgeM - 44){
       makeObstacle(ox, gy);
-      // たまに障害物の真上に寿司(跳び越えのご褒美)
-      if(rng() < 0.5) addItem(ox+22, gy-150, randSushi());
       ox += gapMin + rng()*140;
     }
+    // 障害物を避けて配置。長い直線では「跳んで取る弧」も置く
+    if(rng() < 0.55) placeFlatArc(g, gy);
+    if(rng() < 0.7) placeRunLine(g, gy);
     prevTop = gy; genX = g.x + g.w;
     return;
   }
@@ -630,16 +692,11 @@ function genChunk(){
     gw = Math.min(gw, dir > 0 ? speed*0.42 : speed*0.55);
     const gapStart = genX;
     genX += gw;
-    if(rng() < 0.6) sushiArch(gapStart, gw, Math.min(prevTop, gy), false);
+    if(rng() < 0.6) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
     const g = {x:genX, w: Math.max(240, speed*0.32) + rng()*200, y:gy};
     grounds.push(g);
-    // 段の上に寿司列
-    if(rng() < 0.5){
-      const kind = randSushi();
-      const n = 2 + (rng()*2|0);
-      const sx = g.x + 40 + rng()*Math.max(20, g.w-80-n*52);
-      for(let i=0;i<n;i++) addItem(sx+i*52, gy-70, kind);
-    }
+    // 段の上は走るだけで取れる地上ライン
+    if(rng() < 0.5) placeRunLine(g, gy);
     prevTop = gy; genX = g.x + g.w;
     return;
   }
@@ -656,7 +713,7 @@ function genChunk(){
     const gapStart = genX;
     genX += gw;
     // アーチの基準は高い側の地面(段差地帯の直後でも足場に埋まらない)
-    if(rng() < 0.65) sushiArch(gapStart, gw, Math.min(prevTop, gy), huge);
+    if(rng() < 0.7) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
   }
   // 足場: 通常の台と小島(幅はスピード比例で着地猶予0.4秒以上)
   const small = rng() < 0.22;
@@ -683,22 +740,9 @@ function genChunk(){
     }
   }
 
-  // 地上の寿司（アーチ状 or 一列）
-  if(rng() < (small ? 0.35 : 0.6)){
-    const kind = randSushi();
-    const n = small ? 2 : 3 + (rng()*3|0);
-    // 右端に140pxの余白=次の穴への踏み切り前に取り切れる
-    const sx = g.x + 40 + rng()*(Math.max(40, g.w-150-n*52));
-    const arch = rng() < 0.5;
-    // 高さは列ごとに統一(個別ランダムだと隣同士で全回収不能になるため)
-    const lineElev = (!arch && rng() < 0.25) ? 150 : 0;
-    for(let i=0;i<n;i++){
-      const yy = arch
-        ? gy - 120 - Math.sin((i/(Math.max(1,n-1)))*Math.PI)*130
-        : gy - 70 - lineElev;
-      addItem(sx+i*52, yy, kind);
-    }
-  }
+  // 地上ライン。広い足場では「跳んで取る弧」も置く
+  if(!small && g.w > 620 && rng() < 0.45) placeFlatArc(g, gy);
+  if(rng() < (small ? 0.3 : 0.55)) placeRunLine(g, gy);
   prevTop = gy;
   genX = g.x + g.w;
 }
