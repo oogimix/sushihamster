@@ -813,13 +813,19 @@ function charIconZones(topY){
     fairy:{x: Math.round(W/2 + gap/2),      y: topY, w: bw, h: bh}
   };
 }
-// キャラアイコンのタップ判定は上下に少し広げる(見えているモデルの頭までタップ可)
+// キャラアイコンのタップ判定は大きめに(中央で左右に分割し、アイコン+名前を余裕を持って覆う)
 function charIconHit(topY){
-  const z = charIconZones(topY), pad = 24*uiK();
-  const out = {};
-  for(const k of ["ham","fairy"]) out[k] = {x:z[k].x-6, y:z[k].y-pad, w:z[k].w+12, h:z[k].h+pad+22};
-  return out;
+  const k = uiK(), z = charIconZones(topY);
+  const top = topY - 40*k, h = z.ham.h + 80*k;
+  const halfW = z.ham.w + 30*k;
+  return {
+    ham:  {x: W/2 - halfW - 4, y: top, w: halfW, h: h},
+    fairy:{x: W/2 + 4,         y: top, w: halfW, h: h}
+  };
 }
+// ボタンのタップ判定に余裕を持たせる(端末差で少しズレても押せるように)
+function inZP(mx,my,z){ const p = 16*uiK();
+  return mx>=z.x-p && mx<=z.x+z.w+p && my>=z.y-p && my<=z.y+z.h+p; }
 function activeCharIconY(){
   if(state==="dead" && deadTimer>0.6) return deadIconY();
   if(state==="clear" && clearTimer>0.8) return clearIconY();
@@ -851,20 +857,20 @@ canvas.addEventListener("pointerdown", e=>{
       }
     }
     const bz = titleBtnZones();
-    if(inZ(mx,my,bz.stage)){ state="select"; beep(660,.08,"triangle",.07); return; }
-    if(inZ(mx,my,bz.endless)){ startGame("endless"); return; }
+    if(inZP(mx,my,bz.stage)){ state="select"; beep(660,.08,"triangle",.07); return; }
+    if(inZP(mx,my,bz.endless)){ startGame("endless"); return; }
     return;
   }
   if(state==="select"){
     const zs = selectZones();
     for(const z of zs.stages){
-      if(inZ(mx,my,z)){
+      if(inZP(mx,my,z)){
         if(stageUnlocked(z.s)){ startGame("stage", z.s); }
         else beep(200,.12,"square",.05);
         return;
       }
     }
-    if(inZ(mx,my,zs.back)){ state="title"; lives = 3; beep(440,.06,"square",.05); }
+    if(inZP(mx,my,zs.back)){ state="title"; lives = 3; beep(440,.06,"square",.05); }
     return;
   }
   // キャラアイコンのタップ(ゲームオーバー/クリアの選択UI)
@@ -885,12 +891,12 @@ canvas.addEventListener("pointerdown", e=>{
   }
   if(state==="dead" && deadTimer>0.6){
     if(tapCharIcon()) return;
-    if(inZ(mx,my,deadHomeZone())){
+    if(inZP(mx,my,deadHomeZone())){
       state = "title"; lives = 3; beep(440,.06,"square",.05);
       if(window.VRM3D && VRM3D.reset) VRM3D.reset(); // やられ回転を解除
       return;
     }
-    if(mode==="stage" && inZ(mx,my,deadSelectZone())){
+    if(mode==="stage" && inZP(mx,my,deadSelectZone())){
       state = "select"; beep(440,.06,"square",.05);
       if(window.VRM3D && VRM3D.reset) VRM3D.reset();
       return;
