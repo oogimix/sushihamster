@@ -864,16 +864,14 @@ canvas.addEventListener("pointerdown", e=>{
   }
   // 座標変換: iOSのPWA横持ちでは getBoundingClientRect が誤った値を返すことがあるため、
   // ブラウザが算出するキャンバス相対座標(offsetX/offsetY)を優先して使う
+  // キャンバスは #wrap(fixed inset:0) の中央に配置されるので、その前提で自前計算する。
+  // ※iOSのPWA横持ちでは rect/offset が誤った値になるため使わない
   const cw = canvas.clientWidth || 1, ch = canvas.clientHeight || 1;
   const r = canvas.getBoundingClientRect();
-  let lx, ly, src;
-  if(typeof e.offsetX === "number" && typeof e.offsetY === "number"){
-    lx = e.offsetX; ly = e.offsetY; src = "offset";
-  } else {
-    lx = e.clientX - r.left; ly = e.clientY - r.top; src = "rect";
-  }
-  const mx = lx * W / cw;
-  const my = ly * H / ch;
+  const cLeft = (innerWidth - cw)/2, cTop = (innerHeight - ch)/2;
+  const src = "inner";
+  const mx = (e.clientX - cLeft) * W / cw;
+  const my = (e.clientY - cTop) * H / ch;
   if(DEBUG_TAP) lastTap = {mx, my, cx:e.clientX, cy:e.clientY, src, cw, ch,
                            rl:r.left, rt:r.top, rw:r.width, rh:r.height,
                            mxRect:(e.clientX-r.left)*W/(r.width||1), myRect:(e.clientY-r.top)*H/(r.height||1),
