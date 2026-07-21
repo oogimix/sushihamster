@@ -472,7 +472,8 @@ function mulberry32(a){
     return ((t^(t>>>14))>>>0)/4294967296;
   };
 }
-let rng = Math.random; // 生成用乱数(エンドレス=毎回ランダム / ステージ=シード固定)
+let rng = Math.random;   // 地形・障害物用(ステージ=シード固定)
+let rngS = Math.random;  // 寿司配置専用。地形の乱数列と分けることで寿司を調整しても地形が変わらない
 
 const player = { x:180, y:0, vy:0, w:56, h:50, onGround:false, jumps:0, holding:false, holdT:0, dead:false, deadRot:0 };
 
@@ -527,7 +528,7 @@ let sushiBag = [];
 function randSushi(){
   if(!sushiBag.length){                       // 全種を1回ずつ使い切ってから補充
     sushiBag = SUSHI_KINDS.slice();
-    for(let i=sushiBag.length-1;i>0;i--){ const j=(rng()*(i+1))|0; const t=sushiBag[i]; sushiBag[i]=sushiBag[j]; sushiBag[j]=t; }
+    for(let i=sushiBag.length-1;i>0;i--){ const j=(rngS()*(i+1))|0; const t=sushiBag[i]; sushiBag[i]=sushiBag[j]; sushiBag[j]=t; }
   }
   return sushiBag.pop();
 }
@@ -587,23 +588,33 @@ function jumpApexDx(spd){
 }
 // 障害物の手前・直後は寿司を置かない(取ると必ずぶつかる配置を防ぐ)
 function obstacleConflict(x){
+  // 手前=跳ぶ準備の距離 / 後ろ=跳び越えて着地するまでの距離(空中なので地上の寿司は取れない)
+  const mBefore = Math.max(140, speed*0.35);
+  const mAfter  = Math.max(180, speed*0.62);
   for(const o of obstacles){
     const bx = (o.bx !== undefined) ? o.bx : o.x;      // 動く敵は基準位置で判定
     const sw = (o.amp || 0);                            // 往復幅ぶんも避ける
-    if(x > bx - 130 - sw && x < bx + o.w + 70 + sw) return true;
+    if(x > bx - mBefore - sw && x < bx + o.w + mAfter + sw) return true;
   }
   return false;
+}
+// 低い位置に寿司を置いてよいか: 真下に地面があり、その先にも走れる地面が続くこと
+function safeLowSpot(x){
+  if(groundTopAt(x-8, x+8) === Infinity) return false;          // 穴の上はダメ
+  const ahead = Math.max(170, speed*0.42);
+  if(groundTopAt(x+ahead-10, x+ahead+10) === Infinity) return false; // 取った直後に落ちる位置もダメ
+  return !obstacleConflict(x);
 }
 // 走るだけで取れる地上ライン
 function placeRunLine(g, gy){
   const kind = randSushi(), y = gy - 52, step = 58;
-  const sx = Math.max(g.x + 80, sushiMaxX + 140), ex = g.x + g.w - 150;
+  const sx = Math.max(g.x + 80, sushiMaxX + 140), ex = g.x + g.w - Math.max(150, speed*0.32);
   if(ex - sx < step*2) return;
-  let x = sx + rng()*(ex - sx - step*2);
+  let x = sx + rngS()*(ex - sx - step*2);
   let n = 0;
-  const max = 3 + (rng()*3|0);
+  const max = 3 + (rngS()*3|0);
   while(x < ex && n < max){
-    if(!obstacleConflict(x)){ addItem(x, y, kind); n++; }
+    if(safeLowSpot(x)){ addItem(x, y, kind); n++; }
     x += step;
   }
 }
@@ -615,12 +626,12 @@ function placeFlatArc(g, gy){
   const sx = Math.max(g.x + 90, sushiMaxX + 140), ex = g.x + g.w - 120 - span;
   if(ex <= sx) return false;                   // 直線が短ければ置かない
   for(let tries = 0; tries < 6; tries++){
-    const t0 = sx + rng()*(ex - sx);
+    const t0 = sx + rngS()*(ex - sx);
     let clear = true;
     for(let d = 0; d <= span; d += 40) if(obstacleConflict(t0 + d)){ clear = false; break; }
     if(!clear) continue;                       // 障害物にかかる場所は避ける
     const kind = randSushi();
-    const n = 5 + (rng()*2|0);
+    const n = 5 + (rngS()*2|0);
     for(let i = 0; i <= n; i++){
       const dx = span * (i/n);
       const h = Math.max(0, jumpH(dx, speed) * 0.85);
@@ -636,7 +647,17 @@ function pathSpan(fn, spd){
   for(let i=0;i<400;i++){ dx += step; if(fn(dx, spd) <= 0) break; }
   return dx;
 }
-// 穴を跳ぶ1段ジャンプの軌道に沿って放物線状に置く(大穴には置かない)
+// 大穴用: 踏み切り〜頂点までの上り部分だけ。2段ジャンプしても必ず通る区間なので確実に取れる
+function placeRiseArc(takeoffX, groundTop){
+  if(takeoffX < sushiMaxX + 140) return;
+  const apex = jumpApexDx(speed), kind = randSushi(), n = 3;
+  for(let i=1;i<=n;i++){
+    const dx = apex*(i/n), x = takeoffX + dx, h = jumpH(dx, speed)*0.8;
+    if(h < 90 && !safeLowSpot(x)) continue;
+    addItem(x, groundTop - 45 - h, kind);
+  }
+}
+// 穴を跳ぶ1段ジャンプの軌道に沿って放物線状に置く
 function placeJumpArc(takeoffX, groundTop){
   if(takeoffX < sushiMaxX + 140) return;   // 直前の配置と近すぎる場合は置かない(重ね置き防止)
   const fn = jumpH;
@@ -646,7 +667,10 @@ function placeJumpArc(takeoffX, groundTop){
   for(let i=0;i<=n;i++){
     const dx = span * (i/n);
     const h = Math.max(0, fn(dx, speed) * 0.85);  // 少し低めにして踏み切りのブレを吸収
-    addItem(takeoffX + dx, groundTop - 45 - h, kind);
+    const x = takeoffX + dx;
+    // 低い位置の寿司は真下に地面がある所だけ(穴の上だと取った瞬間に落ちてしまう)
+    if(h < 90 && !safeLowSpot(x)) continue;
+    addItem(x, groundTop - 45 - h, kind);
   }
 }
 
@@ -656,6 +680,10 @@ function genChunk(){
   const d = mode === "stage"
     ? Math.min(1, stageP.dBase + dist/25000)
     : Math.min(dist/20000, 1);
+  // 地形の詰め具合(0=余裕たっぷり / 1=シビア)。ステージ11から徐々に、20以降で最大
+  const tight = (mode === "stage")
+    ? Math.min(1, Math.max(0, (stageNum - 10) / 10))
+    : Math.min(1, dist/45000);
 
   // ステージのゴール手前は平坦なウイニングロードにする
   if(mode === "stage"){
@@ -684,8 +712,9 @@ function genChunk(){
     const g = {x:genX, w: 700 + rng()*500, y:gy};
     grounds.push(g);
     const edgeM = Math.max(160, speed*0.24);
-    // 跳んで着地して次を跳べる間隔(スピード比例)で連続配置
-    const gapMin = Math.max(300, speed*0.72);
+    // 障害物の間隔はジャンプ1回の飛距離(約0.82×スピード)より広く取る。
+    // 狭いと前の障害物を跳んだ着地の途中に次が来て回避不能になる
+    const gapMin = Math.max(340, speed*(1.05 - 0.10*tight));   // 1.05 → 0.95
     // 直前が高い段だった場合は飛び降りの着地余白を追加
     let ox = g.x + edgeM + (prevTop < gy ? speed*0.7 : 0);
     while(ox < g.x + g.w - edgeM - 44){
@@ -693,9 +722,10 @@ function genChunk(){
       ox += gapMin + rng()*140;
     }
     // 障害物を避けて配置。長い直線では「跳んで取る弧」も置く
-    // 1か所につき「跳んで取る弧」か「地上ライン」のどちらか一方だけ(重ね置き防止)
-    if(rng() < 0.5){ if(!placeFlatArc(g, gy)) placeRunLine(g, gy); }
-    else placeRunLine(g, gy);
+    // 弧→直線の順に置く。140px以上離れる場合のみ置かれるので重ならない
+    if(rngS() < 0.55) placeFlatArc(g, gy);
+    placeRunLine(g, gy);
+    if(rngS() < 0.7) placeRunLine(g, gy);
     prevTop = gy; genX = g.x + g.w;
     return;
   }
@@ -708,14 +738,15 @@ function genChunk(){
     const gy = GROUND_Y - elevLvl*ELEV_H;
     // 上りは水平距離を短めに(高さも稼ぐ必要があるため)
     let gw = 100 + rng()*90;
-    gw = Math.min(gw, dir > 0 ? speed*0.42 : speed*0.55);
+    gw = Math.min(gw, dir > 0 ? speed*(0.36+0.06*tight) : speed*(0.46+0.09*tight));
     const gapStart = genX;
     genX += gw;
-    if(rng() < 0.6) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
-    const g = {x:genX, w: Math.max(240, speed*0.32) + rng()*200, y:gy};
+    const g = {x:genX, w: Math.max(280, speed*(0.75 - 0.15*tight)) + rng()*200, y:gy};
     grounds.push(g);
+    // 着地する足場を作ってから弧を置く(終端が穴の上に出ないように)
+    if(rngS() < 0.95) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
     // 段の上は走るだけで取れる地上ライン
-    if(rng() < 0.5) placeRunLine(g, gy);
+    if(rngS() < 0.5) placeRunLine(g, gy);
     prevTop = gy; genX = g.x + g.w;
     return;
   }
@@ -723,22 +754,26 @@ function genChunk(){
   // ================= 穴ジャンプ地帯(従来) =================
   elevLvl = 0;
   const gy = GROUND_Y;
+  let gapArc = null;                    // 穴の上の弧(足場・障害物を作ってから置く)
   const gap = rng() < (0.55 + d*0.25);
   if(gap){
     const huge = rng() < 0.22; // たまに2段ジャンプ必須の大穴
     let gw = (huge ? 240 : 140) + rng()*(130 + d*150);
     // 現在のスピードで確実に跳び越せる幅にクランプ
-    gw = Math.min(gw, huge ? 140 + speed*0.62 : speed*0.62);
+    const gapF = 0.52 + 0.10*tight;   // 0.52 → 0.62
+    gw = Math.min(gw, huge ? 120 + speed*gapF : speed*gapF);
     const gapStart = genX;
     genX += gw;
-    // アーチの基準は高い側の地面(段差地帯の直後でも足場に埋まらない)
-    if(!huge && rng() < 0.7) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
+    // 弧は着地する足場と障害物を作ってから置く(下の gapArc で実行)
+    if(rngS() < 0.95) gapArc = {x: gapStart - 40, top: Math.min(prevTop, gy), huge};
   }
   // 足場: 通常の台と小島(幅はスピード比例で着地猶予0.4秒以上)
   const small = rng() < 0.22;
+  // 着地は踏み切りから約0.82×スピード先=足場に0.2×スピード進んだ所。
+  // その先に反応の猶予を残すため、足場の最小幅をスピード連動で確保する
   const gw2 = small
-    ? Math.max(150, speed*0.35) + rng()*120
-    : 280 + rng()*380;
+    ? Math.max(230, speed*(0.72 - 0.18*tight)) + rng()*140
+    : Math.max(320, speed*(0.90 - 0.18*tight)) + rng()*380;
   const g = {x:genX, w:gw2, y:gy};
   grounds.push(g);
 
@@ -759,10 +794,15 @@ function genChunk(){
     }
   }
 
+  // 穴の上の弧(ここで置くことで着地点に地面があるか判定できる)
+  if(gapArc){
+    if(gapArc.huge) placeRiseArc(gapArc.x, gapArc.top);
+    else placeJumpArc(gapArc.x, gapArc.top);
+  }
   // 地上ライン。広い足場では「跳んで取る弧」も置く
-  // 1か所につき弧か直線のどちらか一方だけ(重ね置き防止)
-  if(!small && g.w > 620 && rng() < 0.4){ if(!placeFlatArc(g, gy)) placeRunLine(g, gy); }
-  else if(rng() < (small ? 0.3 : 0.55)) placeRunLine(g, gy);
+  // 弧→直線の順(140px以上離れる場合のみ置かれるので重ならない)
+  if(!small && g.w > 620 && rngS() < 0.45) placeFlatArc(g, gy);
+  if(rngS() < (small ? 0.55 : 0.85)) placeRunLine(g, gy);
   prevTop = gy;
   genX = g.x + g.w;
 }
@@ -782,11 +822,12 @@ function startGame(newMode, sNum, carryLives){
     stageP = stageParams(stageNum);
     stageGoalPx = stageP.goalM * 10;
     // シード固定(チェックポイント再開時はcpごとのシード=再開後の地形もリトライで毎回同じ)
-    rng = mulberry32(20260718 + stageNum*7919 + (cpResume ? (cpResume.idx+1)*101 : 0));
+    rng  = mulberry32(20260718 + stageNum*7919 + (cpResume ? (cpResume.idx+1)*101 : 0));
+    rngS = mulberry32(77003 + stageNum*104729 + (cpResume ? (cpResume.idx+1)*307 : 0));
   } else {
     stageGoalPx = 0;
     cpResume = null;
-    rng = Math.random;
+    rng = Math.random; rngS = Math.random;
   }
   state="play"; reset(); if(window.VRM3D) VRM3D.reset();
   BGM.start(mode==="stage" ? stageP.mood : 0);
@@ -1115,9 +1156,23 @@ function update(dt){
   for(const it of items) it.x -= dx;
   for(const cp of cpEnts) cp.x -= dx;
   genX -= dx;
+  sushiMaxX -= dx;   // ★重要: 重ね置き防止の基準もスクロールさせる(しないと配置が止まる)
   grounds = grounds.filter(g=>g.x+g.w > -200);
   obstacles = obstacles.filter(o=>o.x+o.w > -100);
   items = items.filter(it=>!it.taken && it.x > -60);
+  // 最終チェック: 生成後に判明した地形で「取ると落ちる」低い寿司を取り除く
+  // (配置時点ではまだ先の地形が作られておらず判定できないため、ここで掃除する)
+  if(items.length){
+    const ahead = Math.max(170, speed*0.42);
+    items = items.filter(it=>{
+      if(it.life || it.x < W) return true;                   // 画面内の寿司は消さない(ポップ防止)
+      const gt = groundTopAt(it.x-8, it.x+8);
+      if(gt === Infinity) return true;                       // 空中の弧はそのまま
+      if(gt - it.y - 45 >= 90) return true;                  // 高い位置の寿司は対象外
+      if(groundTopAt(it.x+ahead-10, it.x+ahead+10) === Infinity) return false; // 端で落ちる
+      return !obstacleConflict(it.x);                        // スピード上昇で近くなった障害物も除外
+    });
+  }
   cpEnts = cpEnts.filter(cp=>!cp.taken && cp.x > -80);
   while(genX < W + 700) genChunk();
 
@@ -1183,6 +1238,18 @@ function update(dt){
 
   // 寿司取得(見た目=VRMの体(高さ約96px)に合わせた大きめ判定)
   const ccx = player.x + player.w/2, ccy = player.y + player.h - 48;
+  // 吸い込み(マグネット): 取得判定は広げず、「惜しい」距離のものだけ引き寄せる。
+  // 半径は取得判定(66px)の少し外側までなので、明らかに離れた寿司は取れない
+  const MAG_R = 142;
+  for(const it of items){
+    if(it.taken) continue;
+    const dx = ccx - it.x, dy = ccy - it.y;
+    const dd = Math.hypot(dx, dy);
+    if(dd > 1 && dd < MAG_R){
+      const pull = Math.min(1, (1 - dd/MAG_R) * 15 * dt);   // 近いほど強く引く
+      it.x += dx * pull; it.y += dy * pull;
+    }
+  }
   for(const it of items){
     if(!it.taken && Math.hypot(ccx-it.x, ccy-it.y) < it.r + 46){
       it.taken = true;
