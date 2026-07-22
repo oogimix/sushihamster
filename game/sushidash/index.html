@@ -429,6 +429,36 @@ let speed, dist, score, sushiCnt, best = 0;
 let deadTimer = 0, shake = 0, tPrev = 0, animT = 0;
 try{ best = +localStorage.getItem("sushiran_best") || 0; }catch(e){}
 
+// ===== セーブの永続化 =====
+// iOSのPWA(ホーム画面アプリ)はlocalStorageが消えやすいので、より消えにくい
+// IndexedDBにも二重保存し、起動時は両方から読んで新しい方を採用する。
+const DB = (()=>{
+  let dbp = null;
+  function open(){
+    if(dbp) return dbp;
+    dbp = new Promise(res=>{
+      try{
+        const r = indexedDB.open("sushidash", 1);
+        r.onupgradeneeded = ()=>{ try{ r.result.createObjectStore("kv"); }catch(e){} };
+        r.onsuccess = ()=>res(r.result);
+        r.onerror = ()=>res(null);
+      }catch(e){ res(null); }
+    });
+    return dbp;
+  }
+  return {
+    get(key){ return open().then(db=>{ if(!db) return null;
+      return new Promise(res=>{ try{
+        const q = db.transaction("kv","readonly").objectStore("kv").get(key);
+        q.onsuccess = ()=>res(q.result); q.onerror = ()=>res(null);
+      }catch(e){ res(null); } }); }); },
+    set(key, val){ open().then(db=>{ if(!db) return;
+      try{ db.transaction("kv","readwrite").objectStore("kv").put(val, key); }catch(e){} }); }
+  };
+})();
+// ストレージの永続化を要求(iOSで消えにくくなる)
+try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+
 // ================= モード / ステージ =================
 // state: title / select / play / dead / clear
 let mode = "endless";          // endless / stage
@@ -443,11 +473,26 @@ let lives = 3;                 // 残機(ステージモードのみ)。0にな�
 let lifeList = [], lifeFlags = []; // 1UPアイテムの固定配置(チェックポイント数に応じて1〜3個)
 let stageStars = {};           // {1:3, 2:1, ...}
 try{ stageStars = JSON.parse(localStorage.getItem("sushiran_stars")||"{}") || {}; }catch(e){}
-function saveStars(){ try{ localStorage.setItem("sushiran_stars", JSON.stringify(stageStars)); }catch(e){} }
+function saveStars(){
+  try{ localStorage.setItem("sushiran_stars", JSON.stringify(stageStars)); }catch(e){}
+  DB.set("stars", stageStars);   // IndexedDBにも保存(PWAで消えにくい)
+}
+// 起動時: IndexedDBの保存を読み、localStorageより進んでいればそちらを採用
+DB.get("stars").then(v=>{
+  if(v && typeof v === "object"){
+    let changed = false;
+    for(const k in v){ if((v[k]|0) > (stageStars[k]|0)){ stageStars[k] = v[k]|0; changed = true; } }
+    if(changed) saveStars();
+  }
+});
+DB.get("best").then(v=>{
+  if(typeof v === "number" && v > best){ best = v; try{ localStorage.setItem("sushiran_best", best); }catch(e){} }
+});
 const STAGE_MAX = 30;
 function stageParams(s){
-  const speed0 = 330 + Math.min(s, 15)*8;   // 開始スピードは15面で頭打ち
-  const cap = Math.min(900, 500 + s*45);
+  const speed0 = 340 + Math.min(s, 20)*10;   // 開始スピード
+  // 上限スピード: 10面まで900、11面以降は上げ続けて反応時間を削る(=難しくなる)
+  const cap = s <= 10 ? Math.min(900, 500 + s*45) : Math.min(1250, 900 + (s-10)*24);
   // 目標クリア時間からゴール距離を逆算。LV11以降は長さ据え置き(約3分強)、
   // 代わりに動く障害物などのギミックで難易度を上げる
   const T = s <= 10 ? 120 + (s-1)*10 : 200; // 秒
@@ -461,7 +506,7 @@ function stageParams(s){
   };
 }
 let stageP = stageParams(1);
-function stageUnlocked(s){ return s===1 || (stageStars[s-1]|0) >= 1; }
+function stageUnlocked(s){ return DEBUG_TAP || s===1 || (stageStars[s-1]|0) >= 1; }  // ?debug=1 で全解放
 
 // シード固定乱数(ステージは毎回同じ地形になる)
 function mulberry32(a){
@@ -680,9 +725,9 @@ function genChunk(){
   const d = mode === "stage"
     ? Math.min(1, stageP.dBase + dist/25000)
     : Math.min(dist/20000, 1);
-  // 地形の詰め具合(0=余裕たっぷり / 1=シビア)。ステージ11から徐々に、20以降で最大
+  // 地形の詰め具合(0=余裕たっぷり / 1=シビア)。ステージ11から効き始め、16前後で最大
   const tight = (mode === "stage")
-    ? Math.min(1, Math.max(0, (stageNum - 10) / 10))
+    ? Math.min(1, Math.max(0, (stageNum - 10) / 5))
     : Math.min(1, dist/45000);
 
   // ステージのゴール手前は平坦なウイニングロードにする
@@ -698,9 +743,12 @@ function genChunk(){
   // ---- ゾーン切替: 穴地帯 / 平坦障害物ラッシュ / 高低差ステップ ----
   if(zoneLeft <= 0){
     const r = rng();
-    if(r < 0.40){ zone = "hills"; zoneLeft = 3 + (rng()*3|0); }
-    else if(r < 0.68){ zone = "flat"; zoneLeft = 1 + (rng()*2|0); }
-    else { zone = "steps"; zoneLeft = 3 + (rng()*4|0); }
+    // 後半は単純な穴地帯(hills)を減らし、段差(steps)と障害物ラッシュ(flat)を増やす
+    const hillsTh = 0.40 - tight*0.15;      // 0.40 → 0.25
+    const flatTh  = hillsTh + 0.28;         // flatは常に約28%
+    if(r < hillsTh){ zone = "hills"; zoneLeft = 3 + (rng()*3|0); }
+    else if(r < flatTh){ zone = "flat"; zoneLeft = 1 + (rng()*2|0); }
+    else { zone = "steps"; zoneLeft = 4 + (rng()*4|0); }   // ステップ地帯は長め
     if(zone !== "steps") elevLvl = 0;
   }
   zoneLeft--;
@@ -712,12 +760,13 @@ function genChunk(){
     const g = {x:genX, w: 700 + rng()*500, y:gy};
     grounds.push(g);
     const edgeM = Math.max(160, speed*0.24);
-    // 障害物の間隔はジャンプ1回の飛距離(約0.82×スピード)より広く取る。
-    // 狭いと前の障害物を跳んだ着地の途中に次が来て回避不能になる
-    const gapMin = Math.max(340, speed*(1.05 - 0.10*tight));   // 1.05 → 0.95
+    // 障害物の間隔はジャンプ1回の飛距離(約0.82×スピード)より必ず広く取る(回避可能を担保)。
+    // 後半ほど詰める。1.0 → 0.88倍
+    const gapMin = Math.max(320, speed*(1.0 - 0.12*tight));
     // 直前が高い段だった場合は飛び降りの着地余白を追加
     let ox = g.x + edgeM + (prevTop < gy ? speed*0.7 : 0);
-    while(ox < g.x + g.w - edgeM - 44){
+    const flatTrail = Math.max(edgeM, speed*(0.5 - 0.14*tight));
+    while(ox < g.x + g.w - flatTrail - 44){
       makeObstacle(ox, gy);
       ox += gapMin + rng()*140;
     }
@@ -732,8 +781,10 @@ function genChunk(){
 
   // ================= 高低差ステップ =================
   if(zone === "steps"){
-    // 1段(70px)ずつ上下。段差の境目は必ず穴なので壁に激突はしない
-    const dir = elevLvl<=0 ? 1 : (elevLvl>=2 ? -1 : (rng()<0.5 ? 1 : -1));
+    // 1段(70px)ずつ上下。段差の境目は必ず穴なので壁に激突はしない。
+    // 後半は最大の高さを3段まで許可して起伏を激しくする
+    const maxLvl = tight > 0.5 ? 3 : 2;
+    const dir = elevLvl<=0 ? 1 : (elevLvl>=maxLvl ? -1 : (rng()<0.5 ? 1 : -1));
     elevLvl += dir;
     const gy = GROUND_Y - elevLvl*ELEV_H;
     // 上りは水平距離を短めに(高さも稼ぐ必要があるため)
@@ -755,7 +806,7 @@ function genChunk(){
   elevLvl = 0;
   const gy = GROUND_Y;
   let gapArc = null;                    // 穴の上の弧(足場・障害物を作ってから置く)
-  const gap = rng() < (0.55 + d*0.25);
+  const gap = rng() < (0.55 + d*0.25 + tight*0.15);   // 後半ほど穴が増える
   if(gap){
     const huge = rng() < 0.22; // たまに2段ジャンプ必須の大穴
     let gw = (huge ? 240 : 140) + rng()*(130 + d*150);
@@ -779,18 +830,23 @@ function genChunk(){
 
   // 障害物: 穴の直後や高い段からの飛び降り直後の足場には置かない(着地点被り防止)
   const edgeM = Math.max(180, speed*0.26);
-  if(!gap && prevTop >= gy && g.w >= edgeM*2 + 60){
-    const maxObs = g.w >= edgeM*2 + 260 ? 3 : 1;
+  // 末尾余白は「次が穴でも着地して跳び直せる」最低限だけ。序盤はやや広く、後半は詰める
+  const trailM = Math.max(150, speed*(0.50 - 0.14*tight));
+  if(!gap && prevTop >= gy && g.w >= edgeM + trailM + 50){
+    const room = g.w - edgeM - trailM;
+    const maxObs = room > 700 ? 4 : room > 380 ? 3 : room > 150 ? 2 : 1;
     let placed = 0;
     let ox = g.x + edgeM;
-    const oxEnd = g.x + g.w - edgeM;
-    const stageBonus = (mode==="stage" && stageNum > 10) ? Math.min(0.25, (stageNum-10)*0.02) : 0;
+    const oxEnd = g.x + g.w - trailM;
+    const stageBonus = (mode==="stage" && stageNum > 10) ? Math.min(0.6, (stageNum-10)*0.06) : 0;
+    // 障害物どうしの間隔(跳んで着地して次を跳べる距離)。後半ほど詰める
+    const step = Math.max(270, speed*(0.86 - 0.24*tight));
     while(ox < oxEnd - 44 && placed < maxObs){
-      if(rng() < 0.48 + d*0.15 + stageBonus){
+      if(rng() < 0.78 + d*0.15 + stageBonus){
         makeObstacle(ox, gy);
         placed++;
-        ox += 330 + rng()*180;
-      } else ox += 200 + rng()*160;
+        ox += step + rng()*120;
+      } else ox += 180 + rng()*140;
     }
   }
 
@@ -1074,7 +1130,7 @@ function die(fall){
   if(player.dead) return;
   player.dead = true; state = "dead"; deadTimer = 0; shake = fall?4:14;
   player.vy = fall ? -200 : -650;
-  if(score>best){ best = score; try{ localStorage.setItem("sushiran_best", best); }catch(e){} }
+  if(score>best){ best = score; try{ localStorage.setItem("sushiran_best", best); }catch(e){} DB.set("best", best); }
   // 残機(ステージのみ): 0になったらチェックポイント消滅=最初からやり直し
   if(mode === "stage"){
     lives--;
@@ -1106,6 +1162,22 @@ function findSafeX(sx){
     if(clear) return {x, gt};
   }
   return {x: sx, gt: groundTopAt(sx-15, sx+15)};
+}
+
+// チェックポイント/1UP用: 両側に地面が続き、障害物からも離れた「取りやすい」場所を探す
+function findLandingX(sx){
+  const clr = 110;   // 左右にこれだけ地面が続いていること(穴・崖の縁を避ける)
+  const cand = [0,80,-80,160,-160,240,-240,320,-320,400,-400,500,-500];
+  for(const o of cand){
+    const x = sx + o;
+    if(groundTopAt(x-15, x+15) === Infinity) continue;
+    if(groundTopAt(x-clr, x-clr+18) === Infinity) continue;
+    if(groundTopAt(x+clr-18, x+clr) === Infinity) continue;
+    let ok = true;
+    for(const ob of obstacles){ if(Math.abs((ob.x+ob.w/2)-x) < 150+(ob.amp||0)){ ok=false; break; } }
+    if(ok) return {x, gt: groundTopAt(x-15, x+15)};
+  }
+  return findSafeX(sx);   // 見つからなければ従来ロジック
 }
 
 let nextMile = 500;
@@ -1188,7 +1260,7 @@ function update(dt){
       if(cpResume && i <= cpResume.idx){ cpFlags[i] = true; continue; } // 取得済み地点はスキップ
       const sx = player.x + (cpList[i] - dist);
       if(sx < W + 120){
-        const s = findSafeX(sx);
+        const s = findLandingX(sx);
         cpEnts.push({x:s.x, y:(s.gt < Infinity ? s.gt : GROUND_Y) - 64, idx:i, taken:false});
         cpFlags[i] = true;
       }
@@ -1199,7 +1271,7 @@ function update(dt){
       if(lifeList[i] < dist - 50){ lifeFlags[i] = true; continue; } // 再開位置より手前は消化済み扱い
       const sx = player.x + (lifeList[i] - dist);
       if(sx < W + 120){
-        const s = findSafeX(sx);
+        const s = findLandingX(sx);
         items.push({x:s.x, y:(s.gt < Infinity ? s.gt : GROUND_Y) - 100, r:20, kind:SUSHI_KINDS[0], taken:false, life:true});
         lifeFlags[i] = true;
       }
@@ -1310,6 +1382,23 @@ function updateParticles(dt){
 
 // ================= 描画 =================
 function rr(x,y,w,h,r){ ctx.beginPath(); ctx.roundRect(x,y,w,h,r); }
+
+// 読み込み中のグルグルスピナー
+function drawSpinner(cx, cy, r){
+  const seg = 12, t = animT*6;
+  ctx.save();
+  ctx.lineWidth = Math.max(2.5, r*0.16); ctx.lineCap = "round";
+  for(let i=0;i<seg;i++){
+    const a = t + i/seg*Math.PI*2;
+    ctx.globalAlpha = 0.15 + 0.85*(i/seg);
+    ctx.strokeStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(a)*r*0.55, cy+Math.sin(a)*r*0.55);
+    ctx.lineTo(cx+Math.cos(a)*r, cy+Math.sin(a)*r);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
 
 // キラキラ(4方向に尖った星)
 function sparkPath(x,y,r,rot){
@@ -1592,8 +1681,15 @@ function drawGround(){
 }
 
 // rail.png を使った回転寿司レール地面(足場ごとの高さに対応)
+// ステージ帯ごとの地面の色(1〜10=ピンク / 11〜20=青 / 21〜30=ネオングリーン)。10面ごとに変わる
+function groundTint(){
+  if(mode !== "stage") return null;
+  const band = Math.floor((stageNum - 1) / 10);
+  return ["#ff5fa2", "#1f6cff", "#39ff14", "#12b3a6"][band] || "#12b3a6";  // 予備で31面以降も対応
+}
 function drawRailGround(){
   const strip = railCanvas;
+  const tint = groundTint();
   // レール(プレート+カウンター)の見た目の厚みは固定。
   // 縦画面で地面を上げても巨大化せず、下の余白は木のカウンター前面で埋める。
   const baseGh = Math.min(H - GROUND_Y, 150);
@@ -1632,6 +1728,16 @@ function drawRailGround(){
     const bh = baseGh * (BELT_BOT - BELT_TOP);
     for(let x = -off2 - tw; x < W + tw; x += tw){
       ctx.drawImage(strip, 0, sy, strip.width, sh, x, by, tw, bh);
+    }
+    // 帯ごとの色を重ねる(色相のみ変える"color"合成)。流れるプレート帯は白いまま残す
+    if(tint){
+      ctx.globalCompositeOperation = "color";
+      ctx.fillStyle = tint;
+      const plateTop = top + baseGh * BELT_TOP;
+      const plateBot = top + baseGh * BELT_BOT;
+      ctx.fillRect(g.x, top, g.w, plateTop - top);          // プレートより上
+      ctx.fillRect(g.x, plateBot, g.w, H - plateBot);       // プレートより下(カウンター)
+      ctx.globalCompositeOperation = "source-over";
     }
     ctx.restore();
     // 端の縁取り
@@ -2035,11 +2141,8 @@ function draw(){
       rr(p.x-hw, top, p.w, p.h, 18); ctx.fill();
       if(sel){ ctx.lineWidth=5; ctx.strokeStyle="#ff8c1a"; rr(p.x-hw, top, p.w, p.h, 18); ctx.stroke(); ctx.lineWidth=1; }
       const loaded = window.VRM3D && VRM3D.loaded && VRM3D.loaded[k];
-      if(!loaded){ // VRM未読込時は絵文字で代用
-        ctx.font=Math.round(64*K)+"px sans-serif"; ctx.textAlign="center";
-        ctx.fillText(k==="ham"?"🐹":"🧚", p.x, p.y-p.h*0.24);
-        const l = window.VRM3D && !VRM3D.failed ? "よみこみ中…" : "";
-        if(l){ ctx.font=fz(14,11)+"px sans-serif"; ctx.fillStyle="#555"; ctx.fillText(l, p.x, p.y-p.h*0.07); }
+      if(!loaded){ // VRM未読込時はグルグルスピナー
+        drawSpinner(p.x, p.y - p.h*0.18, 22*K);
       }
       centerTextAt(CHAR_NAMES[k], p.x, p.y+p.h*0.06, fz(24,17), sel?"#7a4a12":"#eee", sel?null:"#333");
     }
@@ -2174,9 +2277,8 @@ function drawCharIcons(topY){
     rr(b.x, b.y, b.w, b.h, 14); ctx.fill();
     if(sel){ ctx.lineWidth=4; ctx.strokeStyle="#ff8c1a"; rr(b.x, b.y, b.w, b.h, 14); ctx.stroke(); ctx.lineWidth=1; }
     const loaded = window.VRM3D && VRM3D.loaded && VRM3D.loaded[k];
-    if(!loaded){ // VRM未読込は絵文字で代用
-      ctx.font = Math.round(b.h*0.5)+"px sans-serif"; ctx.textAlign="center";
-      ctx.fillText(k==="ham"?"🐹":"🧚", b.x+b.w/2, b.y+b.h*0.64);
+    if(!loaded){ // VRM未読込はグルグルスピナー
+      drawSpinner(b.x+b.w/2, b.y+b.h*0.45, b.h*0.24);
     }
     centerTextAt(CHAR_NAMES[k], b.x+b.w/2, b.y+b.h+15, fz2, sel?"#7a4a12":"#fff", sel?null:"#333");
   }
