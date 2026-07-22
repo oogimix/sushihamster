@@ -491,15 +491,16 @@ DB.get("best").then(v=>{
 const STAGE_MAX = 30;
 function stageParams(s){
   const speed0 = 340 + Math.min(s, 20)*10;   // 開始スピード
-  // 上限スピード: 10面まで900、11面以降は上げ続けて反応時間を削る(=難しくなる)
-  const cap = s <= 10 ? Math.min(900, 500 + s*45) : Math.min(1250, 900 + (s-10)*24);
-  // 目標クリア時間からゴール距離を逆算。LV11以降は長さ据え置き(約3分強)、
-  // 代わりに動く障害物などのギミックで難易度を上げる
-  const T = s <= 10 ? 120 + (s-1)*10 : 200; // 秒
-  const tc = Math.min(T, (cap - speed0)/9); // 上限速度に達するまでの時間
-  const px = speed0*tc + 4.5*tc*tc + cap*Math.max(0, T - tc);
+  // 上限スピード: 10面まで900、11〜15で一気に上げて反応時間を削る(=難しくなる)
+  // 15面で1175(=旧30面級)に到達、以降30面まで緩やかに登り続ける(頭打ちにしない)
+  const cap = s <= 10 ? Math.min(900, 500 + s*45)
+            : s <= 15 ? 900 + (s-10)*55
+            : Math.min(1450, 1175 + (s-15)*18);
+  // 総距離は全レベル通しで一直線に伸ばす。L1=6000m → L30=30000m(≒827m/レベル)。
+  // 前半に偏らずレベルに素直に比例。速さ(=難易度)とは独立に長さだけを決める。
+  const goalM = Math.round((6000 + (s-1)*(24000/29))/50)*50;
   return {
-    goalM: Math.round(px/10/50)*50,
+    goalM,
     speed0, cap,
     dBase: Math.min(1, (s-1)/12),
     mood: (((s-1)/3)|0) % 4                 // 3面ごとに 昼→夕→夜→異空間 を循環
@@ -598,15 +599,15 @@ function makeObstacle(ox, top){
     if(type === "wasabi" && stageNum >= 11){
       // パトロールウニ: レール上を左右にゆっくり往復
       o.bx = ox;
-      o.amp = Math.min(90, 40 + (stageNum-10)*4);
-      o.mv  = 1.5 + Math.min(1.5, (stageNum-10)*0.1);
+      o.amp = Math.min(110, 40 + (stageNum-10)*4.5);   // 30面まで往復幅が広がり続ける
+      o.mv  = 1.5 + Math.min(2.0, (stageNum-10)*0.1);   // 30面まで速くなり続ける
       o.ph  = rng()*Math.PI*2;
     }
     if(type === "shoyu" && stageNum >= 16){
       // ジャンプ醤油: 周期的に跳ねる(着地の隙に跳び越える)
       o.by  = top - oh;
-      o.hop = 70 + Math.min(60, (stageNum-15)*5);
-      o.hv  = 2.0 + Math.min(1.2, (stageNum-15)*0.08);
+      o.hop = 70 + Math.min(80, (stageNum-15)*5);       // 30面まで跳ねる高さが伸び続ける
+      o.hv  = 2.0 + Math.min(1.5, (stageNum-15)*0.08);
       o.ph  = rng()*Math.PI*2;
     }
   }
@@ -725,10 +726,14 @@ function genChunk(){
   const d = mode === "stage"
     ? Math.min(1, stageP.dBase + dist/25000)
     : Math.min(dist/20000, 1);
-  // 地形の詰め具合(0=余裕たっぷり / 1=シビア)。ステージ11から効き始め、16前後で最大
+  // 地形の詰め具合(0=余裕たっぷり / 1=シビア)。ステージ11から急に効き、15で最大
   const tight = (mode === "stage")
-    ? Math.min(1, Math.max(0, (stageNum - 10) / 5))
+    ? Math.min(1, Math.max(0, (stageNum - 10) / 4))
     : Math.min(1, dist/45000);
+  // 第二の難度係数: 15面=0 → 30面=1。tightが頭打ちした後も難度を登らせ続ける
+  const hard = (mode === "stage")
+    ? Math.min(1, Math.max(0, (stageNum - 15) / 15))
+    : Math.max(0, Math.min(1, (dist - 45000) / 45000));
 
   // ステージのゴール手前は平坦なウイニングロードにする
   if(mode === "stage"){
@@ -744,11 +749,13 @@ function genChunk(){
   if(zoneLeft <= 0){
     const r = rng();
     // 後半は単純な穴地帯(hills)を減らし、段差(steps)と障害物ラッシュ(flat)を増やす
-    const hillsTh = 0.40 - tight*0.15;      // 0.40 → 0.25
-    const flatTh  = hillsTh + 0.28;         // flatは常に約28%
-    if(r < hillsTh){ zone = "hills"; zoneLeft = 3 + (rng()*3|0); }
-    else if(r < flatTh){ zone = "flat"; zoneLeft = 1 + (rng()*2|0); }
-    else { zone = "steps"; zoneLeft = 4 + (rng()*4|0); }   // ステップ地帯は長め
+    // 単純な穴地帯(hills)と、ワンパターンになりがちな短足場ジャンプ(steps)を減らし、
+    // 障害物ラッシュ(flat)をレベル比例で増やす。→ 障害物が濃く・展開が読みにくくなる
+    const hillsTh = 0.32 - tight*0.10 - hard*0.06;   // 穴だけの地帯を削減
+    const flatTh  = hillsTh + 0.34 + hard*0.08;      // flatを厚く&後半ほど増やす
+    if(r < hillsTh){ zone = "hills"; zoneLeft = 2 + (rng()*3|0); }
+    else if(r < flatTh){ zone = "flat"; zoneLeft = 2 + (rng()*2|0) + (hard>0.5?1:0); }
+    else { zone = "steps"; zoneLeft = 3 + (rng()*3|0); }   // steps地帯は短めに
     if(zone !== "steps") elevLvl = 0;
   }
   zoneLeft--;
@@ -792,8 +799,20 @@ function genChunk(){
     gw = Math.min(gw, dir > 0 ? speed*(0.36+0.06*tight) : speed*(0.46+0.09*tight));
     const gapStart = genX;
     genX += gw;
-    const g = {x:genX, w: Math.max(280, speed*(0.75 - 0.15*tight)) + rng()*200, y:gy};
+    // 後半ほど段の足場を長めにして「ただ跳ぶだけ」から「跳んで着地→障害物を避ける」へ。
+    const g = {x:genX, w: Math.max(280, speed*(0.75 - 0.15*tight)) + rng()*200 + hard*260, y:gy};
     grounds.push(g);
+    // 段の上に障害物を置く(両端に着地・踏み切りの余裕を確保)。後半は複数並べて読みにくく。
+    // 間隔は必ず1ジャンプ飛距離以上あけて配置 → 必ず間に着地できる(回避可能を担保)。
+    if(tight > 0 && rng() < 0.5 + tight*0.35 + hard*0.15){
+      const lead = Math.max(150, speed*0.30), trail = Math.max(180, speed*0.5);
+      const gapMin = Math.max(320, speed*(1.0 - 0.10*hard));   // 1ジャンプ分以上
+      let ox = g.x + lead;
+      while(ox < g.x + g.w - trail - 44){
+        makeObstacle(ox, gy);
+        ox += gapMin + rng()*120;
+      }
+    }
     // 着地する足場を作ってから弧を置く(終端が穴の上に出ないように)
     if(rngS() < 0.95) placeJumpArc(gapStart - 40, Math.min(prevTop, gy));
     // 段の上は走るだけで取れる地上ライン
@@ -838,11 +857,11 @@ function genChunk(){
     let placed = 0;
     let ox = g.x + edgeM;
     const oxEnd = g.x + g.w - trailM;
-    const stageBonus = (mode==="stage" && stageNum > 10) ? Math.min(0.6, (stageNum-10)*0.06) : 0;
+    const stageBonus = (mode==="stage" && stageNum > 10) ? Math.min(0.6, (stageNum-10)*0.09) : 0;
     // 障害物どうしの間隔(跳んで着地して次を跳べる距離)。後半ほど詰める
-    const step = Math.max(270, speed*(0.86 - 0.24*tight));
+    const step = Math.max(260, speed*(0.84 - 0.26*tight));
     while(ox < oxEnd - 44 && placed < maxObs){
-      if(rng() < 0.78 + d*0.15 + stageBonus){
+      if(rng() < 0.82 + d*0.15 + stageBonus){
         makeObstacle(ox, gy);
         placed++;
         ox += step + rng()*120;
@@ -1164,18 +1183,21 @@ function findSafeX(sx){
   return {x: sx, gt: groundTopAt(sx-15, sx+15)};
 }
 
-// チェックポイント/1UP用: 両側に地面が続き、障害物からも離れた「取りやすい」場所を探す
+// チェックポイント/1UP用: 平らな足場の中央付近で、障害物・段差・崖から離れた場所を探す
 function findLandingX(sx){
-  const clr = 110;   // 左右にこれだけ地面が続いていること(穴・崖の縁を避ける)
-  const cand = [0,80,-80,160,-160,240,-240,320,-320,400,-400,500,-500];
+  const clr = 130;   // 左右にこれだけ「同じ高さの地面」が続いていること
+  const cand = [0,90,-90,180,-180,270,-270,360,-360,460,-460,560,-560];
   for(const o of cand){
     const x = sx + o;
-    if(groundTopAt(x-15, x+15) === Infinity) continue;
-    if(groundTopAt(x-clr, x-clr+18) === Infinity) continue;
-    if(groundTopAt(x+clr-18, x+clr) === Infinity) continue;
+    const gt = groundTopAt(x-15, x+15);
+    if(gt === Infinity) continue;                       // 穴の上はダメ
+    // 左右に「同じ高さの地面」が続くこと(崖の縁・段差の上下端を避ける)
+    const gl = groundTopAt(x-clr, x-clr+18), gr = groundTopAt(x+clr-18, x+clr);
+    if(gl === Infinity || gr === Infinity) continue;
+    if(Math.abs(gl-gt) > 8 || Math.abs(gr-gt) > 8) continue;   // 段差の際は不可
     let ok = true;
-    for(const ob of obstacles){ if(Math.abs((ob.x+ob.w/2)-x) < 150+(ob.amp||0)){ ok=false; break; } }
-    if(ok) return {x, gt: groundTopAt(x-15, x+15)};
+    for(const ob of obstacles){ if(Math.abs((ob.x+ob.w/2)-x) < 160+(ob.amp||0)){ ok=false; break; } }
+    if(ok) return {x, gt};
   }
   return findSafeX(sx);   // 見つからなければ従来ロジック
 }
