@@ -82,7 +82,8 @@ function fitCanvas(){
   if(portrait){
     // 縦持ち: マリオラン風に少し引き(視界広め)で表示し、
     // 地面を画面下から上げて下側に余白(カウンター)を作る
-    newW = 780;
+    // ワールド幅を広めに取り前方視界(=反応時間)を確保。スマホ縦の理不尽対策。
+    newW = 880;
     newH = Math.max(760, Math.min(1600, Math.round(newW * ih / iw)));
     newGroundY = Math.round(newH * 0.72); // 走行ラインを画面の72%位置に。下28%が余白(マリオラン風)
   } else {
@@ -105,8 +106,8 @@ function fitCanvas(){
       player.y += dy;
       prevTop += dy;
     }
-    // 縦持ちは前方の反応時間を稼ぐためキャラをさらに左寄せ
-    player.x = portrait ? Math.round(Math.max(56, W*0.12)) : Math.round(Math.min(180, Math.max(70, W*0.2)));
+    // 縦持ちは前方の反応時間を稼ぐためキャラをさらに左寄せ(W*0.06)
+    player.x = portrait ? Math.round(Math.max(48, W*0.06)) : Math.round(Math.min(180, Math.max(70, W*0.2)));
     layoutPanels();
   }catch(e){ /* 初回はゲーム変数が未定義でもOK */ H = newH; }
   canvas.width = W; canvas.height = H;
@@ -1355,7 +1356,7 @@ function update(dt){
       if(it.life){
         // 1UPアイテム
         lives++;
-        popups.push({x:it.x, y:it.y-14, txt:"1UP！", t:0});
+        popups.push({x:it.x, y:it.y-14, txt:"1UP！", t:0, sz:40, col:"#2be04a", stroke:"#0a4a17"});
         burst(it.x, it.y, null); sfx.oneUp();
         if(window.VRM3D) VRM3D.happy();
         continue;
@@ -1367,7 +1368,7 @@ function update(dt){
       // 寿司100個ごとに1UP(ステージのみ)
       if(mode === "stage" && sushiCnt % 100 === 0){
         lives++;
-        popups.push({x:player.x+player.w/2, y:player.y-30, txt:"🍣100コ達成 1UP！", t:0});
+        popups.push({x:player.x+player.w/2, y:player.y-30, txt:"🍣100コ達成 1UP！", t:0, sz:30, col:"#2be04a", stroke:"#0a4a17"});
         sfx.oneUp();
       }
     }
@@ -1378,7 +1379,7 @@ function update(dt){
     if(!cp.taken && Math.abs(ccx-cp.x) < 75 && Math.abs(ccy-cp.y) < 175){
       cp.taken = true;
       cpResume = {idx: cp.idx, px: cpList[cp.idx], sushiCnt, sushiSpawned};
-      popups.push({x:cp.x, y:cp.y-24, txt:"チェックポイント到達！", t:0});
+      popups.push({x:cp.x, y:cp.y-24, txt:"チェックポイント到達！", t:0, sz:34, col:"#25c9ff", stroke:"#06364f"});
       burst(cp.x, cp.y, null);
       sfx.save();
     }
@@ -1772,8 +1773,17 @@ function drawRailGround(){
 function drawObstacle(o){
   ctx.save(); ctx.translate(o.x, o.y);
   // 接地影+全体に軽いドロップシャドウ
-  ctx.fillStyle = "rgba(0,0,0,.22)";
-  ctx.beginPath(); ctx.ellipse(o.w/2, o.h+5, o.w*0.62, 6, 0, 0, 7); ctx.fill();
+  // 醤油さしなど跳ねる障害物は、影を床に残したまま跳ぶほど小さく薄くする(影は一緒に跳ばない)
+  let shY = o.h + 5, shRx = o.w*0.62, shA = 0.22;
+  if(o.hop !== undefined && o.by !== undefined){
+    const hgt = Math.max(0, o.by - o.y);        // 床からの跳躍高さ
+    const frac = Math.min(1, hgt / o.hop);
+    shY = (o.by + o.h) - o.y + 5;               // 影は常に床の位置に固定
+    shRx = o.w*0.62 * (1 - 0.45*frac);          // 跳ぶほど縮む
+    shA  = 0.22 * (1 - 0.55*frac);              // 跳ぶほど薄くなる
+  }
+  ctx.fillStyle = "rgba(0,0,0," + shA.toFixed(3) + ")";
+  ctx.beginPath(); ctx.ellipse(o.w/2, shY, shRx, 6, 0, 0, 7); ctx.fill();
   ctx.shadowColor = "rgba(0,0,0,.30)"; ctx.shadowBlur = 6; ctx.shadowOffsetY = 3;
   const sp = SPRITES["obs_" + o.type];
   if(sp){
@@ -2081,7 +2091,7 @@ function draw(){
   drawHamster();
   for(const p of popups){
     ctx.globalAlpha = 1-p.t;
-    centerTextAt(p.txt, p.x, p.y - p.t*40, 24, "#ff8c1a", "#fff");
+    centerTextAt(p.txt, p.x, p.y - p.t*40, p.sz||24, p.col||"#ff8c1a", p.stroke||"#fff");
     ctx.globalAlpha = 1;
   }
   drawHUD();
