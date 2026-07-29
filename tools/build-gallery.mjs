@@ -19,6 +19,13 @@ const quality = 78;
 
 await fs.ensureDir(THUMB_DIR);
 
+// ★ 既存 images.json の日付を読み込んでおく（手編集した date / ts を再ビルドで消さないため）
+let prevById = new Map();
+try {
+  const prev = await fs.readJson(JSON_PATH);
+  if (Array.isArray(prev)) prevById = new Map(prev.map(it => [it.id, it]));
+} catch { /* 初回ビルド時は無視 */ }
+
 // 元画像一覧を取得
 const all = (await fs.readdir(ORIG_DIR)).filter(f => exts.test(f));
 
@@ -56,12 +63,18 @@ for (const { file, ts } of files) {
       srcSet[label] = `${THUMB_DIR}/${outFile}`;
     }
 
+    // ★ 既存エントリがあれば日付を引き継ぐ（新規ファイルだけ mtime を採用）
+    const prev = prevById.get(base);
+    const finalTs = prev?.ts ?? ts;
+    const finalDate = prev?.date ?? new Date(finalTs).toISOString();
+
     items.push({
       id: base,
-      title: base,
+      title: prev?.title ?? base,
       w: meta.width ?? undefined,
       h: meta.height ?? undefined,
-      ts,                    // ★ 追加（更新時刻ms）
+      ts: finalTs,           // epoch ms
+      date: finalDate,       // ★ 表示順の基準。手で書き換えればここが優先される
       src: srcSet,
     });
 

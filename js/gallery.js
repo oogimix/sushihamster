@@ -21,22 +21,34 @@ console.log('[gallery] init');
     catch (e) { console.error('[gallery] JSON parse error:', url, e); return []; }
   }
 
+  // 日時の解決（画像・動画で共通）
+  // 優先度: date（ISO文字列・手編集用） > ts（epoch ms / ISO / 数値文字列） > 並び順のidx
+  function resolveTs(o, idx) {
+    for (const v of [o && o.date, o && o.ts]) {
+      if (v == null || v === '') continue;
+      if (typeof v === 'number' && isFinite(v)) return v;
+      const parsed = Date.parse(v);
+      if (!isNaN(parsed)) return parsed;
+      const num = Number(v);
+      if (isFinite(num)) return num;
+    }
+    return idx; // 日時不明なものは最下部へ
+  }
+
   // --- データ取得（画像＋動画） ---
   let items = [];
   try {
-    // 画像: images.json は ts（mtimeMs）を含むようにビルダーを修正済み
     const imgsRaw = await loadJSON('asset/gallery/images.json');
     const imgs = imgsRaw.map((it, idx) => ({
       kind: 'img',
-      ts: typeof it.ts === 'number' ? it.ts : idx, // 互換: tsが無い古いファイルでも順序維持
+      ts: resolveTs(it, idx),
       data: it
     }));
 
-    // 動画: videos.json は ts が無くてもOK（末尾に追加される運用 → idxを時刻代わりにする）
     const vidsRaw = await loadJSON('asset/gallery/videos.json');
     const vids = vidsRaw.map((v, idx) => ({
       kind: 'video',
-      ts: v.ts ? Date.parse(v.ts) || +v.ts || idx : idx, // ISO/epoch/無ければidx
+      ts: resolveTs(v, idx),
       data: v
     }));
 
