@@ -62,6 +62,34 @@ console.log('[gallery] init');
   const seenYT = new Set(); // 動画ID重複ガード
   const byImgId = new Set();
 
+  // ===== 列への振り分け（左→右、新しい順） =====
+  // CSSのcolumn-countだと「左列を全部埋めてから右列」になり、新着が右列の途中から
+  // 始まって見えてしまうので、JSで「その時点で一番短い列」に順番に入れていく。
+  const BREAKPOINT = 850; // css/gallery.css のスマホ指定と合わせる
+  const colCount = () => (window.innerWidth < BREAKPOINT ? 1 : 2);
+
+  let cols = [];        // { el, h } の配列。h は推定の高さ（列幅=1 としたときの比率）
+  function buildCols(n) {
+    wrap.innerHTML = '';
+    cols = [];
+    for (let i = 0; i < n; i++) {
+      const c = document.createElement('div');
+      c.className = 'masonry-col';
+      wrap.appendChild(c);
+      cols.push({ el: c, h: 0 });
+    }
+  }
+
+  // 画像の読み込みを待たずに済むよう、w/h から高さを見積もる
+  function place(fig, ratio) {
+    let min = cols[0];
+    for (const c of cols) if (c.h < min.h) min = c;
+    min.el.appendChild(fig);
+    min.h += ratio + 0.04; // 0.04 は余白ぶんの補正
+  }
+
+  buildCols(colCount());
+
   for (const it of items) {
     if (it.kind === 'img') {
       const d = it.data;
@@ -89,7 +117,7 @@ console.log('[gallery] init');
       }
 
       fig.appendChild(img);
-      wrap.appendChild(fig);
+      place(fig, (d.w && d.h) ? d.h / d.w : 0.75);
     } else if (it.kind === 'video') {
       const v = it.data;
       if (!v || !v.id) continue;
@@ -141,13 +169,32 @@ console.log('[gallery] init');
         this.appendChild(box);
       });
 
-      wrap.appendChild(fig);
+      place(fig, 9 / 16); // 動画カードは16:9固定
     }
   }
 
-  if (!wrap.children.length) {
+  if (!wrap.querySelector('.card')) {
     wrap.innerHTML = '<p style="opacity:.6">ギャラリーに表示できる項目がありません</p>';
   }
+
+  // 画面幅が変わって列数が変わったら組み直す
+  let lastCols = cols.length;
+  let rid;
+  window.addEventListener('resize', () => {
+    clearTimeout(rid);
+    rid = setTimeout(() => {
+      const n = colCount();
+      if (n === lastCols) return;
+      lastCols = n;
+      const cards = Array.from(wrap.querySelectorAll('.card'));
+      const ratios = cards.map(c => {
+        const img = c.querySelector('img');
+        return (img && img.width && img.height) ? img.height / img.width : 9 / 16;
+      });
+      buildCols(n);
+      cards.forEach((c, i) => place(c, ratios[i]));
+    }, 150);
+  });
 
   // フェードイン（IO）
   try {

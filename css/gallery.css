@@ -14,26 +14,33 @@
   box-sizing: border-box;
 }
 
-/* Masonry: 列幅の目安を指定して自動列数（中央寄せ版） */
+/* Masonry: 列は js/gallery.js が生成し、新しい順に「左→右」へ振り分ける
+   （旧: column-count による段組。あれは左列を全部埋めてから右列に移るため、
+     新着が右列の途中から始まって見え、並び順が分かりにくかった） */
 #page-content #gallery.masonry{
-  /* 列幅＆隙間 */
-  --col-w: 320px;
   --gap: 16px;
 
-  column-width: var(--col-w);
-  column-gap: var(--gap);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap);
 
-  /* まずは2列の見た目幅にピタッと合わせて中央寄せ */
-  max-width: calc(2 * var(--col-w) + 1 * var(--gap));
   margin: 0 auto;        /* 中央寄せ */
   padding: 0 16px;       /* コンテンツ左右余白 */
   box-sizing: border-box;
 }
 
+/* JSが作る各列 */
+#page-content #gallery.masonry > .masonry-col{
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
 /* カード共通 */
 .card{
-  break-inside: avoid;
-  margin: 0 0 16px;
+  margin: 0;
   display: block;
   border-radius: var(--card-radius);
   overflow: hidden;
@@ -116,8 +123,7 @@
 
 /* ===== スマホ微調整 ===== */
 @media (max-width:480px){
-  #page-content #gallery.masonry{ column-gap:8px; }
-  .card{ margin-bottom:8px; }
+  #page-content #gallery.masonry{ --gap:8px; }
 }
 
 /* ===== 低モーション配慮 ===== */
@@ -126,31 +132,20 @@
   .play-overlay, .play-button{ transition:none; }
 }
 
-/* 2列・中央寄せ：他ページの本文幅(760px)に合わせる */
+/* 中央寄せ：他ページの本文幅(760px)に合わせる
+   ※ 列数は js/gallery.js が画面幅から決める（850px未満=1列 / それ以上=2列） */
 #page-content #gallery.masonry{
   box-sizing: border-box;
   width: 100%;
   max-width: 780px;        /* ← 他ページと同じ幅に固定（サムネはここで大きくなる） */
   margin: 0 auto;          /* 中央寄せ */
   padding: 0 16px;
-
-  /* 列は固定して、列幅は自動計算に任せる */
-  column-count: 2;
-  column-gap: 16px;
-  column-width: auto !important;  /* 以前の column-width 指定を無効化 */
 }
 
-/* スマホは1列 */
+/* スマホ */
 @media (max-width: 850px){
   #page-content #gallery.masonry{
     max-width: 100%;
-    column-count: 1;
     padding: 0 12px;
   }
-  /* 画面広い時は3列に拡張（container: max-width 1100px と整合） */
-@media (min-width: 1100px){
-  #page-content #gallery.masonry{
-    max-width: calc(3 * var(--col-w) + 2 * var(--gap)); /* ≒ 992px */
-  }
-}
 }
