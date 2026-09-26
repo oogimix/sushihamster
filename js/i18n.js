@@ -72,15 +72,25 @@
     if (resolveReady) { resolveReady(); resolveReady = null; }
   }
 
-  // --- 翻訳文中のプレースホルダ展開 ---
-  // {year}  → 現在の年（例: 2026）
-  // {years} → サイト開始年〜現在年（例: 2025–2026 / 同じ年なら 2025 のみ）
+  // --- 翻訳文中の年の自動更新 ---
+  // 1) © のうしろの年（"© 2025" / "© 2025–2026"）を現在年まで自動で伸ばす
+  //    → JSONには実際の年を書いておくので、このJSが古いキャッシュでも表示は壊れない
+  // 2) {year} / {years} プレースホルダも使える（任意）
   const START_YEAR = 2025;
-  function interpolate(s) {
-    if (typeof s !== "string" || !s.includes("{")) return s;
+  function yearRange() {
     const y = new Date().getFullYear();
-    const years = y > START_YEAR ? `${START_YEAR}–${y}` : String(START_YEAR);
-    return s.replace(/\{years\}/g, years).replace(/\{year\}/g, String(y));
+    return y > START_YEAR ? `${START_YEAR}–${y}` : String(START_YEAR);
+  }
+  function interpolate(s) {
+    if (typeof s !== "string") return s;
+    let out = s;
+    if (out.includes("{")) {
+      out = out.replace(/\{years\}/g, yearRange())
+               .replace(/\{year\}/g, String(new Date().getFullYear()));
+    }
+    // © 2025 / © 2025–2026 / © 2025-2026 などをまとめて置き換え
+    out = out.replace(/©\s*\d{4}(?:\s*[–—-]\s*\d{4})?/g, `© ${yearRange()}`);
+    return out;
   }
 
   function translateElement(el) {
