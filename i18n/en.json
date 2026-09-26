@@ -2,7 +2,7 @@
   "site": {
     "title": "sushihamster Official Website",
     "banner": "★☆ Welcome to sushihamster ☆★",
-    "footer": "© 2025 sushihamster. All sushi reserved. 🍣🐹",
+    "footer": "© {years} sushihamster. All sushi reserved. 🍣🐹",
     "og_title": "sushihamster Official Website",
     "og_desc": "sushihamster Official Website 🐹🍣 Bringing you the latest updates and event info!"
   },

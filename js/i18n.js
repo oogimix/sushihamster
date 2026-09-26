@@ -72,21 +72,32 @@
     if (resolveReady) { resolveReady(); resolveReady = null; }
   }
 
+  // --- 翻訳文中のプレースホルダ展開 ---
+  // {year}  → 現在の年（例: 2026）
+  // {years} → サイト開始年〜現在年（例: 2025–2026 / 同じ年なら 2025 のみ）
+  const START_YEAR = 2025;
+  function interpolate(s) {
+    if (typeof s !== "string" || !s.includes("{")) return s;
+    const y = new Date().getFullYear();
+    const years = y > START_YEAR ? `${START_YEAR}–${y}` : String(START_YEAR);
+    return s.replace(/\{years\}/g, years).replace(/\{year\}/g, String(y));
+  }
+
   function translateElement(el) {
     const key = el.getAttribute("data-i18n");
     if (!key) return;
     const val = get(dict, key);
     if (val == null) return;
 
-    if (el.hasAttribute("data-i18n-html")) el.innerHTML = val;
-    else el.textContent = val;
+    if (el.hasAttribute("data-i18n-html")) el.innerHTML = interpolate(val);
+    else el.textContent = interpolate(val);
 
     const attrMap = el.getAttribute("data-i18n-attr");
     if (attrMap) {
       attrMap.split(",").forEach(pair => {
         const [attr, k = key] = pair.split("|").map(s => s.trim());
         const v = get(dict, k);
-        if (v != null) el.setAttribute(attr, v);
+        if (v != null) el.setAttribute(attr, interpolate(v));
       });
     }
   }
@@ -101,12 +112,12 @@
         const [attr, k] = pair.split("|").map(s => s.trim());
         if (!k) return;
         const v = get(dict, k);
-        if (v != null) el.setAttribute(attr, v);
+        if (v != null) el.setAttribute(attr, interpolate(v));
       });
     });
   }
   window.applyI18n = applyI18n;
-  window.i18nGet = key => get(dict, key) ?? key;
+  window.i18nGet = key => interpolate(get(dict, key) ?? key);
 
   async function setLang(lang) {
     await loadDict(lang);
