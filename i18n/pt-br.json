@@ -15,6 +15,7 @@
     "info": "Notícias",
     "music": "Música",
     "gallery": "Galeria",
+    "movie": "Cinema",
     "bbs": "Fóruns",
     "links": "Links",
     "game": "Jogos"
@@ -201,5 +202,15 @@
       "genre": "Puzzle",
       "desc": "Solte e role sushis para fundi-los! Una sushis iguais para fazê-los evoluir e mire no toro supremo♪"
     }
+  },
+  "movie": {
+    "title": "🎬 Cinema Sushiham 🎬",
+    "subtitle": "Em cartaz: animações curtas da sushihamster♪",
+    "lineup": "🎟️ Em cartaz 🎟️",
+    "coming_soon": "🍿 EM BREVE 🍿",
+    "now_showing": "🎞️ EM EXIBIÇÃO 🎞️",
+    "latest": "NOVO!",
+    "more_youtube": "Veja mais no YouTube",
+    "more_instagram": "Veja mais no Instagram"
   }
 }

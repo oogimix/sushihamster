@@ -15,6 +15,7 @@
     "info": "お知らせ",
     "music": "ミュージック",
     "gallery": "ギャラリー",
+    "movie": "シアター",
     "bbs": "BBS集",
     "links": "リンク集",
     "game": "ゲーム"
@@ -201,5 +202,15 @@
       "genre": "パズル",
       "desc": "落として転がして鮨を合体！同じ鮨どうしをくっつけて進化させ、特上トロを目指そう♪"
     }
+  },
+  "movie": {
+    "title": "🎬 すしハムシアター 🎬",
+    "subtitle": "sushihamsterのショートアニメ上映中♪",
+    "lineup": "🎟️ 上映ラインナップ 🎟️",
+    "coming_soon": "🍿 COMING SOON 🍿",
+    "now_showing": "🎞️ 上映中 🎞️",
+    "latest": "NEW!",
+    "more_youtube": "YouTubeでもっと見る",
+    "more_instagram": "Instagramでもっと見る"
   }
 }

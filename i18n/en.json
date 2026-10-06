@@ -15,6 +15,7 @@
     "info": "News",
     "music": "Music",
     "gallery": "Gallery",
+    "movie": "Theater",
     "bbs": "BBS",
     "links": "Links",
     "game": "Games"
@@ -201,5 +202,15 @@
       "genre": "Puzzle",
       "desc": "Drop and roll sushi to merge them! Combine matching sushi to evolve and aim for the premium toro♪"
     }
+  },
+  "movie": {
+    "title": "🎬 Sushiham Theater 🎬",
+    "subtitle": "Now showing: sushihamster short animations♪",
+    "lineup": "🎟️ Now Playing 🎟️",
+    "coming_soon": "🍿 COMING SOON 🍿",
+    "now_showing": "🎞️ NOW SHOWING 🎞️",
+    "latest": "NEW!",
+    "more_youtube": "Watch more on YouTube",
+    "more_instagram": "Watch more on Instagram"
   }
 }

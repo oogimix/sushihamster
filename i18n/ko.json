@@ -15,6 +15,7 @@
     "info": "뉴스",
     "music": "뮤직",
     "gallery": "갤러리",
+    "movie": "시어터",
     "bbs": "BBS",
     "links": "링크",
     "game": "게임"
@@ -201,5 +202,15 @@
       "genre": "퍼즐",
       "desc": "스시를 떨어뜨려 굴려서 합체시키자! 같은 스시를 붙여서 진화시키고 특상 참치를 목표로♪"
     }
+  },
+  "movie": {
+    "title": "🎬 스시햄 시어터 🎬",
+    "subtitle": "sushihamster 숏 애니메이션 상영 중♪",
+    "lineup": "🎟️ 상영 라인업 🎟️",
+    "coming_soon": "🍿 COMING SOON 🍿",
+    "now_showing": "🎞️ 상영 중 🎞️",
+    "latest": "NEW!",
+    "more_youtube": "YouTube에서 더 보기",
+    "more_instagram": "Instagram에서 더 보기"
   }
 }

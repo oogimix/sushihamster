@@ -1,0 +1,4 @@
+{
+  "_how_to": "上映作品を増やすときは movies に1つ足すだけ。新しいものを上に。id=YouTubeの動画ID（https://youtube.com/shorts/XXXX の XXXX 部分）、type=short（縦）/ wide（横）。title・desc は文字列でもOK、{\"ja\":\"…\",\"en\":\"…\"} のように言語別でもOK。instagram は任意。",
+  "movies": []
+}

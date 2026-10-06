@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>すしハムシアター | sushihamster</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/movie.css" />
+</head>
+<body>
+  <div class="movie-wrap" id="movie-page">
+
+    <!-- 看板 -->
+    <div class="marquee">
+      <span class="marquee-bulbs" aria-hidden="true"></span>
+      <h2 class="marquee-title" data-i18n="movie.title">🎬 すしハムシアター 🎬</h2>
+      <p class="marquee-sub" data-i18n="movie.subtitle">sushihamsterのショートアニメ上映中♪</p>
+      <span class="marquee-bulbs" aria-hidden="true"></span>
+    </div>
+
+    <!-- ステージ（カーテンが開いて最新作が見える） -->
+    <div class="stage" id="movie-stage">
+      <div class="stage-screen" id="movie-feature">
+        <p class="stage-coming" data-i18n="movie.coming_soon">🍿 COMING SOON 🍿</p>
+      </div>
+      <div class="curtain curtain-left" aria-hidden="true"></div>
+      <div class="curtain curtain-right" aria-hidden="true"></div>
+      <div class="curtain-valance" aria-hidden="true"></div>
+    </div>
+
+    <!-- 上映ラインナップ -->
+    <h3 class="lineup-title" data-i18n="movie.lineup">🎟️ 上映ラインナップ 🎟️</h3>
+    <div class="ticket-grid" id="movie-list"></div>
+
+    <!-- 外部チャンネル -->
+    <div class="movie-sns">
+      <a class="sns-btn yt" href="https://www.youtube.com/channel/UC5rW29U6e7Qq02Xp8hhMmow" target="_blank" rel="noopener">
+        <img src="asset/img/icon_yt.jpg" alt="" class="sns-icon">
+        <span data-i18n="movie.more_youtube">YouTubeでもっと見る</span>
+      </a>
+      <a class="sns-btn ig" href="https://www.instagram.com/sush1h4mst3r/" target="_blank" rel="noopener">
+        <img src="asset/img/icon_ig.jpg" alt="" class="sns-icon">
+        <span data-i18n="movie.more_instagram">Instagramでもっと見る</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

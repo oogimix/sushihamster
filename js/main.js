@@ -2,7 +2,7 @@
 (function () {
   // ========= 設定 =========
   const CONTENT_ID = "page-content";
-  const SCRIPT_IDS = ["news-loader-script", "share-script", "gallery-runtime", "hamham-bbs-script", "paint-bbs-script"];
+  const SCRIPT_IDS = ["news-loader-script", "share-script", "gallery-runtime", "hamham-bbs-script", "paint-bbs-script", "movie-script"];
   const FILES_JSON = "news/files-html.json";
   const NEWS_LIST_SELECTOR = "#news-list, .news ul";
 
@@ -338,8 +338,10 @@
         // ▼ ギャラリー初期化フック（#gallery出現を待ってから実行）
         onPageLoadedHook(page);
 
-        // ▼ BBS 初期化フック
-        if (page === "hamham_bbs.html") {
+        // ▼ BBS / シアター 初期化フック
+        if (page === "movie.html") {
+          addScript("/js/movie.js", "movie-script");
+        } else if (page === "hamham_bbs.html") {
           ensureFirebase().then(() => addScript("/js/hamham-bbs.js", "hamham-bbs-script"));
         } else if (page === "paint_bbs.html") {
           ensureFirebase().then(() => addScript("/js/paint-bbs.js", "paint-bbs-script"));

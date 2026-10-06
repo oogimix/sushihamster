@@ -15,6 +15,7 @@
     "info": "通知",
     "music": "音乐",
     "gallery": "相册",
+    "movie": "劇場",
     "bbs": "留言板合集",
     "links": "友情链接",
     "game": "游戏"
@@ -201,5 +202,15 @@
       "genre": "益智",
       "desc": "滚落合并相同寿司！将同种寿司拼在一起进化，目标是最顶级的大金枪鱼♪"
     }
+  },
+  "movie": {
+    "title": "🎬 壽司倉鼠劇場 🎬",
+    "subtitle": "sushihamster 短篇動畫上映中♪",
+    "lineup": "🎟️ 上映片單 🎟️",
+    "coming_soon": "🍿 COMING SOON 🍿",
+    "now_showing": "🎞️ 上映中 🎞️",
+    "latest": "NEW!",
+    "more_youtube": "在 YouTube 看更多",
+    "more_instagram": "在 Instagram 看更多"
   }
 }

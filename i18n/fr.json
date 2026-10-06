@@ -15,6 +15,7 @@
     "info": "Actualités",
     "music": "Musique",
     "gallery": "Galerie",
+    "movie": "Cinéma",
     "bbs": "Forums",
     "links": "Liens",
     "game": "Jeux"
@@ -201,5 +202,15 @@
       "genre": "Puzzle",
       "desc": "Lancez et faites rouler les sushis pour les fusionner ! Assemblez les mêmes pour les faire évoluer et visez le toro suprême♪"
     }
+  },
+  "movie": {
+    "title": "🎬 Cinéma Sushiham 🎬",
+    "subtitle": "À l'affiche : les courts métrages animés de sushihamster♪",
+    "lineup": "🎟️ À l'affiche 🎟️",
+    "coming_soon": "🍿 PROCHAINEMENT 🍿",
+    "now_showing": "🎞️ EN PROJECTION 🎞️",
+    "latest": "NOUVEAU !",
+    "more_youtube": "Plus de vidéos sur YouTube",
+    "more_instagram": "Plus de vidéos sur Instagram"
   }
 }
