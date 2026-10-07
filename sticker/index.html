@@ -193,6 +193,12 @@ const MAT_PRESETS = {
   'クリアライム': { top: '#e4ffc2', bottom: '#6fd222', rough: 0.05, metal: 0, coat: 1, irid: 0.15, sheen: 0, opacity: 1, env: 1.4, trans: 0.6 },
   'クリアピンク': { top: '#ffd9ec', bottom: '#ff58a8', rough: 0.05, metal: 0, coat: 1, irid: 0.2, sheen: 0, opacity: 1, env: 1.4, trans: 0.6 },
   'Y2Kシルバー':  { top: '#ffffff', bottom: '#c9d4e4', rough: 0.05, metal: 1, coat: 1, irid: 0.5, sheen: 0, opacity: 1, env: 1.8 },
+  // スケルトン：iMac G3 風の乳白半透明プラスチック（trans＋ざらつきで“すりガラス”にする）
+  'スケルトンブルー':   { top: '#b9ecfa', bottom: '#1aa3c8', rough: 0.3, metal: 0, coat: 1, irid: 0, sheen: 0.4, opacity: 1, env: 1.3, trans: 0.7 },
+  'ストロベリーG3':     { top: '#ffd3e6', bottom: '#ff4f8e', rough: 0.3, metal: 0, coat: 1, irid: 0, sheen: 0.4, opacity: 1, env: 1.3, trans: 0.7 },
+  'タンジェリンG3':     { top: '#ffdfae', bottom: '#ff8c1a', rough: 0.3, metal: 0, coat: 1, irid: 0, sheen: 0.4, opacity: 1, env: 1.3, trans: 0.7 },
+  'ライムG3':           { top: '#e2fbb0', bottom: '#8ad81e', rough: 0.3, metal: 0, coat: 1, irid: 0, sheen: 0.4, opacity: 1, env: 1.3, trans: 0.7 },
+  'グレープG3':         { top: '#dccbff', bottom: '#8a5cff', rough: 0.3, metal: 0, coat: 1, irid: 0, sheen: 0.4, opacity: 1, env: 1.3, trans: 0.7 },
   // stripes：下半分に入る横縞の本数（80年代クロームのサンセット表現）、stripeColor：縞の色
   'ベイパー':     { top: '#7af5ff', bottom: '#ff71ce', rough: 0.1, metal: 0.55, coat: 1, irid: 0.5, sheen: 0, opacity: 1, env: 1.6, stripes: 6, stripeColor: '#8a4dff' },
   'サンセット':   { top: '#ffe289', bottom: '#ff5e87', rough: 0.12, metal: 0.35, coat: 1, irid: 0, sheen: 0, opacity: 1, env: 1.4, stripes: 5, stripeColor: '#ff9d2e' },
@@ -215,6 +221,7 @@ const TYPE_STYLES = {
   'Y2Kクローム':    { ref: 'Y2K',      font: 'Audiowide', thick: 0.02, round: 0.012, fx: 'none', puff: 0.9, spacing: 0.02, mat: 'Y2Kシルバー' },
   'サイバー':       { ref: '2000',     font: 'Orbitron', thick: 0.015, round: 0.01, fx: 'tube', fxAmt: 0.9, puff: 1, spacing: 0.04, mat: 'クリアアクア',
                       top: '#d8fbff', bottom: '#19c8e8' },
+  'Y2Kスケルトン':  { ref: 'G3',       font: 'Baloo 2', thick: 0.055, round: 0.028, fx: 'none', puff: 1.25, spacing: -0.04, mat: 'スケルトンブルー' },
   '8ビット':         { ref: 'LVUP',     jpFont: 'DotGothic16', font: 'Press Start 2P', thick: 0, round: 0, fx: 'none', puff: 0.9, spacing: 0.06, quality: 88, mat: 'ソーダ' },
   'グリッチ':       { ref: 'BZZT',     jpFont: 'DotGothic16', font: 'Rubik Glitch', thick: 0, round: 0.004, fx: 'none', puff: 0.8, spacing: 0.04, quality: 88, mat: 'ネオン' },
   'ドレイン':       { ref: 'Pain',     jpFont: 'Shippori Mincho B1', font: 'Pirata One', thick: 0.012, round: 0.008, fx: 'none', puff: 0.85, spacing: 0.05, mat: 'クローム',
