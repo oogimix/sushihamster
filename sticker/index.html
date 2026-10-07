@@ -156,7 +156,7 @@ const VALID_COUNTS = [8, 16, 24, 32, 40];
 // 新しいモデルはここに追加すると「プリセット」に並ぶ（game/vrm/ に置いた場合）
 const PRESETS = [
   { name: 'sushihamster', url: 'models/sushihamster.vrm' },
-  { name: 'sushifairy',   url: '../game/vrm/shin_sushifairy.vrm', siteOnly: true },  // 新版が来たら models/ に置き換える
+  { name: 'sushifairy',   url: 'models/sushifairy.vrm' },
   { name: 'recordolphin', url: 'models/recordolphin.glb' },
   { name: 'kakapop',      url: 'models/kakapop.glb' },
   { name: 'vibestar',     url: 'models/vibestar.glb' },
@@ -379,7 +379,7 @@ function normalizeText(t) {
 }
 function defaultModelData(i) {
   return { pos: [i === 0 ? 0 : (i % 2 ? 1 : -1) * Math.ceil(i / 2) * 0.8, 0, 0], rotY: 0, scale: 1, visible: true,
-    pose: structuredClone(REST), expr: {}, boneRot: {}, lookAtCam: true, anim: 0, animTime: 0 };
+    pose: structuredClone(REST), expr: {}, boneRot: {}, neta: 0, lookAtCam: true, anim: 0, animTime: 0 };
 }
 const clone = o => JSON.parse(JSON.stringify(o));
 
@@ -456,6 +456,7 @@ async function loadModel(url, rawName) {
   selModel = models.length - 1;
   applyModelData(m);
   if (vrm) settleModel(m, 30);
+  setupNeta(m);
   document.getElementById('dropHint').style.display = 'none';
   if (!saved) {
     frameCamera('full');   // 新しく出したキャラが画面に入るように
@@ -578,6 +579,65 @@ stageWrap.addEventListener('dragover', e => { e.preventDefault(); stageWrap.clas
 stageWrap.addEventListener('dragleave', () => stageWrap.classList.remove('dragover'));
 stageWrap.addEventListener('drop', e => { e.preventDefault(); stageWrap.classList.remove('dragover'); loadFiles(e.dataTransfer.files); });
 
+// ===== おすしネタ切り替え（sushifairy） =====
+const NETA_SCRIPTS = { sushifairy: 'models/sushifairy_neta.js' };
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const sc = document.createElement('script');
+    sc.src = src; sc.onload = res; sc.onerror = () => rej(new Error(src + ' が読めません'));
+    document.head.appendChild(sc);
+  });
+}
+async function setupNeta(m) {
+  const src = NETA_SCRIPTS[m.name];
+  if (!src || !m.vrm) return;
+  try { if (!window.__NETA?.[m.name]) await loadScript(src); } catch (e) { console.warn(e); return; }
+  const cfg = window.__NETA[m.name];
+  let netaMat = null; const shell = [];
+  m.obj.traverse(o => {
+    if (o.isMesh) (Array.isArray(o.material) ? o.material : [o.material]).forEach(mt => { if (/^Neta_/.test(mt.name)) { netaMat = mt; shell.push(o); } });
+  });
+  const chest = m.vrm.humanoid?.getRawBoneNode('chest');
+  if (!netaMat || !chest) return;
+  m.obj.updateMatrixWorld(true);
+  const local = chest.matrixWorld.clone().invert().multiply(m.obj.matrixWorld);  // 追加パーツを胸ボーンに乗せる変換
+  m.neta = { cfg, netaMat, shell, chest, local, orig: { map: netaMat.map, rough: netaMat.roughness }, tex: {}, parts: {} };
+  applyNeta(m);
+  renderPanel();
+}
+async function applyNeta(m) {
+  const N = m.neta;
+  if (!N) return;
+  const i = m.data.neta || 0, it = N.cfg[i];
+  if (!it) return;
+  for (const g of Object.values(N.parts)) g.visible = false;
+  N.shell.forEach(o => { o.visible = !it.hideShell; });
+  if (!it.img) { N.netaMat.map = N.orig.map; N.netaMat.roughness = N.orig.rough; N.netaMat.needsUpdate = true; }
+  else {
+    if (!N.tex[i]) {
+      const im = new Image();
+      await new Promise(r => { im.onload = r; im.src = it.img; });
+      const t = new THREE.Texture(im);
+      t.flipY = false; t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; t.needsUpdate = true;
+      N.tex[i] = t;
+    }
+    if ((m.data.neta || 0) !== i) return;
+    N.netaMat.map = N.tex[i]; N.netaMat.roughness = it.rough; N.netaMat.needsUpdate = true;
+  }
+  if (it.glb) {
+    if (!N.parts[i]) {
+      const b64 = it.glb.includes(',') ? it.glb.split(',')[1] : it.glb;
+      const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+      const g = await loader.parseAsync(bin.buffer, '');
+      const grp = g.scene;
+      grp.matrixAutoUpdate = false; grp.matrix.copy(N.local);
+      grp.traverse(o => { o.frustumCulled = false; });
+      N.chest.add(grp);
+      N.parts[i] = grp;
+    }
+    N.parts[i].visible = (m.data.neta || 0) === i;
+  }
+}
 // ===== モデルへの反映 =====
 function applyModelData(m) {
   const d = m.data;
@@ -585,6 +645,7 @@ function applyModelData(m) {
   m.root.rotation.y = d.rotY * D2R;
   m.root.scale.setScalar(d.scale);
   m.root.visible = d.visible;
+  if (m.neta) applyNeta(m);
   if (m.vrm?.lookAt) {
     m.vrm.lookAt.target = d.lookAtCam ? camera : undefined;
     if (!d.lookAtCam) { m.vrm.lookAt.yaw = 0; m.vrm.lookAt.pitch = 0; }
@@ -1358,6 +1419,7 @@ const workCtx = work.getContext('2d', { willReadFrequently: true });
 async function renderSlotStill(slot) {
   applySlot(slot, true);
   await Promise.all(state.texts.map(ensureFonts));
+  await Promise.all(models.map(m => applyNeta(m)));
   await document.fonts.ready;
   syncTexts(true);
   for (const m of models) if (m.vrm) applyPose(m), m.vrm.update(0);
@@ -1539,6 +1601,10 @@ function panelModel() {
   const m = curModel();
   if (!m) return;
   const d = m.data, upd = () => applyModelData(m);
+  if (m.neta) body.append(sec('おすしのネタ',
+    el('div', { class: 'btns' }, ...m.neta.cfg.map((it, i) => btn(it.label, () => {
+      m.data.neta = i; applyNeta(m); renderPanel(); markDirty();
+    }, (m.data.neta || 0) === i ? 'on' : '')))));
   body.append(sec(`配置：${m.name}`,
     slider('左右', () => d.pos[0], v => { d.pos[0] = v; upd(); }, -3, 3, 0.01),
     slider('上下', () => d.pos[1], v => { d.pos[1] = v; upd(); }, -2, 2, 0.01),
