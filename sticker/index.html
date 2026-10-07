@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>スタンプ撮影スタジオ</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Rampart+One&family=Reggae+One&family=RocknRoll+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kiwi+Maru:wght@500&family=Hachi+Maru+Pop&family=Yusei+Magic&family=DotGothic16&family=Train+One&family=Stick&family=Potta+One&family=Darumadrop+One&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{
+  --bg:#fff4f8; --panel:#ffffff; --ink:#4a2a3a; --sub:#9a7a8a; --line:#f3d2df;
+  --accent:#ff6fa3; --accent-d:#e24f86; --accent-l:#ffe3ee; --ok:#2eaa6a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",Meiryo,sans-serif;font-size:14px}
+header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:2px solid var(--line);flex-wrap:wrap}
+header h1{font-size:18px;margin:0;font-family:"Mochiy Pop One",sans-serif;color:var(--accent-d)}
+header .sp{flex:1}
+header small{color:var(--sub)}
+button{font:inherit;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:800}
+button.primary:hover{background:var(--accent-d)}
+button.on{background:var(--accent-l);border-color:var(--accent)}
+button:disabled{opacity:.5;cursor:default}
+main{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;padding:16px;max-width:1400px;margin:0 auto}
+@media (max-width:900px){main{grid-template-columns:minmax(0,1fr);padding:16px}}
+.stage-col{display:flex;flex-direction:column;gap:10px;min-width:0}
+.stage-wrap{position:relative;width:100%;max-width:740px;margin:0 auto;aspect-ratio:370/320;border-radius:14px;overflow:hidden;
+  border:2px solid var(--line);touch-action:none;background-color:#fff}
+.stage-wrap.bg-checker{background-image:linear-gradient(45deg,#eee 25%,transparent 25%),linear-gradient(-45deg,#eee 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#eee 75%),linear-gradient(-45deg,transparent 75%,#eee 75%);
+  background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+.stage-wrap.bg-line{background:#8ca5c6}
+.stage-wrap.bg-dark{background:#1e1e24}
+.stage-wrap.bg-white{background:#fff}
+#stage{width:100%;height:100%;display:block}
+#guide{position:absolute;inset:0;pointer-events:none}
+.drop-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--sub);pointer-events:none;padding:20px;line-height:1.8}
+.stage-wrap.dragover{outline:4px dashed var(--accent);outline-offset:-8px}
+.toolbar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center}
+.toolbar .lbl{color:var(--sub);font-size:12px}
+.status{text-align:center;color:var(--sub);font-size:12px;min-height:1.4em}
+.panel{background:var(--panel);border:2px solid var(--line);border-radius:14px;min-width:0;display:flex;flex-direction:column;max-height:calc(100vh - 90px);position:sticky;top:12px}
+@media (max-width:900px){.panel{max-height:none;position:static}}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;padding:8px;border-bottom:2px solid var(--line)}
+.tabs button{padding:5px 9px;font-size:13px}
+.tab-body{padding:12px;overflow:auto;flex:1}
+.sec{margin:0 0 14px}
+.sec h3{font-size:13px;margin:0 0 8px;color:var(--accent-d)}
+.row{display:flex;align-items:center;gap:8px;margin:5px 0}
+.row label{flex:0 0 96px;font-size:12px;color:var(--sub)}
+.row input[type=range]{flex:1;min-width:0;accent-color:var(--accent)}
+.row .val{flex:0 0 42px;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
+.row select,.row input[type=text],.row textarea{flex:1;min-width:0;font:inherit;padding:5px 6px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.row textarea{resize:vertical;min-height:52px;font-size:16px}
+.row input[type=color]{width:40px;height:28px;border:none;background:none;padding:0}
+.btns{display:flex;flex-wrap:wrap;gap:5px}
+.btns button{font-size:12px;padding:5px 8px}
+.list{display:flex;flex-direction:column;gap:4px}
+.list .item{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer}
+.list .item.sel{border-color:var(--accent);background:var(--accent-l)}
+.list .item .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note{font-size:12px;color:var(--sub);line-height:1.6}
+.slots-bar{background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px}
+.slots-head{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.slots-head .cnt{font-weight:800;color:var(--accent-d)}
+.slots-head .sp{flex:1}
+.slots{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.slot{flex:0 0 auto;width:96px;border:2px solid var(--line);border-radius:10px;cursor:pointer;position:relative;background-color:#fff;
+  background-image:linear-gradient(45deg,#f2f2f2 25%,transparent 25%),linear-gradient(-45deg,#f2f2f2 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f2f2f2 75%),linear-gradient(-45deg,transparent 75%,#f2f2f2 75%);
+  background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0}
+.slot img{width:100%;aspect-ratio:370/320;display:block;object-fit:contain}
+.slot .no{position:absolute;left:4px;top:2px;font-size:11px;font-weight:800;color:var(--accent-d);text-shadow:0 0 3px #fff,0 0 3px #fff}
+.slot.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-l)}
+.progress{position:fixed;inset:0;background:rgba(255,244,248,.85);display:none;align-items:center;justify-content:center;z-index:50;font-size:18px;font-weight:800;color:var(--accent-d)}
+.progress.show{display:flex}
+input[type=file]{display:none}
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/",
+    "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@2.1.1/lib/three-vrm.module.min.js"
+  }
+}
+</script>
+</head>
+<body>
+<header>
+  <h1>🍣 スタンプ撮影スタジオ</h1>
+  <small>VRM / GLB を読み込んで LINE スタンプ用 PNG を量産</small>
+  <span class="sp"></span>
+  <button id="btnProjSave">プロジェクト保存</button>
+  <button id="btnProjLoad">プロジェクト読込</button>
+  <input type="file" id="projFile" accept=".json,application/json">
+</header>
+
+<main>
+  <div class="stage-col">
+    <div class="stage-wrap bg-checker" id="stageWrap">
+      <canvas id="stage" width="740" height="640"></canvas>
+      <canvas id="guide" width="740" height="640"></canvas>
+      <div class="drop-hint" id="dropHint">右の「モデル」タブからプリセットを読み込むか、<br>.vrm / .glb ファイルをここにドロップしてね</div>
+    </div>
+    <div class="toolbar">
+      <span class="lbl">背景プレビュー</span>
+      <button data-bg="checker" class="on">透過</button>
+      <button data-bg="white">白</button>
+      <button data-bg="line">トーク画面</button>
+      <button data-bg="dark">ダーク</button>
+      <span class="lbl">｜</span>
+      <button id="btnGuide" class="on">余白ガイド</button>
+      <button id="btnSnap" class="primary">このスタンプをPNG保存</button>
+    </div>
+    <div class="status" id="status">ドラッグで回転・右ドラッグで移動・ホイールでズーム。文字はドラッグで移動できます。</div>
+    <div class="slots-bar">
+      <div class="slots-head">
+        <span>スタンプ一覧</span><span class="cnt" id="slotCount">1</span>
+        <span class="note" id="slotHint"></span>
+        <span class="sp"></span>
+        <button id="slotNew" class="primary">＋ 複製して新規</button>
+        <button id="slotLeft">←</button>
+        <button id="slotRight">→</button>
+        <button id="slotDel">削除</button>
+      </div>
+      <div class="slots" id="slots"></div>
+    </div>
+  </div>
+
+  <aside class="panel">
+    <div class="tabs" id="tabs">
+      <button data-tab="model" class="on">モデル</button>
+      <button data-tab="pose">ポーズ</button>
+      <button data-tab="face">表情</button>
+      <button data-tab="camera">カメラ・ライト</button>
+      <button data-tab="text">文字</button>
+      <button data-tab="export">書き出し</button>
+    </div>
+    <div class="tab-body" id="tabBody"></div>
+  </aside>
+</main>
+<input type="file" id="modelFile" accept=".vrm,.glb" multiple>
+<div class="progress" id="progress">処理中…</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { VRMLoaderPlugin } from '@pixiv/three-vrm';
+
+// ===== 定数 =====
+const W = 370, H = 320, S = 2, CW = W * S, CH = H * S;   // LINEスタンプ最大サイズ×2で内部描画
+const MARGIN = 10;                                        // LINE推奨余白
+const D2R = Math.PI / 180;
+const STORE_KEY = 'sushiStickerStudio.v1';
+const VALID_COUNTS = [8, 16, 24, 32, 40];
+
+// 新しいモデルはここに追加すると「プリセット」に並ぶ（game/vrm/ に置いた場合）
+const PRESETS = [
+  { name: 'sushihamster', url: '../game/vrm/shin_sushihamster.vrm' },
+  { name: 'sushifairy',   url: '../game/vrm/shin_sushifairy.vrm' },
+];
+
+const FONTS = [
+  'Mochiy Pop One', 'Dela Gothic One', 'Potta One', 'Rampart One', 'Reggae One', 'RocknRoll One',
+  'M PLUS Rounded 1c', 'Zen Maru Gothic', 'Kiwi Maru', 'Hachi Maru Pop', 'Darumadrop One',
+  'Yusei Magic', 'Train One', 'DotGothic16', 'Stick',
+];
+
+const TEXT_STYLES = {
+  'ポップピンク': { top: '#ffe0ec', bottom: '#ff4f93', edge: '#c2185b', depthColor: '#9c0f47', outline: '#ffffff' },
+  'すしレッド':   { top: '#fff1a8', bottom: '#ff5a2c', edge: '#a8321b', depthColor: '#6e1d0e', outline: '#ffffff' },
+  'サイダー':     { top: '#e6fcff', bottom: '#2fb6ff', edge: '#1565c0', depthColor: '#0d3477', outline: '#ffffff' },
+  'メロン':       { top: '#f6ffd2', bottom: '#5fd23c', edge: '#2e7d32', depthColor: '#174d1a', outline: '#ffffff' },
+  'ゴールド':     { top: '#fffbd6', bottom: '#ffae00', edge: '#8d5a00', depthColor: '#5e3a00', outline: '#ffffff' },
+  'グレープ':     { top: '#f5e2ff', bottom: '#9b4dff', edge: '#5e1fa8', depthColor: '#35106a', outline: '#ffffff' },
+  'ミルク':       { top: '#ffffff', bottom: '#ffe9f1', edge: '#ff6fa3', depthColor: '#ff6fa3', outline: '#5a2a3e' },
+  'ブラック':     { top: '#5a5a66', bottom: '#111116', edge: '#000000', depthColor: '#ff4f93', outline: '#ffffff' },
+};
+
+const BONES = [
+  ['hips', '腰'], ['spine', '背骨'], ['chest', '胸'], ['upperChest', '上胸'], ['neck', '首'], ['head', '頭'],
+  ['leftShoulder', '左肩'], ['leftUpperArm', '左上腕'], ['leftLowerArm', '左ひじ'], ['leftHand', '左手首'],
+  ['rightShoulder', '右肩'], ['rightUpperArm', '右上腕'], ['rightLowerArm', '右ひじ'], ['rightHand', '右手首'],
+  ['leftUpperLeg', '左もも'], ['leftLowerLeg', '左ひざ'], ['leftFoot', '左足首'],
+  ['rightUpperLeg', '右もも'], ['rightLowerLeg', '右ひざ'], ['rightFoot', '右足首'],
+];
+const FINGERS = ['Index', 'Middle', 'Ring', 'Little'];
+const FINGER_JOINTS = ['Proximal', 'Intermediate', 'Distal'];
+
+// ポーズプリセット（度）。左右はキャラ視点
+const REST = { leftUpperArm: [0, 0, -70], rightUpperArm: [0, 0, 70] };
+const POSE_PRESETS = {
+  'きをつけ': { ...REST },
+  'Tポーズ': {},
+  '手をふる': { leftUpperArm: [0, 0, -70], rightUpperArm: [0, 0, -25], rightLowerArm: [0, 0, -75], rightHand: [0, 0, -10], head: [0, 0, -6] },
+  'バンザイ': { leftUpperArm: [0, 0, 65], rightUpperArm: [0, 0, -65], leftLowerArm: [0, 0, 10], rightLowerArm: [0, 0, -10], head: [-8, 0, 0], _gripL: 0, _gripR: 0 },
+  'おじぎ': { ...REST, spine: [18, 0, 0], chest: [12, 0, 0], neck: [6, 0, 0], head: [10, 0, 0] },
+  'かんがえ中': { leftUpperArm: [0, 0, -70], rightUpperArm: [0, 25, 65], rightLowerArm: [0, 125, 0], head: [6, 0, 10], _gripR: 0.6 },
+  'ガッツ': { leftUpperArm: [0, 0, -5], rightUpperArm: [0, 0, 5], leftLowerArm: [0, 0, 100], rightLowerArm: [0, 0, -100], _gripL: 1, _gripR: 1 },
+  'びっくり': { leftUpperArm: [0, 0, 25], rightUpperArm: [0, 0, -25], leftLowerArm: [0, 0, 55], rightLowerArm: [0, 0, -55], spine: [-6, 0, 0], head: [-6, 0, 0] },
+  'はてな': { ...REST, head: [0, 0, 18], neck: [0, 0, 6], spine: [0, 0, 4] },
+  'しょんぼり': { leftUpperArm: [0, 0, -78], rightUpperArm: [0, 0, 78], spine: [10, 0, 0], chest: [8, 0, 0], head: [22, 0, 0] },
+  'ぷんぷん': { leftUpperArm: [0, -30, -55], rightUpperArm: [0, 30, 55], leftLowerArm: [0, -110, 0], rightLowerArm: [0, 110, 0], _gripL: 1, _gripR: 1, head: [-4, 0, 0] },
+  'ハグ待ち': { leftUpperArm: [0, -45, -30], rightUpperArm: [0, 45, 30], leftLowerArm: [0, -20, 0], rightLowerArm: [0, 20, 0], spine: [6, 0, 0] },
+  'ジャンプ': { leftUpperArm: [0, 0, 50], rightUpperArm: [0, 0, -50], leftUpperLeg: [-30, 0, 0], leftLowerLeg: [60, 0, 0], rightUpperLeg: [-10, 0, 0], rightLowerLeg: [30, 0, 0] },
+};
+const EXPR_PRESETS = {
+  'ふつう': {},
+  'にっこり': { happy: 1 },
+  'ほっこり': { relaxed: 1 },
+  'びっくり': { surprised: 1, aa: 0.4 },
+  'おこ': { angry: 1 },
+  'かなしい': { sad: 1 },
+  'ウインク': { happy: 0.5, blinkLeft: 1 },
+  'ねむい': { blink: 0.75, relaxed: 0.4 },
+  'あ〜': { aa: 1, happy: 0.4 },
+};
+
+// ===== 状態 =====
+const models = [];            // 読み込み済みモデル（three オブジェクトを持つ）
+let selModel = -1;
+const state = {
+  texts: [],
+  selText: 0,
+  settings: defaultSettings(),
+  slots: [],
+  active: 0,
+};
+let bgMode = 'checker', showGuide = true, tab = 'model', busy = false;
+let dirtyTimer = 0, suppressDirty = true;   // 起動処理が終わるまで自動保存しない
+
+// ===== three.js セットアップ =====
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(CW, CH, false);
+renderer.setClearColor(0x000000, 0);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, W / H, 0.01, 100);
+camera.position.set(0, 0.8, 3.2);
+const ambLight = new THREE.AmbientLight(0xffffff, 0.9); scene.add(ambLight);
+const keyLight = new THREE.DirectionalLight(0xffffff, 1.0); scene.add(keyLight);
+
+const stage = document.getElementById('stage');
+const stageCtx = stage.getContext('2d');
+const stageWrap = document.getElementById('stageWrap');
+const guide = document.getElementById('guide');
+const controls = new OrbitControls(camera, stage);
+controls.target.set(0, 0.6, 0);
+controls.enableDamping = false;
+controls.addEventListener('change', () => markDirty());
+controls.update();
+
+const loader = new GLTFLoader();
+loader.register(p => new VRMLoaderPlugin(p));
+
+function defaultSettings() {
+  return { outlineW: 6, outlineColor: '#ffffff', amb: 0.9, key: 1.0, keyAz: 30, keyEl: 40, shadow: true };
+}
+function defaultText(text = 'よろしく') {
+  return {
+    text, font: 'Mochiy Pop One', size: 62, spacing: 0, lineH: 1.1, x: W / 2, y: H - 52, rot: -4,
+    curve: 0, jitter: 5, bounce: 3, depth: 7, depthAngle: 70, edgeW: 2.5, outlineW: 6, highlight: 0.55,
+    shadow: true, behind: false, style: 'ポップピンク', ...TEXT_STYLES['ポップピンク'],
+  };
+}
+function defaultModelData(i) {
+  return { pos: [i === 0 ? 0 : (i % 2 ? 1 : -1) * Math.ceil(i / 2) * 0.8, 0, 0], rotY: 0, scale: 1, visible: true,
+    pose: structuredClone(REST), expr: {}, lookAtCam: true, anim: 0, animTime: 0 };
+}
+const clone = o => JSON.parse(JSON.stringify(o));
+
+// ===== モデル読み込み =====
+function setStatus(s) { document.getElementById('status').textContent = s; }
+function uniqueName(n) {
+  let name = n, k = 2;
+  while (models.some(m => m.name === name)) name = `${n}(${k++})`;
+  return name;
+}
+async function loadModel(url, rawName) {
+  setStatus(`${rawName} を読み込み中…`);
+  let gltf;
+  try {
+    gltf = await loader.loadAsync(url, ev => {
+      if (ev.total) setStatus(`${rawName} を読み込み中… ${Math.round(ev.loaded / ev.total * 100)}%`);
+    });
+  } catch (e) {
+    console.error(e);
+    setStatus(`読み込み失敗: ${rawName}（${e.message || e}）`);
+    return;
+  }
+  const name = uniqueName(rawName);
+  const vrm = gltf.userData.vrm || null;
+  const obj = vrm ? vrm.scene : gltf.scene;
+  obj.traverse(o => { o.frustumCulled = false; });
+  // VRM0 は後ろ向きなので向きを揃える（VRMUtils.rotateVRM0 相当）
+  if (vrm && vrm.meta?.metaVersion === '0') obj.rotation.y = Math.PI;
+  const root = new THREE.Group();
+  root.add(obj);
+  scene.add(root);
+  // 足元を原点に、GLB は身長を 1.4 にそろえる
+  let box = new THREE.Box3().setFromObject(obj);
+  const size = box.getSize(new THREE.Vector3());
+  if (!vrm && size.y > 0) { obj.scale.multiplyScalar(1.4 / size.y); box = new THREE.Box3().setFromObject(obj); }
+  const c = box.getCenter(new THREE.Vector3());
+  obj.position.x -= c.x; obj.position.z -= c.z; obj.position.y -= box.min.y;
+  const height = box.max.y - box.min.y;
+
+  let mixer = null, clips = gltf.animations || [];
+  if (clips.length) mixer = new THREE.AnimationMixer(obj);
+  const exprNames = vrm?.expressionManager ? vrm.expressionManager.expressions.map(e => e.expressionName) : [];
+
+  const m = { name, root, obj, vrm, vrm0: vrm?.meta?.metaVersion === '0', mixer, clips, action: null, height, exprNames, data: null };
+  const saved = state.slots[state.active]?.models?.[name];
+  m.data = saved ? { ...defaultModelData(models.length), ...clone(saved) } : defaultModelData(models.length);
+  if (!vrm) m.data.pose = {};
+  models.push(m);
+  selModel = models.length - 1;
+  applyModelData(m);
+  if (vrm) settleModel(m, 30);
+  document.getElementById('dropHint').style.display = 'none';
+  if (models.length === 1 && !saved) frameCamera('full');
+  setStatus(`${name} を読み込みました${vrm ? '（VRM）' : '（GLB）'}`);
+  renderPanel();
+  markDirty();
+}
+function removeModel(i) {
+  const m = models[i];
+  scene.remove(m.root);
+  m.root.traverse(o => {
+    o.geometry?.dispose();
+    const mats = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
+    mats.forEach(mt => { Object.values(mt).forEach(v => v?.isTexture && v.dispose()); mt.dispose(); });
+  });
+  models.splice(i, 1);
+  selModel = Math.min(selModel, models.length - 1);
+  if (!models.length) document.getElementById('dropHint').style.display = '';
+  renderPanel(); markDirty();
+}
+function loadFiles(files) {
+  for (const f of files) {
+    if (!/\.(vrm|glb)$/i.test(f.name)) { setStatus(`${f.name} は未対応（.vrm / .glb のみ）`); continue; }
+    const url = URL.createObjectURL(f);
+    loadModel(url, f.name.replace(/\.(vrm|glb)$/i, '').replace(/^shin_/, '')).finally(() => URL.revokeObjectURL(url));
+  }
+}
+document.getElementById('modelFile').addEventListener('change', e => { loadFiles(e.target.files); e.target.value = ''; });
+stageWrap.addEventListener('dragover', e => { e.preventDefault(); stageWrap.classList.add('dragover'); });
+stageWrap.addEventListener('dragleave', () => stageWrap.classList.remove('dragover'));
+stageWrap.addEventListener('drop', e => { e.preventDefault(); stageWrap.classList.remove('dragover'); loadFiles(e.dataTransfer.files); });
+
+// ===== モデルへの反映 =====
+function applyModelData(m) {
+  const d = m.data;
+  m.root.position.set(...d.pos);
+  m.root.rotation.y = d.rotY * D2R;
+  m.root.scale.setScalar(d.scale);
+  m.root.visible = d.visible;
+  if (m.vrm?.lookAt) {
+    m.vrm.lookAt.target = d.lookAtCam ? camera : undefined;
+    if (!d.lookAtCam) { m.vrm.lookAt.yaw = 0; m.vrm.lookAt.pitch = 0; }
+  }
+  if (m.mixer) {
+    if (m.action) m.action.stop();
+    m.action = null;
+    const clip = m.clips[d.anim];
+    if (clip) {
+      m.action = m.mixer.clipAction(clip);
+      m.action.play(); m.action.paused = true;
+      m.action.time = Math.min(d.animTime, clip.duration);
+      m.mixer.update(0);
+    }
+  }
+}
+function applyPose(m) {
+  const h = m.vrm?.humanoid;
+  if (!h) return;
+  const p = m.data.pose;
+  const f = m.vrm0 ? -1 : 1;   // VRM0 は正規化ボーンが180°逆向きなので X/Z を反転
+  for (const [b] of BONES) {
+    const n = h.getNormalizedBoneNode(b);
+    if (!n) continue;
+    const r = p[b] || [0, 0, 0];
+    n.rotation.set(f * r[0] * D2R, r[1] * D2R, f * r[2] * D2R);
+  }
+  for (const [side, key, sign] of [['left', '_gripL', -1], ['right', '_gripR', 1]]) {
+    const g = (p[key] ?? 0.15) * 80 * D2R * sign * f;
+    for (const f of FINGERS) for (const j of FINGER_JOINTS) {
+      const n = h.getNormalizedBoneNode(side + f + j);
+      if (n) n.rotation.set(0, 0, g);
+    }
+  }
+  const em = m.vrm.expressionManager;
+  if (em) for (const nm of m.exprNames) em.setValue(nm, m.data.expr[nm] || 0);
+}
+function settleModel(m, steps = 45) {
+  if (!m.vrm) return;
+  applyPose(m);
+  m.vrm.update(0);
+  m.vrm.springBoneManager?.reset();
+  for (let i = 0; i < steps; i++) { applyPose(m); m.vrm.update(1 / 30); }
+}
+function applyLights() {
+  const s = state.settings;
+  ambLight.intensity = s.amb;
+  keyLight.intensity = s.key;
+  const az = s.keyAz * D2R, el = s.keyEl * D2R;
+  keyLight.position.set(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)).multiplyScalar(5);
+}
+
+// ===== カメラ =====
+function modelBox(list) {
+  const box = new THREE.Box3();
+  for (const m of list) if (m.root.visible) box.expandByObject(m.obj);
+  return box;
+}
+function boneY(m, name) {
+  const n = m.vrm?.humanoid?.getNormalizedBoneNode(name);
+  if (!n) return null;
+  return n.getWorldPosition(new THREE.Vector3()).y;
+}
+function frameCamera(kind) {
+  const vis = models.filter(m => m.root.visible);
+  if (!vis.length) return;
+  const focus = kind === 'full' || selModel < 0 ? vis : [models[selModel]];
+  for (const m of models) m.root.updateMatrixWorld(true);
+  const box = modelBox(focus);
+  if (box.isEmpty()) return;
+  const size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  let ty = c.y, visH = size.y * 1.2, visW = size.x * 1.2;
+  const m = focus[0];
+  if (kind === 'bust') {
+    const sp = boneY(m, 'spine') ?? (box.min.y + size.y * 0.45);
+    ty = (box.max.y + sp) / 2; visH = (box.max.y - sp) * 1.35; visW = visH;
+  } else if (kind === 'face') {
+    const hd = boneY(m, 'head') ?? (box.min.y + size.y * 0.65);
+    ty = (box.max.y + hd) / 2 - (box.max.y - hd) * 0.05; visH = Math.max(0.15, (box.max.y - hd) * 2.3); visW = visH;
+  }
+  const fovR = camera.fov * D2R;
+  const dist = Math.max(visH, visW * H / W) / 2 / Math.tan(fovR / 2);
+  const dir = camera.position.clone().sub(controls.target);
+  if (dir.lengthSq() < 1e-6) dir.set(0, 0, 1);
+  dir.normalize();
+  controls.target.set(c.x, ty, c.z);
+  camera.position.copy(controls.target).addScaledVector(dir, dist);
+  controls.update();
+  markDirty();
+}
+function setAngle(azDeg, elDeg) {
+  const dist = camera.position.distanceTo(controls.target);
+  const az = azDeg * D2R, el = elDeg * D2R;
+  camera.position.set(
+    controls.target.x + Math.sin(az) * Math.cos(el) * dist,
+    controls.target.y + Math.sin(el) * dist,
+    controls.target.z + Math.cos(az) * Math.cos(el) * dist);
+  controls.update();
+  markDirty();
+}
+
+// ===== キャラのフチ取り =====
+const outlineCanvas = document.createElement('canvas'); outlineCanvas.width = CW; outlineCanvas.height = CH;
+const outlineCtx = outlineCanvas.getContext('2d');
+function outlined(src, w, color) {
+  const ctx = outlineCtx;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.clearRect(0, 0, CW, CH);
+  const r = w * S;
+  for (const rr of [r, r * 0.5]) {
+    const n = Math.max(12, Math.ceil(rr * 1.6));
+    for (let i = 0; i < n; i++) {
+      const a = i / n * Math.PI * 2;
+      ctx.drawImage(src, Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+  }
+  ctx.globalCompositeOperation = 'source-in';
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, CW, CH);
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.drawImage(src, 0, 0);
+  return outlineCanvas;
+}
+
+// ===== 3D風文字 =====
+const measureCtx = document.createElement('canvas').getContext('2d');
+const faceCanvas = document.createElement('canvas'); faceCanvas.width = CW; faceCanvas.height = CH;
+const faceCtx = faceCanvas.getContext('2d');
+const fontLoaded = new Set();
+function fontStr(L) {
+  const wt = ['M PLUS Rounded 1c', 'Zen Maru Gothic'].includes(L.font) ? 900 : 400;
+  return `${wt} ${L.size}px "${L.font}", "Hiragino Maru Gothic ProN", sans-serif`;
+}
+function ensureFont(L) {
+  const key = fontStr(L) + '|' + L.text;
+  if (fontLoaded.has(key)) return Promise.resolve();
+  fontLoaded.add(key);
+  return document.fonts.load(fontStr(L), L.text || 'あ').catch(() => {});
+}
+function hash(i) { const x = Math.sin(i * 12.9898 + 4.1414) * 43758.5453; return (x - Math.floor(x)) * 2 - 1; }
+
+function layoutText(L) {
+  measureCtx.font = fontStr(L);
+  const lines = (L.text || '').split('\n');
+  const glyphs = [];
+  const lh = L.size * L.lineH;
+  const k = L.curve ? (L.curve * D2R) : 0;
+  const cr = Math.cos(L.rot * D2R), sr = Math.sin(L.rot * D2R);
+  let gi = 0;
+  lines.forEach((line, li) => {
+    const chars = [...line];
+    const ws = chars.map(ch => measureCtx.measureText(ch).width);
+    const total = ws.reduce((a, b) => a + b, 0) + L.spacing * Math.max(0, chars.length - 1);
+    const kk = total > 0 ? k / total : 0;
+    let cur = -total / 2;
+    const ly = (li - (lines.length - 1) / 2) * lh;
+    chars.forEach((ch, ci) => {
+      const u = cur + ws[ci] / 2;
+      cur += ws[ci] + L.spacing;
+      let x = u, y = 0, r = 0;
+      if (Math.abs(kk) > 1e-6) { const t = u * kk; x = Math.sin(t) / kk; y = (1 - Math.cos(t)) / kk; r = t; }
+      y += ly + L.bounce * (gi % 2 ? 1 : -1);
+      r += L.jitter * hash(gi) * D2R;
+      gi++;
+      if (ch.trim() === '') return;
+      glyphs.push({ ch, x: L.x + x * cr - y * sr, y: L.y + x * sr + y * cr, rot: r + L.rot * D2R });
+    });
+  });
+  const pad = L.size * 0.6 + L.outlineW + L.depth;
+  let bb = [Infinity, Infinity, -Infinity, -Infinity];
+  for (const g of glyphs) bb = [Math.min(bb[0], g.x - pad), Math.min(bb[1], g.y - pad), Math.max(bb[2], g.x + pad), Math.max(bb[3], g.y + pad)];
+  L._bbox = glyphs.length ? bb : null;
+  return glyphs;
+}
+function eachGlyph(ctx, glyphs, ox, oy, fn) {
+  for (const g of glyphs) {
+    ctx.save();
+    ctx.translate(g.x + ox, g.y + oy);
+    ctx.rotate(g.rot);
+    fn(g);
+    ctx.restore();
+  }
+}
+function mixColor(a, b, t) {
+  const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16);
+  const ch = s => Math.round(((pa >> s) & 255) * (1 - t) + ((pb >> s) & 255) * t);
+  return `rgb(${ch(16)},${ch(8)},${ch(0)})`;
+}
+function drawText(ctx, L) {
+  if (!L.text) return;
+  ensureFont(L);
+  const glyphs = layoutText(L);
+  if (!glyphs.length) return;
+  const font = fontStr(L);
+  const step = 0.5;
+  const n = Math.max(0, Math.ceil(L.depth / step));
+  const dx = Math.cos(L.depthAngle * D2R) * step, dy = Math.sin(L.depthAngle * D2R) * step;
+  const setup = c => { c.setTransform(S, 0, 0, S, 0, 0); c.font = font; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.miterLimit = 2; };
+  ctx.save();
+  setup(ctx);
+  // 1) 白フチ（押し出し部分ごと囲む）＋影
+  const ow = L.outlineW * 2 + L.edgeW * 2;
+  ctx.fillStyle = ctx.strokeStyle = L.outline;
+  ctx.lineWidth = ow;
+  if (L.shadow) {
+    ctx.save();
+    ctx.shadowColor = 'rgba(60,20,40,.35)'; ctx.shadowBlur = 8 * S; ctx.shadowOffsetY = 3 * S;
+    eachGlyph(ctx, glyphs, dx * n, dy * n, g => { if (ow > 0) ctx.strokeText(g.ch, 0, 0); ctx.fillText(g.ch, 0, 0); });
+    ctx.restore();
+  }
+  if (ow > 0) for (let i = 0; i <= n; i++) eachGlyph(ctx, glyphs, dx * i, dy * i, g => { ctx.strokeText(g.ch, 0, 0); ctx.fillText(g.ch, 0, 0); });
+  // 2) 押し出し（奥ほど暗く）
+  ctx.lineWidth = L.edgeW * 2;
+  for (let i = n; i >= 1; i--) {
+    const col = mixColor(L.depthColor, '#000000', (i / Math.max(1, n)) * 0.35);
+    ctx.fillStyle = ctx.strokeStyle = col;
+    eachGlyph(ctx, glyphs, dx * i, dy * i, g => { if (L.edgeW > 0) ctx.strokeText(g.ch, 0, 0); ctx.fillText(g.ch, 0, 0); });
+  }
+  // 3) 表面のフチ
+  if (L.edgeW > 0) {
+    ctx.strokeStyle = L.edge; ctx.lineWidth = L.edgeW * 2;
+    eachGlyph(ctx, glyphs, 0, 0, g => ctx.strokeText(g.ch, 0, 0));
+  }
+  ctx.restore();
+  // 4) 表面（グラデ＋ツヤ）は別キャンバスで描いて合成
+  faceCtx.setTransform(1, 0, 0, 1, 0, 0);
+  faceCtx.globalCompositeOperation = 'source-over';
+  faceCtx.clearRect(0, 0, CW, CH);
+  setup(faceCtx);
+  const hs = L.size / 2;
+  eachGlyph(faceCtx, glyphs, 0, 0, g => {
+    const gr = faceCtx.createLinearGradient(0, -hs * 0.8, 0, hs * 0.8);
+    gr.addColorStop(0, L.top); gr.addColorStop(1, L.bottom);
+    faceCtx.fillStyle = gr;
+    faceCtx.fillText(g.ch, 0, 0);
+  });
+  if (L.highlight > 0) {
+    faceCtx.globalCompositeOperation = 'source-atop';
+    eachGlyph(faceCtx, glyphs, 0, 0, () => {
+      const gr = faceCtx.createLinearGradient(0, -hs, 0, -hs * 0.05);
+      gr.addColorStop(0, `rgba(255,255,255,${L.highlight})`);
+      gr.addColorStop(1, 'rgba(255,255,255,0)');
+      faceCtx.fillStyle = gr;
+      faceCtx.fillRect(-L.size, -hs * 1.2, L.size * 2, hs * 1.15);
+    });
+    faceCtx.globalCompositeOperation = 'source-over';
+  }
+  ctx.drawImage(faceCanvas, 0, 0);
+}
+
+// ===== 描画 =====
+function compose(ctx) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, CW, CH);
+  for (const L of state.texts) if (L.behind) drawText(ctx, L);
+  const s = state.settings;
+  const src = renderer.domElement;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.drawImage(s.outlineW > 0 ? outlined(src, s.outlineW, s.outlineColor) : src, 0, 0);
+  for (const L of state.texts) if (!L.behind) drawText(ctx, L);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+}
+function drawGuide() {
+  const g = guide.getContext('2d');
+  g.clearRect(0, 0, CW, CH);
+  if (!showGuide) return;
+  g.strokeStyle = 'rgba(255,111,163,.7)'; g.setLineDash([8, 6]); g.lineWidth = 2;
+  g.strokeRect(MARGIN * S, MARGIN * S, (W - MARGIN * 2) * S, (H - MARGIN * 2) * S);
+  const L = state.texts[state.selText];
+  if (tab === 'text' && L?._bbox) {
+    g.strokeStyle = 'rgba(60,140,255,.6)'; g.setLineDash([4, 4]);
+    const b = L._bbox;
+    g.strokeRect(b[0] * S, b[1] * S, (b[2] - b[0]) * S, (b[3] - b[1]) * S);
+  }
+}
+function renderFrame(dt) {
+  for (const m of models) {
+    if (m.vrm) { applyPose(m); m.vrm.update(dt); }
+  }
+  renderer.render(scene, camera);
+  compose(stageCtx);
+}
+let last = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (!busy) { renderFrame(dt); drawGuide(); }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// ===== 文字のドラッグ =====
+let drag = null;
+function toStage(e) {
+  const r = stage.getBoundingClientRect();
+  return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H };
+}
+function hitText(p) {
+  for (let i = state.texts.length - 1; i >= 0; i--) {
+    const b = state.texts[i]._bbox;
+    if (b && p.x >= b[0] && p.x <= b[2] && p.y >= b[1] && p.y <= b[3]) return i;
+  }
+  return -1;
+}
+stageWrap.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return;
+  const p = toStage(e);
+  const i = hitText(p);
+  if (i < 0) return;
+  e.stopPropagation(); e.preventDefault();
+  const L = state.texts[i];
+  drag = { L, sx: p.x, sy: p.y, ox: L.x, oy: L.y, id: e.pointerId };
+  stageWrap.setPointerCapture(e.pointerId);
+  if (state.selText !== i || tab !== 'text') { state.selText = i; showTab('text'); }
+}, { capture: true });
+stageWrap.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const p = toStage(e);
+  drag.L.x = Math.round(drag.ox + p.x - drag.sx);
+  drag.L.y = Math.round(drag.oy + p.y - drag.sy);
+});
+stageWrap.addEventListener('pointerup', () => { if (drag) { drag = null; renderPanel(); markDirty(); } });
+
+// ===== スロット（量産用スタンプ一覧） =====
+function serialize() {
+  const ms = {};
+  for (const m of models) ms[m.name] = clone(m.data);
+  return {
+    models: ms,
+    camera: { pos: camera.position.toArray(), target: controls.target.toArray(), fov: camera.fov },
+    texts: clone(state.texts.map(({ _bbox, ...t }) => t)),
+    settings: clone(state.settings),
+  };
+}
+function applySlot(slot, settle = true) {
+  for (let i = 0; i < models.length; i++) {
+    const m = models[i];
+    const d = slot.models?.[m.name];
+    m.data = d ? { ...defaultModelData(i), ...clone(d) } : { ...m.data, visible: false };
+    applyModelData(m);
+    if (settle) settleModel(m);
+  }
+  if (slot.camera) {
+    camera.position.fromArray(slot.camera.pos);
+    controls.target.fromArray(slot.camera.target);
+    camera.fov = slot.camera.fov; camera.updateProjectionMatrix();
+    controls.update();
+  }
+  state.texts = clone(slot.texts || []);
+  state.selText = Math.min(state.selText, Math.max(0, state.texts.length - 1));
+  state.settings = { ...defaultSettings(), ...clone(slot.settings || {}) };
+  applyLights();
+}
+function markDirty() {
+  if (suppressDirty || busy) return;
+  clearTimeout(dirtyTimer);
+  dirtyTimer = setTimeout(captureActive, 400);
+}
+function makeThumb() {
+  const c = document.createElement('canvas'); c.width = 148; c.height = 128;
+  c.getContext('2d').drawImage(stage, 0, 0, 148, 128);
+  return c.toDataURL('image/png');
+}
+function captureActive() {
+  clearTimeout(dirtyTimer);
+  const slot = serialize();
+  slot.thumb = makeThumb();
+  state.slots[state.active] = slot;
+  renderSlots();
+  saveLocal();
+}
+function selectSlot(i) {
+  if (i === state.active) return;
+  captureActive();
+  state.active = i;
+  suppressDirty = true;
+  applySlot(state.slots[i]);
+  suppressDirty = false;
+  renderSlots(); renderPanel(); saveLocal();
+}
+function renderSlots() {
+  const box = document.getElementById('slots');
+  box.innerHTML = '';
+  state.slots.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = 'slot' + (i === state.active ? ' sel' : '');
+    d.innerHTML = `<span class="no">${i + 1}</span>`;
+    if (s.thumb) { const im = new Image(); im.src = s.thumb; d.prepend(im); }
+    else d.style.height = '83px';
+    d.onclick = () => selectSlot(i);
+    box.appendChild(d);
+  });
+  const n = state.slots.length;
+  document.getElementById('slotCount').textContent = n;
+  const next = VALID_COUNTS.find(v => v >= n);
+  document.getElementById('slotHint').textContent = VALID_COUNTS.includes(n) ? `✓ LINE申請OKの枚数` :
+    next ? `（LINEは 8/16/24/32/40 枚。あと${next - n}枚で${next}枚）` : '（40枚を超えています）';
+  box.children[state.active]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+document.getElementById('slotNew').onclick = () => {
+  if (state.slots.length >= 40) { setStatus('LINEスタンプは最大40枚です'); return; }
+  captureActive();
+  state.slots.splice(state.active + 1, 0, clone(state.slots[state.active]));
+  state.active++;
+  renderSlots(); saveLocal();
+  setStatus(`${state.active + 1}枚目を作成（前のスタンプを複製）`);
+};
+document.getElementById('slotDel').onclick = () => {
+  if (state.slots.length <= 1) return;
+  if (!confirm(`${state.active + 1}枚目を削除しますか？`)) return;
+  state.slots.splice(state.active, 1);
+  state.active = Math.min(state.active, state.slots.length - 1);
+  suppressDirty = true; applySlot(state.slots[state.active]); suppressDirty = false;
+  renderSlots(); renderPanel(); saveLocal();
+};
+function moveSlot(d) {
+  const i = state.active, j = i + d;
+  if (j < 0 || j >= state.slots.length) return;
+  captureActive();
+  [state.slots[i], state.slots[j]] = [state.slots[j], state.slots[i]];
+  state.active = j;
+  renderSlots(); saveLocal();
+}
+document.getElementById('slotLeft').onclick = () => moveSlot(-1);
+document.getElementById('slotRight').onclick = () => moveSlot(1);
+
+function saveLocal() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ slots: state.slots, active: state.active })); }
+  catch (e) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ slots: state.slots.map(({ thumb, ...s }) => s), active: state.active })); } catch (e2) {}
+  }
+}
+function loadLocal() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (d?.slots?.length) return d;
+  } catch (e) {}
+  return null;
+}
+
+// ===== 書き出し =====
+function trimToCanvas(src, maxW, maxH, margin, exact) {
+  const sctx = src.getContext('2d');
+  const data = sctx.getImageData(0, 0, src.width, src.height).data;
+  let x0 = src.width, y0 = src.height, x1 = -1, y1 = -1;
+  for (let y = 0; y < src.height; y++) for (let x = 0; x < src.width; x++) {
+    if (data[(y * src.width + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  }
+  const out = document.createElement('canvas');
+  out.clipped = x1 >= 0 && (x0 === 0 || y0 === 0 || x1 === src.width - 1 || y1 === src.height - 1);
+  if (x1 < 0) { out.width = exact ? maxW : 2; out.height = exact ? maxH : 2; return out; }
+  const cw = x1 - x0 + 1, ch = y1 - y0 + 1;
+  const sc = Math.min((maxW - margin * 2) / cw, (maxH - margin * 2) / ch);
+  const dw = cw * sc, dh = ch * sc;
+  out.width = exact ? maxW : Math.min(maxW, Math.ceil((dw + margin * 2) / 2) * 2);
+  out.height = exact ? maxH : Math.min(maxH, Math.ceil((dh + margin * 2) / 2) * 2);
+  const o = out.getContext('2d');
+  o.imageSmoothingEnabled = true; o.imageSmoothingQuality = 'high';
+  o.drawImage(src, x0, y0, cw, ch, (out.width - dw) / 2, (out.height - dh) / 2, dw, dh);
+  return out;
+}
+function exportOpts() { return state.exportMode || 'trim'; }
+function finalSticker(src) {
+  if (exportOpts() === 'trim') return trimToCanvas(src, W, H, MARGIN, false);
+  const out = document.createElement('canvas'); out.width = W; out.height = H;
+  out.clipped = trimToCanvas(src, 2, 2, 0, true).clipped;
+  const o = out.getContext('2d'); o.imageSmoothingQuality = 'high'; o.drawImage(src, 0, 0, W, H);
+  return out;
+}
+const toBlob = c => new Promise(r => c.toBlob(r, 'image/png'));
+function download(blob, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const work = document.createElement('canvas'); work.width = CW; work.height = CH;
+const workCtx = work.getContext('2d', { willReadFrequently: true });
+async function renderSlotStill(slot) {
+  applySlot(slot, true);
+  await Promise.all(state.texts.map(ensureFont));
+  await document.fonts.ready;
+  for (const m of models) if (m.vrm) applyPose(m), m.vrm.update(0);
+  renderer.render(scene, camera);
+  compose(workCtx);
+  return work;
+}
+function showProgress(t) { const p = document.getElementById('progress'); p.textContent = t; p.classList.add('show'); }
+function hideProgress() { document.getElementById('progress').classList.remove('show'); }
+async function withBusy(fn) {
+  captureActive();
+  busy = true;
+  try { return await fn(); }
+  finally {
+    applySlot(state.slots[state.active]);
+    busy = false; hideProgress(); renderPanel();
+  }
+}
+async function exportCurrent() {
+  await withBusy(async () => {
+    const c = await renderSlotStill(state.slots[state.active]);
+    const out = finalSticker(c);
+    download(await toBlob(out), `${String(state.active + 1).padStart(2, '0')}.png`);
+    setStatus(out.clipped ? '⚠ 画面の端で切れています（ズームアウトするか文字を内側へ）' : 'PNGを保存しました');
+  });
+}
+async function exportZip() {
+  if (!window.JSZip) { alert('ZIPライブラリの読み込みに失敗しました'); return; }
+  await withBusy(async () => {
+    const zip = new JSZip();
+    const clipped = [];
+    for (let i = 0; i < state.slots.length; i++) {
+      showProgress(`書き出し中… ${i + 1} / ${state.slots.length}`);
+      await new Promise(r => setTimeout(r, 0));
+      const c = await renderSlotStill(state.slots[i]);
+      const out = finalSticker(c);
+      if (out.clipped) clipped.push(i + 1);
+      zip.file(`${String(i + 1).padStart(2, '0')}.png`, await toBlob(out));
+    }
+    const mi = Math.min(state.mainSlot ?? state.active, state.slots.length - 1);
+    const c = await renderSlotStill(state.slots[mi]);
+    zip.file('main.png', await toBlob(trimToCanvas(c, 240, 240, 0, true)));
+    zip.file('tab.png', await toBlob(trimToCanvas(c, 96, 74, 0, true)));
+    showProgress('ZIP作成中…');
+    download(await zip.generateAsync({ type: 'blob' }), 'line_stickers.zip');
+    setStatus(`${state.slots.length}枚 + main.png + tab.png を書き出しました` +
+      (clipped.length ? `　⚠ ${clipped.join(', ')}枚目は端で切れています` : ''));
+  });
+}
+document.getElementById('btnSnap').onclick = exportCurrent;
+
+// プロジェクト（ポーズ・文字など。モデル本体は含まない）
+document.getElementById('btnProjSave').onclick = () => {
+  captureActive();
+  const blob = new Blob([JSON.stringify({ app: 'sushi-sticker-studio', version: 1, slots: state.slots, active: state.active }, null, 1)], { type: 'application/json' });
+  download(blob, 'sticker_project.json');
+};
+document.getElementById('btnProjLoad').onclick = () => document.getElementById('projFile').click();
+document.getElementById('projFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    if (!d.slots?.length) throw new Error('slots がありません');
+    state.slots = d.slots; state.active = Math.min(d.active || 0, d.slots.length - 1);
+    suppressDirty = true; applySlot(state.slots[state.active]); suppressDirty = false;
+    renderSlots(); renderPanel(); saveLocal();
+    setStatus(`プロジェクトを読み込みました（${d.slots.length}枚）`);
+  } catch (err) { alert('読み込めませんでした: ' + err.message); }
+});
+
+// ===== UI ヘルパー =====
+const body = document.getElementById('tabBody');
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k.startsWith('on')) e[k] = v; else if (k === 'class') e.className = v; else e.setAttribute(k, v);
+  }
+  for (const k of kids) if (k != null) e.append(k);
+  return e;
+}
+function sec(title, ...kids) { return el('div', { class: 'sec' }, title ? el('h3', {}, title) : null, ...kids); }
+function slider(label, get, set, min, max, step = 1, fmt = v => v) {
+  const val = el('span', { class: 'val' }, String(fmt(get())));
+  const inp = el('input', { type: 'range', min, max, step });
+  inp.value = get();
+  inp.oninput = () => { set(+inp.value); val.textContent = fmt(+inp.value); markDirty(); };
+  inp.ondblclick = () => { inp.value = Math.min(max, Math.max(min, 0)); inp.oninput(); };
+  return el('div', { class: 'row' }, el('label', {}, label), inp, val);
+}
+function color(label, get, set) {
+  const inp = el('input', { type: 'color' }); inp.value = get();
+  inp.oninput = () => { set(inp.value); markDirty(); };
+  return el('div', { class: 'row' }, el('label', {}, label), inp);
+}
+function select(label, opts, get, set) {
+  const s = el('select');
+  for (const o of opts) { const [v, t] = Array.isArray(o) ? o : [o, o]; s.append(el('option', { value: v }, t)); }
+  s.value = get();
+  s.onchange = () => { set(s.value); markDirty(); };
+  return el('div', { class: 'row' }, el('label', {}, label), s);
+}
+function check(label, get, set) {
+  const c = el('input', { type: 'checkbox' }); c.checked = get();
+  c.onchange = () => { set(c.checked); markDirty(); };
+  return el('div', { class: 'row' }, el('label', {}, label), c);
+}
+function btn(text, fn, cls) { return el('button', { onclick: fn, class: cls || '' }, text); }
+function curModel() { return models[selModel]; }
+
+// ===== パネル =====
+function showTab(t) {
+  tab = t;
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  renderPanel();
+}
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+function renderPanel() {
+  body.innerHTML = '';
+  ({ model: panelModel, pose: panelPose, face: panelFace, camera: panelCamera, text: panelText, export: panelExport })[tab]();
+}
+function needModel(vrmOnly) {
+  const m = curModel();
+  if (!m) { body.append(el('p', { class: 'note' }, 'まず「モデル」タブでモデルを読み込んでね。')); return null; }
+  if (vrmOnly && !m.vrm) { body.append(el('p', { class: 'note' }, `${m.name} は VRM ではないので、この機能は使えません（GLB はモデルタブのアニメーションでポーズを選べます）。`)); return null; }
+  return m;
+}
+function modelPicker() {
+  if (models.length < 2) return null;
+  return select('対象モデル', models.map((m, i) => [i, m.name]), () => selModel, v => { selModel = +v; renderPanel(); });
+}
+
+function panelModel() {
+  body.append(sec('プリセット',
+    el('div', { class: 'btns' }, ...PRESETS.map(p => btn(p.name, () => loadModel(p.url, p.name)))),
+    el('p', { class: 'note' }, 'recordolphin / kakapop / vibestar などは下のボタンかステージへのドロップで読み込めます。'),
+    el('div', { class: 'btns' }, btn('📂 VRM / GLB を開く', () => document.getElementById('modelFile').click(), 'primary'))));
+  if (!models.length) return;
+  const list = el('div', { class: 'list' });
+  models.forEach((m, i) => {
+    const vis = el('input', { type: 'checkbox' }); vis.checked = m.data.visible;
+    vis.onclick = e => e.stopPropagation();
+    vis.onchange = () => { m.data.visible = vis.checked; applyModelData(m); markDirty(); };
+    const del = btn('×', e => { e.stopPropagation(); if (confirm(`${m.name} を外しますか？`)) removeModel(i); });
+    list.append(el('div', { class: 'item' + (i === selModel ? ' sel' : ''), onclick: () => { selModel = i; renderPanel(); } },
+      vis, el('span', { class: 'nm' }, `${m.name}${m.vrm ? '' : ' (GLB)'}`), del));
+  });
+  body.append(sec('読み込み済み（チェックで表示）', list));
+  const m = curModel();
+  if (!m) return;
+  const d = m.data, upd = () => applyModelData(m);
+  body.append(sec(`配置：${m.name}`,
+    slider('左右', () => d.pos[0], v => { d.pos[0] = v; upd(); }, -3, 3, 0.01),
+    slider('上下', () => d.pos[1], v => { d.pos[1] = v; upd(); }, -2, 2, 0.01),
+    slider('前後', () => d.pos[2], v => { d.pos[2] = v; upd(); }, -3, 3, 0.01),
+    slider('向き', () => d.rotY, v => { d.rotY = v; upd(); }, -180, 180, 1, v => v + '°'),
+    slider('大きさ', () => d.scale, v => { d.scale = v; upd(); }, 0.2, 3, 0.01),
+    m.vrm ? check('カメラ目線', () => d.lookAtCam, v => { d.lookAtCam = v; upd(); }) : null));
+  if (m.clips.length) {
+    const dur = () => m.clips[d.anim]?.duration || 1;
+    body.append(sec('アニメーション（ポーズとして使う）',
+      select('クリップ', [[-1, '（なし）'], ...m.clips.map((c, i) => [i, c.name || `clip ${i + 1}`])], () => d.anim,
+        v => { d.anim = +v; d.animTime = 0; upd(); renderPanel(); }),
+      d.anim >= 0 ? slider('時間', () => d.animTime, v => { d.animTime = v; upd(); }, 0, dur(), 0.01, v => v.toFixed(2) + 's') : null));
+  }
+}
+
+function panelPose() {
+  const m = needModel(true);
+  if (!m) return;
+  const p = m.data.pose;
+  const pk = modelPicker(); if (pk) body.append(pk);
+  body.append(sec('ポーズプリセット',
+    el('div', { class: 'btns' }, ...Object.entries(POSE_PRESETS).map(([k, v]) => btn(k, () => {
+      m.data.pose = clone(v); settleModel(m); renderPanel(); markDirty();
+    }))),
+    el('div', { class: 'btns', style: 'margin-top:6px' },
+      btn('↔ 左右反転', () => { m.data.pose = mirrorPose(p); settleModel(m); renderPanel(); markDirty(); }),
+      btn('ゆれもの再計算', () => settleModel(m)))));
+  const boneSel = state.boneSel || 'head';
+  const has = BONES.filter(([b]) => m.vrm.humanoid.getNormalizedBoneNode(b));
+  const r = p[boneSel] || [0, 0, 0];
+  const setR = (ax, v) => { const a = p[boneSel] ? p[boneSel] : (p[boneSel] = [0, 0, 0]); a[ax] = v; };
+  body.append(sec('ボーン調整（スライダーをダブルクリックで0）',
+    select('ボーン', has.map(([b, t]) => [b, t]), () => boneSel, v => { state.boneSel = v; renderPanel(); }),
+    slider('X（前後）', () => r[0], v => setR(0, v), -180, 180, 1, v => v + '°'),
+    slider('Y（ひねり）', () => r[1], v => setR(1, v), -180, 180, 1, v => v + '°'),
+    slider('Z（左右）', () => r[2], v => setR(2, v), -180, 180, 1, v => v + '°'),
+    el('div', { class: 'btns' }, btn('このボーンを0に', () => { delete p[boneSel]; renderPanel(); markDirty(); }))));
+  body.append(sec('手の形',
+    slider('左手にぎり', () => p._gripL ?? 0.15, v => p._gripL = v, 0, 1, 0.01, v => Math.round(v * 100) + '%'),
+    slider('右手にぎり', () => p._gripR ?? 0.15, v => p._gripR = v, 0, 1, 0.01, v => Math.round(v * 100) + '%')));
+  body.append(el('p', { class: 'note' }, '左右はキャラ視点です。腕を下ろす：左上腕 Z を −、右上腕 Z を ＋。ひじを前に曲げる：右ひじ Y を ＋、左ひじ Y を −。'));
+}
+function mirrorPose(p) {
+  const out = {};
+  for (const [k, v] of Object.entries(p)) {
+    if (k === '_gripL') { out._gripR = v; continue; }
+    if (k === '_gripR') { out._gripL = v; continue; }
+    const nk = k.startsWith('left') ? 'right' + k.slice(4) : k.startsWith('right') ? 'left' + k.slice(5) : k;
+    out[nk] = [v[0], -v[1], -v[2]];
+  }
+  return out;
+}
+
+function panelFace() {
+  const m = needModel(true);
+  if (!m) return;
+  const pk = modelPicker(); if (pk) body.append(pk);
+  const e = m.data.expr;
+  body.append(sec('表情プリセット',
+    el('div', { class: 'btns' }, ...Object.entries(EXPR_PRESETS).map(([k, v]) => btn(k, () => {
+      m.data.expr = clone(v); renderPanel(); markDirty();
+    })))));
+  if (!m.exprNames.length) { body.append(el('p', { class: 'note' }, 'このモデルには表情（BlendShape）がありません。')); return; }
+  body.append(sec('表情スライダー', ...m.exprNames.map(n =>
+    slider(n, () => e[n] || 0, v => { if (v) e[n] = v; else delete e[n]; }, 0, 1, 0.01, v => Math.round(v * 100) + '%'))));
+}
+
+function panelCamera() {
+  const s = state.settings;
+  body.append(sec('構図',
+    el('div', { class: 'btns' },
+      btn('全身', () => frameCamera('full')), btn('バストアップ', () => frameCamera('bust')), btn('顔アップ', () => frameCamera('face'))),
+    el('div', { class: 'btns', style: 'margin-top:6px' },
+      btn('正面', () => setAngle(0, 5)), btn('ななめ左', () => setAngle(-35, 8)), btn('ななめ右', () => setAngle(35, 8)),
+      btn('あおり', () => setAngle(0, -20)), btn('見下ろし', () => setAngle(0, 35))),
+    slider('画角', () => camera.fov, v => { camera.fov = v; camera.updateProjectionMatrix(); }, 10, 70, 1, v => v + '°'),
+    el('p', { class: 'note' }, '画角を小さくするとパースが弱く、大きくするとデフォルメ感が強くなります。')));
+  body.append(sec('キャラのフチ',
+    slider('フチの太さ', () => s.outlineW, v => s.outlineW = v, 0, 16, 0.5),
+    color('フチの色', () => s.outlineColor, v => s.outlineColor = v)));
+  body.append(sec('ライト',
+    slider('環境光', () => s.amb, v => { s.amb = v; applyLights(); }, 0, 3, 0.05),
+    slider('メインライト', () => s.key, v => { s.key = v; applyLights(); }, 0, 4, 0.05),
+    slider('ライト方向', () => s.keyAz, v => { s.keyAz = v; applyLights(); }, -180, 180, 1, v => v + '°'),
+    slider('ライト高さ', () => s.keyEl, v => { s.keyEl = v; applyLights(); }, -30, 90, 1, v => v + '°')));
+}
+
+function panelText() {
+  const T = state.texts;
+  const list = el('div', { class: 'list' });
+  T.forEach((L, i) => list.append(el('div', { class: 'item' + (i === state.selText ? ' sel' : ''), onclick: () => { state.selText = i; renderPanel(); } },
+    el('span', { class: 'nm' }, L.text.replace(/\n/g, ' ') || '（空）'))));
+  body.append(sec('文字レイヤー', list, el('div', { class: 'btns', style: 'margin-top:6px' },
+    btn('＋ 追加', () => { T.push(defaultText('テキスト')); state.selText = T.length - 1; renderPanel(); markDirty(); }),
+    T.length ? btn('複製', () => { const c = clone(T[state.selText]); c.y = Math.max(40, c.y - 60); T.push(c); state.selText = T.length - 1; renderPanel(); markDirty(); }) : null,
+    T.length ? btn('削除', () => { T.splice(state.selText, 1); state.selText = Math.max(0, state.selText - 1); renderPanel(); markDirty(); }) : null)));
+  const L = T[state.selText];
+  if (!L) return;
+  const ta = el('textarea'); ta.value = L.text;
+  ta.oninput = () => {
+    L.text = ta.value; markDirty();
+    const nm = list.children[state.selText]?.querySelector('.nm');
+    if (nm) nm.textContent = L.text.replace(/\n/g, ' ') || '（空）';
+  };
+  body.append(sec('テキスト', el('div', { class: 'row' }, ta),
+    select('フォント', FONTS.map(f => [f, f]), () => L.font, v => { L.font = v; }),
+    slider('サイズ', () => L.size, v => L.size = v, 16, 160, 1),
+    slider('字間', () => L.spacing, v => L.spacing = v, -20, 40, 1),
+    slider('行間', () => L.lineH, v => L.lineH = v, 0.7, 2, 0.05),
+    check('キャラの後ろ', () => L.behind, v => L.behind = v)));
+  body.append(sec('配色',
+    el('div', { class: 'btns' }, ...Object.entries(TEXT_STYLES).map(([k, v]) => {
+      const b = btn(k, () => { Object.assign(L, v); L.style = k; renderPanel(); markDirty(); }, L.style === k ? 'on' : '');
+      b.style.background = `linear-gradient(${v.top},${v.bottom})`; b.style.color = v.edge; b.style.fontWeight = 800;
+      return b;
+    })),
+    color('表面 上', () => L.top, v => L.top = v),
+    color('表面 下', () => L.bottom, v => L.bottom = v),
+    color('ふちどり', () => L.edge, v => L.edge = v),
+    color('厚み', () => L.depthColor, v => L.depthColor = v),
+    color('外側フチ', () => L.outline, v => L.outline = v)));
+  body.append(sec('立体感',
+    slider('厚み', () => L.depth, v => L.depth = v, 0, 24, 0.5),
+    slider('厚みの向き', () => L.depthAngle, v => L.depthAngle = v, 0, 360, 1, v => v + '°'),
+    slider('ふちどり幅', () => L.edgeW, v => L.edgeW = v, 0, 8, 0.5),
+    slider('外側フチ幅', () => L.outlineW, v => L.outlineW = v, 0, 16, 0.5),
+    slider('ツヤ', () => L.highlight, v => L.highlight = v, 0, 1, 0.05),
+    check('影', () => L.shadow, v => L.shadow = v)));
+  body.append(sec('配置・動き',
+    slider('X', () => L.x, v => L.x = v, 0, W, 1),
+    slider('Y', () => L.y, v => L.y = v, 0, H, 1),
+    slider('回転', () => L.rot, v => L.rot = v, -45, 45, 1, v => v + '°'),
+    slider('アーチ', () => L.curve, v => L.curve = v, -120, 120, 1, v => v + '°'),
+    slider('ゆらぎ', () => L.jitter, v => L.jitter = v, 0, 20, 0.5, v => v + '°'),
+    slider('はずみ', () => L.bounce, v => L.bounce = v, 0, 20, 0.5),
+    el('p', { class: 'note' }, 'ステージ上の文字はドラッグで動かせます。')));
+}
+
+function panelExport() {
+  body.append(sec('LINEスタンプの書き出し',
+    el('p', { class: 'note' }, 'スタンプ画像：最大 370×320px（偶数サイズ・透過PNG・余白10px）。main.png 240×240 と tab.png 96×74 もZIPに入ります。'),
+    select('サイズ', [['trim', '余白トリム（推奨）'], ['full', '370×320 固定']], exportOpts, v => state.exportMode = v),
+    select('メイン画像', state.slots.map((_, i) => [i, `${i + 1}枚目`]), () => Math.min(state.mainSlot ?? state.active, state.slots.length - 1), v => state.mainSlot = +v),
+    el('div', { class: 'btns', style: 'margin-top:8px' },
+      btn('いまのスタンプをPNG', exportCurrent),
+      btn(`全${state.slots.length}枚をZIPで書き出し`, exportZip, 'primary'))));
+  body.append(sec('量産のコツ',
+    el('p', { class: 'note' }, '①1枚作ったら「＋複製して新規」→ ②文字とポーズ・表情だけ変える、の繰り返しが早いです。'),
+    el('p', { class: 'note' }, 'スタンプ一覧（ポーズ・文字・カメラ）はブラウザに自動保存されます。モデル本体は保存されないので、開き直したら同じモデルを読み込んでください（名前で紐づきます）。'),
+    el('p', { class: 'note' }, '別のPCで続きをやる時は「プロジェクト保存」でJSONを持ち出せます。')));
+}
+
+// ===== 起動 =====
+document.querySelectorAll('[data-bg]').forEach(b => b.onclick = () => {
+  bgMode = b.dataset.bg;
+  stageWrap.className = 'stage-wrap bg-' + bgMode;
+  document.querySelectorAll('[data-bg]').forEach(x => x.classList.toggle('on', x === b));
+});
+document.getElementById('btnGuide').onclick = e => { showGuide = !showGuide; e.target.classList.toggle('on', showGuide); };
+
+const saved = loadLocal();
+if (saved) {
+  state.slots = saved.slots;
+  state.active = Math.min(saved.active || 0, saved.slots.length - 1);
+  suppressDirty = true; applySlot(state.slots[state.active], false); suppressDirty = false;
+  setStatus(`前回のスタンプ一覧（${state.slots.length}枚）を復元しました。モデルを読み込むとポーズも戻ります。`);
+} else {
+  state.texts = [defaultText()];
+  applyLights();
+  state.slots = [serialize()];
+}
+suppressDirty = false;
+renderSlots();
+renderPanel();
+</script>
+</body>
+</html>
