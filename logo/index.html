@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SUSHIHAMSTER 3D Logo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chewy&family=Dela+Gothic+One&family=Fredoka:wght@700&family=Hachi+Maru+Pop&family=M+PLUS+Rounded+1c:wght@500;800;900&family=Mochiy+Pop+One&family=Titan+One&display=swap">
+<style>
+/* Layout: one-screen studio — the logo floats on a sky stage, a soft control tray sits beside it (below on phones). */
+/* Single deliberate look: the SUSHIHAMSTER sky world from the site OGP, so no dark variant. */
+:root {
+  color-scheme: light;
+  --sky-top: #7cc6ff;
+  --sky-bottom: #d9f1ff;
+  --tray: #f4faff;
+  --ink: #12355b;
+  --ink-soft: #4f6f90;
+  --line: #c4dcf2;
+  --pink: #f48fd0;
+  --hamster: #2e9bf0;
+  --salmon: #ff7a45;
+  --check-a: #ffffff;
+  --check-b: #e3edf6;
+  --font-display: "Mochiy Pop One", "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif;
+  --font-ui: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Arial Rounded MT Bold", sans-serif;
+}
+html, body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+body { background: var(--sky-bottom); color: var(--ink); font-family: var(--font-ui); font-weight: 500; }
+* { box-sizing: border-box; }
+
+.app { height: 100%; display: grid; grid-template-columns: minmax(0, 1fr) 320px; }
+.stage {
+  position: relative; min-height: 0; overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255,255,255,.55) 0 3%, transparent 3.4%),
+    radial-gradient(circle at 84% 70%, rgba(255,255,255,.45) 0 2%, transparent 2.4%),
+    radial-gradient(circle at 72% 16%, rgba(255,255,255,.35) 0 1.2%, transparent 1.5%),
+    radial-gradient(ellipse at 50% 45%, rgba(255,255,255,.6), transparent 60%),
+    linear-gradient(180deg, var(--sky-top), var(--sky-bottom));
+}
+.stage.checker {
+  background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 24px 24px;
+}
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.stage canvas:active { cursor: grabbing; }
+.hint {
+  position: absolute; left: 16px; bottom: 14px; margin: 0;
+  font-size: 12px; color: var(--ink); background: rgba(255,255,255,.7);
+  padding: 6px 10px; border-radius: 999px; pointer-events: none;
+}
+.busy { position: absolute; right: 16px; top: 14px; font-size: 12px; color: var(--ink-soft); }
+
+.panel {
+  background: var(--tray); border-left: 1px solid var(--line);
+  overflow-y: auto; padding-inline: 20px; padding-block: 20px 28px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.panel h1 { font-family: var(--font-display); font-weight: 400; font-size: 20px; margin: 0; line-height: 1.2; text-wrap: balance; }
+.panel h1 small { display: block; font-family: var(--font-ui); font-size: 12px; color: var(--ink-soft); margin-top: 4px; font-weight: 500; }
+fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+legend { font-size: 11px; letter-spacing: .12em; color: var(--ink-soft); font-weight: 800; padding: 0; margin-bottom: 8px; }
+label.row { display: grid; grid-template-columns: 76px minmax(0,1fr) 34px; align-items: center; gap: 8px; font-size: 13px; }
+label.row output { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--ink-soft); text-align: right; }
+label.stack { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+input[type="text"], select {
+  font: inherit; font-size: 15px; color: var(--ink); background: #fff;
+  border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; width: 100%;
+}
+input[type="range"] { width: 100%; accent-color: var(--hamster); }
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--hamster); outline-offset: 2px; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.check input { accent-color: var(--hamster); width: 16px; height: 16px; }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.swatch {
+  border: 2px solid transparent; border-radius: 999px; padding: 3px 10px 3px 3px;
+  background: #fff; display: inline-flex; align-items: center; gap: 6px;
+  font: inherit; font-size: 12px; color: var(--ink); cursor: pointer;
+}
+.swatch i { width: 22px; height: 22px; border-radius: 50%; display: block; }
+.swatch[aria-pressed="true"] { border-color: var(--ink); }
+
+.seg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 3px; }
+.seg button { font: inherit; font-size: 12px; border: 0; background: transparent; color: var(--ink); padding: 7px 2px; border-radius: 9px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+
+.export { display: flex; flex-direction: column; gap: 8px; }
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn {
+  font: inherit; font-weight: 800; font-size: 14px; border-radius: 12px; padding: 11px 10px; cursor: pointer;
+  border: 0; background: var(--hamster); color: #fff;
+}
+.btn.alt { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+.note { font-size: 11.5px; color: var(--ink-soft); margin: 0; line-height: 1.6; }
+
+.modal { position: fixed; inset: 0; background: rgba(18,53,91,.55); display: grid; place-items: center; padding: 16px; z-index: 10; }
+.sheet { background: var(--tray); border-radius: 18px; padding: 18px; max-width: min(560px, 100%); width: 100%; display: flex; flex-direction: column; gap: 12px; }
+.sheet h2 { margin: 0; font-size: 16px; font-family: var(--font-display); font-weight: 400; }
+.preview { background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 16px 16px; border-radius: 12px; display: grid; place-items: center; padding: 12px; }
+.preview img { max-width: 100%; max-height: 50vh; image-rendering: auto; }
+
+@media (max-width: 760px) {
+  .app { grid-template-columns: 1fr; grid-template-rows: 52vh auto; height: auto; }
+  .stage { height: 52vh; }
+  .panel { border-left: 0; border-top: 1px solid var(--line); overflow: visible; }
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <main class="stage" id="stage">
+    <canvas id="c" aria-label="SUSHIHAMSTER 3Dロゴ。ドラッグで回転できます"></canvas>
+    <p class="hint">ドラッグで回転・ホイール / ピンチで拡大</p>
+    <span class="busy" id="busy" hidden>つくり中…</span>
+  </main>
+
+  <aside class="panel">
+    <h1>SUSHIHAMSTER 3D Logo<small>ぷっくり風船文字のロゴ。ポーズを決めてPNG・GLBで書き出せます</small></h1>
+
+    <fieldset>
+      <legend>もじ</legend>
+      <label class="stack">1行目<input type="text" id="line1" value="Sushi" maxlength="16"></label>
+      <label class="stack">2行目<input type="text" id="line2" value="hamster" maxlength="16"></label>
+      <label class="stack">フォント
+        <select id="font">
+          <option value="0">Fredoka（まるっこ）</option>
+          <option value="1">Titan One（ころころ）</option>
+          <option value="2">Chewy（ぐにゃっと）</option>
+          <option value="3">Mochiy Pop One（日本語OK）</option>
+          <option value="4">M PLUS Rounded 1c（日本語OK）</option>
+          <option value="5">Hachi Maru Pop（日本語OK）</option>
+          <option value="6">Dela Gothic One（日本語OK）</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>いろ</legend>
+      <div class="swatches" id="swatches"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>かたち</legend>
+      <label class="row">ふくらみ<input type="range" id="puff" min="0.3" max="1.6" step="0.05" value="1"><output for="puff"></output></label>
+      <label class="row">ふとさ<input type="range" id="fat" min="0" max="12" step="0.5" value="1.5"><output for="fat"></output></label>
+      <label class="row">行間<input type="range" id="gap" min="0.7" max="1.4" step="0.02" value="0.92"><output for="gap"></output></label>
+      <label class="row">ツヤ<input type="range" id="gloss" min="0" max="1" step="0.05" value="0.85"><output for="gloss"></output></label>
+      <label class="check"><input type="checkbox" id="nigiri" checked>サーモンのにぎりをのせる</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>うごき</legend>
+      <div class="seg" id="motion" role="group" aria-label="アニメーション">
+        <button type="button" data-m="sway">ゆらゆら</button>
+        <button type="button" data-m="spin">くるくる</button>
+        <button type="button" data-m="jelly">ぷるぷる</button>
+        <button type="button" data-m="stop">とめる</button>
+      </div>
+      <label class="check"><input type="checkbox" id="checker">背景を透明チェックにする</label>
+    </fieldset>
+
+    <fieldset class="export">
+      <legend>かきだし</legend>
+      <label class="stack">PNGサイズ
+        <select id="size">
+          <option value="370x320">LINEスタンプ 370×320</option>
+          <option value="240x240">LINEメイン画像 240×240</option>
+          <option value="96x74">LINEトークタブ 96×74</option>
+          <option value="1024x1024" selected>正方形 1024×1024</option>
+          <option value="2048x1024">横長 2048×1024</option>
+        </select>
+      </label>
+      <div class="btns">
+        <button class="btn" id="savePng" type="button">PNGを書き出す</button>
+        <button class="btn alt" id="saveGlb" type="button">GLB（3D）</button>
+      </div>
+      <p class="note">PNGは今のポーズのまま、背景透過・余白10px相当で切り抜きます。GLBはUnity・Blender・three.jsでそのまま動かせる3Dモデルです。</p>
+      <p class="note" id="status" role="status"></p>
+    </fieldset>
+  </aside>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">書き出したPNG</h2>
+    <div class="preview"><img id="outImg" alt="書き出したロゴ画像"></div>
+    <p class="note" id="outInfo"></p>
+    <div class="btns">
+      <button class="btn" id="dlAgain" type="button">ダウンロード</button>
+      <button class="btn alt" id="closeModal" type="button">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+
+const FONTS = [
+  { family: 'Fredoka', weight: 700 },
+  { family: 'Titan One', weight: 400 },
+  { family: 'Chewy', weight: 400 },
+  { family: 'Mochiy Pop One', weight: 400 },
+  { family: 'M PLUS Rounded 1c', weight: 900 },
+  { family: 'Hachi Maru Pop', weight: 400 },
+  { family: 'Dela Gothic One', weight: 400 },
+];
+const PALETTES = [
+  { name: 'いちごミルク', top: '#ffb8ea', bottom: '#f070c8' },
+  { name: 'ハムスターブルー', top: '#7fd0ff', bottom: '#1f8ef0' },
+  { name: 'サーモン', top: '#ffb48a', bottom: '#ff6a3d' },
+  { name: 'たまご', top: '#fff09a', bottom: '#ffc23a' },
+  { name: 'まぐろ', top: '#ff7b8f', bottom: '#d42a4a' },
+  { name: 'シャリ', top: '#ffffff', bottom: '#dfe6ee' },
+];
+
+const $ = (id) => document.getElementById(id);
+const state = { palette: 0, motion: 'sway' };
+if (matchMedia('(prefers-reduced-motion: reduce)').matches) state.motion = 'stop';
+
+/* ---------- renderer / scene ---------- */
+const canvas = $('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.LinearToneMapping;
+renderer.toneMappingExposure = 0.95;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+const key = new THREE.DirectionalLight(0xffffff, 1.6);
+key.position.set(-2.5, 4, 5);
+scene.add(key, new THREE.HemisphereLight(0xffffff, 0xffd6ec, 0.7));
+
+const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+camera.position.set(0, 0.15, 9);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.enablePan = false;
+controls.minDistance = 4;
+controls.maxDistance = 20;
+
+const rig = new THREE.Group();      // animated holder
+const logo = new THREE.Group();     // text + nigiri, the exported model
+logo.name = 'sushihamster_logo';
+rig.add(logo);
+scene.add(rig);
+
+const textMat = new THREE.MeshPhysicalMaterial({
+  vertexColors: true, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08, sheen: 0.4, sheenColor: new THREE.Color('#ffffff'),
+});
+let textMesh = null;
+let nigiri = null;
+
+/* soft contact shadow, viewer only */
+const shadowTex = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d');
+  const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grd.addColorStop(0, 'rgba(18,53,91,0.35)'); grd.addColorStop(1, 'rgba(18,53,91,0)');
+  g.fillStyle = grd; g.fillRect(0, 0, 128, 128);
+  return new THREE.CanvasTexture(c);
+})();
+const shadow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
+shadow.rotation.x = -Math.PI / 2;
+scene.add(shadow);
+
+/* ---------- signed distance field helpers ---------- */
+const INF = 1e20;
+function edt1d(f, n, d, v, z) {
+  let k = 0; v[0] = 0; z[0] = -INF; z[1] = INF;
+  for (let q = 1; q < n; q++) {
+    let s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]);
+    while (s <= z[k]) { k--; s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]); }
+    k++; v[k] = q; z[k] = s; z[k + 1] = INF;
+  }
+  k = 0;
+  for (let q = 0; q < n; q++) { while (z[k + 1] < q) k++; d[q] = (q - v[k]) * (q - v[k]) + f[v[k]]; }
+}
+function edt(grid, w, h) {
+  const n = Math.max(w, h);
+  const f = new Float64Array(n), d = new Float64Array(n), v = new Int32Array(n), z = new Float64Array(n + 1);
+  for (let x = 0; x < w; x++) {
+    for (let y = 0; y < h; y++) f[y] = grid[y * w + x];
+    edt1d(f, h, d, v, z);
+    for (let y = 0; y < h; y++) grid[y * w + x] = d[y];
+  }
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) f[x] = grid[y * w + x];
+    edt1d(f, w, d, v, z);
+    for (let x = 0; x < w; x++) grid[y * w + x] = Math.sqrt(d[x]);
+  }
+  return grid;
+}
+function blur(src, w, h) {
+  const out = new Float32Array(src.length);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    let s = 0, c = 0;
+    for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) {
+      const xx = x + i, yy = y + j;
+      if (xx >= 0 && yy >= 0 && xx < w && yy < h) { s += src[yy * w + xx]; c++; }
+    }
+    out[y * w + x] = s / c;
+  }
+  return out;
+}
+
+/* ---------- inflated "balloon" text ---------- */
+function rasterize(lines, font, fatPct, gap) {
+  const probe = document.createElement('canvas').getContext('2d');
+  probe.font = `${font.weight} 100px "${font.family}"`;
+  const maxW = Math.max(...lines.map((t) => probe.measureText(t).width), 1);
+  const fs = Math.max(60, Math.min(170, (560 / maxW) * 100));
+  const fat = (fs * fatPct) / 100;
+  const spacing = `${(fat * 2 + fs * 0.035).toFixed(1)}px`;   // keeps fattened letters from fusing into thin necks
+  probe.font = `${font.weight} ${fs}px "${font.family}"`;
+  probe.letterSpacing = spacing;
+  const ms = lines.map((t) => probe.measureText(t));
+  const asc = Math.max(...ms.map((m) => m.actualBoundingBoxAscent));
+  const desc = Math.max(...ms.map((m) => m.actualBoundingBoxDescent));
+  const pad = Math.ceil(fat + 8);
+  const lineH = fs * gap;
+  const w = Math.ceil(Math.max(...ms.map((m) => m.width)) + pad * 2 + fat * 2);
+  const h = Math.ceil(asc + desc + lineH * (lines.length - 1) + pad * 2);
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d');
+  g.font = probe.font; g.letterSpacing = spacing; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+  g.fillStyle = g.strokeStyle = '#fff'; g.lineJoin = 'round'; g.lineWidth = fat * 2;
+  lines.forEach((t, i) => {
+    const y = pad + asc + i * lineH;
+    if (fat > 0) g.strokeText(t, w / 2, y);
+    g.fillText(t, w / 2, y);
+  });
+  const px = g.getImageData(0, 0, w, h).data;
+  const inside = new Uint8Array(w * h);
+  for (let i = 0; i < w * h; i++) inside[i] = px[i * 4 + 3] > 127 ? 1 : 0;
+  return { inside, w, h };
+}
+
+function buildBalloonGeometry({ inside, w, h }, puff, colTop, colBottom) {
+  const dIn = new Float64Array(w * h), dOut = new Float64Array(w * h);
+  for (let i = 0; i < w * h; i++) { dIn[i] = inside[i] ? INF : 0; dOut[i] = inside[i] ? 0 : INF; }
+  edt(dIn, w, h); edt(dOut, w, h);
+  let sdf = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) sdf[i] = inside[i] ? dIn[i] - 0.5 : -(dOut[i] - 0.5);
+  sdf = blur(blur(sdf, w, h), w, h);
+
+  // Inflate like a balloon: solve the Poisson equation (Laplacian u = -1 inside, u = 0 on the rim)
+  // and use sqrt(u) as height, which gives round cross-sections with no creases along the stroke centres.
+  const cells = [];
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) if (sdf[y * w + x] > 0) cells.push(y * w + x);
+  const u = new Float32Array(w * h);
+  for (const i of cells) u[i] = sdf[i] * sdf[i] * 0.5;           // slab-shaped first guess
+  for (let it = 0; it < 500; it++) {
+    for (const i of cells) u[i] = (u[i - 1] + u[i + 1] + u[i - w] + u[i + w] + 1) * 0.25;
+  }
+  let uMax = 1e-6, maxD = 1;
+  for (const i of cells) { if (u[i] > uMax) uMax = u[i]; if (sdf[i] > maxD) maxD = sdf[i]; }
+  const H = maxD * puff, rootMax = Math.sqrt(uMax);
+  const height = (i) => H * Math.sqrt(u[i]) / rootMax;
+
+  const pos = [], col = [], idxF = new Int32Array(w * h).fill(-1), idxB = new Int32Array(w * h).fill(-1);
+  const top = new THREE.Color(colTop), bot = new THREE.Color(colBottom), tmp = new THREE.Color();
+  const pushV = (x, y, z) => {
+    tmp.copy(top).lerp(bot, Math.min(1, Math.max(0, y / h)));
+    pos.push(x, -y, z); col.push(tmp.r, tmp.g, tmp.b);
+    return pos.length / 3 - 1;
+  };
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = y * w + x, d = sdf[i];
+    if (d > 0) {
+      const z = height(i);
+      idxF[i] = pushV(x, y, z);
+      idxB[i] = pushV(x, y, -z);
+    } else if (d > -2 && x > 0 && y > 0 && x < w - 1 && y < h - 1) {
+      // snap the rim vertex onto the zero contour so the silhouette is smooth, not stair-stepped
+      let gx = (sdf[i + 1] - sdf[i - 1]) / 2, gy = (sdf[i + w] - sdf[i - w]) / 2;
+      const gl = Math.hypot(gx, gy) || 1; gx /= gl; gy /= gl;
+      const v = pushV(x - gx * d, y - gy * d, 0);
+      idxF[i] = idxB[i] = v;
+    }
+  }
+  const index = [];
+  for (let y = 0; y < h - 1; y++) for (let x = 0; x < w - 1; x++) {
+    const a = y * w + x, b = a + 1, c = a + w, d = c + 1;
+    if (idxF[a] < 0 || idxF[b] < 0 || idxF[c] < 0 || idxF[d] < 0) continue;
+    if (sdf[a] <= 0 && sdf[b] <= 0 && sdf[c] <= 0 && sdf[d] <= 0) continue;
+    index.push(idxF[a], idxF[c], idxF[b], idxF[b], idxF[c], idxF[d]);
+    index.push(idxB[a], idxB[b], idxB[c], idxB[b], idxB[d], idxB[c]);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  geo.setIndex(index);
+  const s = 4.2 / w;                         // logo is about 4.2 units wide
+  geo.scale(s, s, s);
+  geo.center();
+  geo.computeVertexNormals();
+  return geo;
+}
+
+/* ---------- salmon nigiri ---------- */
+function makeNigiri() {
+  const g = new THREE.Group();
+  g.name = 'salmon_nigiri';
+  const rice = new THREE.SphereGeometry(1, 72, 40);
+  const p = rice.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) {
+    v.fromBufferAttribute(p, i);
+    const bump = 1 + 0.018 * Math.sin(v.x * 31 + v.y * 23) * Math.sin(v.z * 29 - v.y * 17);
+    v.multiplyScalar(bump);
+    v.set(v.x * 1.05, v.y * 0.5, v.z * 0.62);
+    if (v.y < -0.3) v.y = -0.3 + (v.y + 0.3) * 0.25;   // flat bottom
+    p.setXYZ(i, v.x, v.y, v.z);
+  }
+  rice.computeVertexNormals();
+  g.add(new THREE.Mesh(rice, new THREE.MeshPhysicalMaterial({ color: '#fffaf0', roughness: 0.7, sheen: 1, sheenColor: new THREE.Color('#ffffff') })));
+
+  const fish = new THREE.SphereGeometry(1, 128, 48);
+  const fp = fish.attributes.position, colors = [];
+  const orange = new THREE.Color('#ff6f3c'), fat = new THREE.Color('#ffd9c2'), c = new THREE.Color();
+  for (let i = 0; i < fp.count; i++) {
+    v.fromBufferAttribute(fp, i);
+    v.set(v.x * 1.3, v.y * 0.17, v.z * 0.72);
+    v.y += 0.42 - 0.2 * v.x * v.x;            // drape over the rice
+    fp.setXYZ(i, v.x, v.y, v.z);
+    const s = Math.sin((v.x * 1.0 + v.z * 0.55) * 13);
+    c.copy(orange).lerp(fat, THREE.MathUtils.smoothstep(s, 0.45, 0.85));
+    colors.push(c.r, c.g, c.b);
+  }
+  fish.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  fish.computeVertexNormals();
+  g.add(new THREE.Mesh(fish, new THREE.MeshPhysicalMaterial({ vertexColors: true, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.12 })));
+  return g;
+}
+
+/* ---------- build ---------- */
+let buildToken = 0;
+async function rebuild() {
+  const token = ++buildToken;
+  $('busy').hidden = false;
+  const font = FONTS[+$('font').value];
+  const lines = [$('line1').value, $('line2').value].map((t) => t.trim()).filter(Boolean);
+  if (!lines.length) lines.push('Sushi');
+  try { await document.fonts.load(`${font.weight} 100px "${font.family}"`, lines.join('')); } catch (e) { /* fallback face */ }
+  if (token !== buildToken) return;
+  const pal = PALETTES[state.palette];
+  const geo = buildBalloonGeometry(rasterize(lines, font, +$('fat').value, +$('gap').value), +$('puff').value, pal.top, pal.bottom);
+  if (textMesh) { logo.remove(textMesh); textMesh.geometry.dispose(); }
+  textMesh = new THREE.Mesh(geo, textMat);
+  textMesh.name = 'logo_text';
+  logo.add(textMesh);
+
+  geo.computeBoundingBox();
+  const bb = geo.boundingBox;
+  if ($('nigiri').checked) {
+    if (!nigiri) nigiri = makeNigiri();
+    nigiri.scale.setScalar(0.42);
+    nigiri.position.set(bb.max.x - 0.45, bb.max.y - 0.12, 0.25);
+    nigiri.rotation.set(0.35, -0.5, -0.22);
+    logo.add(nigiri);
+  } else if (nigiri) logo.remove(nigiri);
+
+  logo.position.set(0, 0, 0);
+  logo.updateMatrixWorld(true);
+  const b2 = new THREE.Box3().setFromObject(logo);
+  logo.position.x -= (b2.min.x + b2.max.x) / 2;
+  logo.position.y -= (b2.min.y + b2.max.y) / 2;
+  const size = b2.getSize(new THREE.Vector3());
+  shadow.position.y = -size.y / 2 - 0.45;
+  shadow.scale.set(size.x * 1.15, size.z * 3 + 0.8, 1);
+  $('busy').hidden = true;
+}
+
+function applyGloss() {
+  const gl = +$('gloss').value;
+  textMat.roughness = 0.6 - gl * 0.5;
+  textMat.clearcoat = gl;
+  textMat.needsUpdate = true;
+}
+
+/* ---------- UI ---------- */
+const sw = $('swatches');
+PALETTES.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'swatch';
+  b.innerHTML = `<i style="background:linear-gradient(160deg,${p.top},${p.bottom})"></i>${p.name}`;
+  b.setAttribute('aria-pressed', i === state.palette);
+  b.onclick = () => {
+    state.palette = i;
+    sw.querySelectorAll('.swatch').forEach((x, j) => x.setAttribute('aria-pressed', j === i));
+    rebuild();
+  };
+  sw.append(b);
+});
+const motionBtns = $('motion').querySelectorAll('button');
+const syncMotion = () => motionBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.m === state.motion));
+motionBtns.forEach((b) => b.onclick = () => { state.motion = b.dataset.m; syncMotion(); });
+syncMotion();
+
+let t0;
+const debounced = () => { clearTimeout(t0); t0 = setTimeout(rebuild, 160); };
+['line1', 'line2', 'fat', 'puff', 'gap'].forEach((id) => $(id).addEventListener('input', debounced));
+['font', 'nigiri'].forEach((id) => $(id).addEventListener('change', rebuild));
+$('gloss').addEventListener('input', applyGloss);
+$('checker').addEventListener('change', (e) => $('stage').classList.toggle('checker', e.target.checked));
+document.querySelectorAll('input[type="range"]').forEach((r) => {
+  const out = r.parentElement.querySelector('output');
+  const sync = () => { out.textContent = (+r.value).toFixed(r.step < 0.1 ? 2 : 1).replace(/\.0+$/, ''); };
+  r.addEventListener('input', sync); sync();
+});
+
+/* ---------- loop ---------- */
+function resize() {
+  const r = canvas.parentElement.getBoundingClientRect();
+  renderer.setSize(r.width, r.height, false);
+  camera.aspect = r.width / Math.max(1, r.height);
+  camera.fov = camera.aspect < 1 ? 46 : 32;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(canvas.parentElement);
+
+const clock = new THREE.Clock();
+let spinAngle = 0;
+function animate() {
+  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
+  rig.rotation.set(0, 0, 0); rig.scale.set(1, 1, 1); rig.position.set(0, 0, 0);
+  if (state.motion === 'sway') {
+    rig.rotation.y = Math.sin(t * 0.9) * 0.45;
+    rig.rotation.x = Math.sin(t * 0.6) * 0.06;
+    rig.position.y = Math.sin(t * 1.8) * 0.06;
+  } else if (state.motion === 'spin') {
+    spinAngle += dt * 1.4; rig.rotation.y = spinAngle;
+  } else if (state.motion === 'jelly') {
+    const s = Math.sin(t * 7) * Math.max(0, Math.sin(t * 1.4)) ;
+    rig.scale.set(1 - s * 0.05, 1 + s * 0.07, 1 - s * 0.05);
+    rig.rotation.z = Math.sin(t * 3.5) * 0.04;
+  }
+  if (nigiri && nigiri.parent) nigiri.position.y = (textMesh.geometry.boundingBox.max.y - 0.12) + Math.abs(Math.sin(t * 2.2)) * (state.motion === 'stop' ? 0 : 0.08);
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+
+/* ---------- export ---------- */
+function renderTransparent(px) {
+  // Reuse the main renderer so the environment map (bound to its GL context) lights the export too.
+  const prevSize = renderer.getSize(new THREE.Vector2()), prevRatio = renderer.getPixelRatio();
+  const cam = camera.clone(); cam.aspect = 1; cam.fov = 32;
+  const sphere = new THREE.Box3().setFromObject(rig).getBoundingSphere(new THREE.Sphere());
+  const need = sphere.radius / Math.sin(THREE.MathUtils.degToRad(cam.fov / 2)) * 1.02;
+  const dir = cam.position.clone().sub(controls.target).normalize();
+  cam.position.copy(controls.target).addScaledVector(dir, Math.max(need, cam.position.distanceTo(controls.target)));
+  cam.updateProjectionMatrix(); cam.lookAt(controls.target);
+  renderer.setPixelRatio(1); renderer.setSize(px, px, false);
+  shadow.visible = false;
+  renderer.render(scene, cam);
+  const c = document.createElement('canvas'); c.width = c.height = px;
+  c.getContext('2d').drawImage(renderer.domElement, 0, 0);
+  shadow.visible = true;
+  renderer.setPixelRatio(prevRatio); renderer.setSize(prevSize.x, prevSize.y, false);
+  renderer.render(scene, camera);
+  return c;
+}
+function cropFit(src, W, H) {
+  const g = src.getContext('2d'), n = src.width, data = g.getImageData(0, 0, n, n).data;
+  let x0 = n, y0 = n, x1 = 0, y1 = 0;
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (data[(y * n + x) * 4 + 3] > 6) {
+    if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+  }
+  const out = document.createElement('canvas'); out.width = W; out.height = H;
+  if (x1 < x0) return out;
+  const m = Math.max(4, Math.round(Math.min(W, H) * 0.03));     // LINE asks for ~10px margin at 370×320
+  const bw = x1 - x0 + 1, bh = y1 - y0 + 1, s = Math.min((W - 2 * m) / bw, (H - 2 * m) / bh);
+  const dw = bw * s, dh = bh * s;
+  // halve in steps for a crisp downscale
+  let cur = src, cx = x0, cy = y0, cw = bw, ch = bh;
+  while (dw < cw / 2) {
+    const t = document.createElement('canvas'); t.width = Math.ceil(cw / 2); t.height = Math.ceil(ch / 2);
+    const tg = t.getContext('2d'); tg.imageSmoothingQuality = 'high';
+    tg.drawImage(cur, cx, cy, cw, ch, 0, 0, t.width, t.height);
+    cur = t; cx = 0; cy = 0; cw = t.width; ch = t.height;
+  }
+  const og = out.getContext('2d'); og.imageSmoothingQuality = 'high';
+  og.drawImage(cur, cx, cy, cw, ch, (W - dw) / 2, (H - dh) / 2, dw, dh);
+  return out;
+}
+function exportPNG(W, H) { return cropFit(renderTransparent(2048), W, H).toDataURL('image/png'); }
+function exportGLB() {
+  return new Promise((resolve, reject) => {
+    const clone = logo.clone(true);
+    clone.position.set(0, 0, 0);
+    new GLTFExporter().parse(clone, resolve, reject, { binary: true });
+  });
+}
+function download(href, name) {
+  const a = document.createElement('a'); a.href = href; a.download = name;
+  document.body.append(a); a.click(); a.remove();
+}
+let lastPng = null;
+$('savePng').onclick = () => {
+  const [W, H] = $('size').value.split('x').map(Number);
+  const url = exportPNG(W, H);
+  lastPng = { url, name: `sushihamster-logo-${W}x${H}.png` };
+  $('outImg').src = url;
+  $('outInfo').textContent = `${W}×${H}px・背景透過。保存できないときは画像を長押し（右クリック）して保存してください。`;
+  $('modal').hidden = false;
+  download(url, lastPng.name);
+};
+$('dlAgain').onclick = () => lastPng && download(lastPng.url, lastPng.name);
+$('closeModal').onclick = () => { $('modal').hidden = true; };
+$('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') $('modal').hidden = true; });
+$('saveGlb').onclick = async () => {
+  try {
+    const buf = await exportGLB();
+    const url = URL.createObjectURL(new Blob([buf], { type: 'model/gltf-binary' }));
+    download(url, 'sushihamster-logo.glb');
+    $('status').textContent = `GLBを書き出しました（${(buf.byteLength / 1024 / 1024).toFixed(1)}MB）。ダウンロードが始まらない場合は、サイトに置いた版から書き出してください。`;
+  } catch (e) {
+    $('status').textContent = 'GLBの書き出しに失敗しました。もう一度お試しください。';
+  }
+};
+
+window.__logo = { ready: null, exportPNG, exportGLB, setMotion: (m) => { state.motion = m; syncMotion(); }, rig, camera, controls };
+applyGloss();
+resize();
+window.__logo.ready = rebuild();
+animate();
+</script>
+</body>
+</html>
