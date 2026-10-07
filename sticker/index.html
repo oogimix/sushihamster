@@ -143,7 +143,7 @@ input[type=file]{display:none}
 <script>
 (() => {
 // three.js / three-vrm / JSZip は lib/vendor.js に同梱（ダブルクリックで開いてもオフラインで動く）
-const { THREE, GLTFLoader, OrbitControls, VRMLoaderPlugin, JSZip } = window.Vendor;
+const { THREE, GLTFLoader, OrbitControls, VRMLoaderPlugin, MeshoptDecoder, JSZip } = window.Vendor;
 const IS_FILE = location.protocol === 'file:';
 
 // ===== 定数 =====
@@ -155,8 +155,11 @@ const VALID_COUNTS = [8, 16, 24, 32, 40];
 
 // 新しいモデルはここに追加すると「プリセット」に並ぶ（game/vrm/ に置いた場合）
 const PRESETS = [
-  { name: 'sushihamster', url: '../game/vrm/shin_sushihamster.vrm' },
-  { name: 'sushifairy',   url: '../game/vrm/shin_sushifairy.vrm' },
+  { name: 'sushihamster', url: 'models/sushihamster.vrm' },
+  { name: 'sushifairy',   url: '../game/vrm/shin_sushifairy.vrm', siteOnly: true },  // 新版が来たら models/ に置き換える
+  { name: 'recordolphin', url: 'models/recordolphin.glb' },
+  { name: 'kakapop',      url: 'models/kakapop.glb' },
+  { name: 'vibestar',     url: 'models/vibestar.glb' },
 ];
 
 // 3D文字のフォント（ふくらませる前提で、太め・丸めのものを中心に）
@@ -255,6 +258,56 @@ const POSE_PRESETS = {
   'ハグ待ち': { leftUpperArm: [0, -45, -30], rightUpperArm: [0, 45, 30], leftLowerArm: [0, -20, 0], rightLowerArm: [0, 20, 0], spine: [6, 0, 0] },
   'ジャンプ': { leftUpperArm: [0, 0, 50], rightUpperArm: [0, 0, -50], leftUpperLeg: [-30, 0, 0], leftLowerLeg: [60, 0, 0], rightUpperLeg: [-10, 0, 0], rightLowerLeg: [30, 0, 0] },
 };
+// GLBキャラ専用ポーズ：クリップの決めフレーム＋ボーンの追加回転（度）
+const GLB_POSES = {
+  recordolphin: [
+    ['きほん', 'Idle', 0.67, {}],
+    ['あいさつ', 'Flap', 0.5, { head: [0, 0, -14] }],
+    ['ダンスきめ', 'Dance', 0.33, {}],
+    ['ノリノリ', 'Dance', 1.67, {}],
+    ['ぱたぱた', 'Flap', 0.33, {}],
+    ['ジャンプ', 'Jump', 0.53, {}],
+    ['ダイブ', 'Jump', 0.8, {}],
+    ['どや', 'RecordSpin', 0.75, {}],
+    ['くびかしげ', 'Idle', 2, { head: [0, 0, 18] }],
+  ],
+  kakapop: [
+    ['きほん', 'Idle', 0, {}],
+    ['ダンス', 'Dance', 0.67, {}],
+    ['ステップ', 'Dance', 2.67, {}],
+    ['ぱたぱた', 'Flap', 0.33, {}],
+    ['ラップ', 'Rap', 0, {}],
+    ['いえーい', 'Rap', 4.44, {}],
+    ['とことこ', 'Walk', 0.33, {}],
+    ['くびかしげ', 'Idle', 0, { head: [0, 0, 20] }],
+    ['つばさパー', 'Idle', 0, { 'wing.L': [0, 0, -70], 'wing.R': [0, 0, 70] }],
+  ],
+  vibestar: [
+    ['きほん', 'Idle', 0, {}],
+    ['あいさつ', 'Wave', 0.27, {}],
+    ['ばいばい', 'Idle', 0, { RightArm: [0, 0, 50], Head: [0, 0, -10] }],
+    ['かたてあげ', 'Idle', 0, { LeftArm: [0, 0, -50] }],
+    ['ばんざい', 'Idle', 0, { LeftArm: [0, 0, -32], RightArm: [0, 0, 32] }],
+    ['ダンス', 'Dance', 0.17, {}],
+    ['かたむき', 'Dance', 0.67, {}],
+    ['おじぎ', 'Idle', 0, { Spine: [35, 0, 0], Head: [15, 0, 0] }],
+  ],
+};
+// VRMキャラ専用ポーズ（既存の humanoid ポーズと同じ形式）
+const VRM_CHAR_POSES = {
+  sushihamster: {
+    'DJプレイ': { leftUpperArm: [-55, 0, -25], leftLowerArm: [-15, 0, 0], rightUpperArm: [0, 0, 110], rightLowerArm: [0, -120, 0], spine: [5, 0, -5], head: [0, 0, 10], _gripL: 0.6, _gripR: 0.4 },
+    'ヘッドホンおさえ': { leftUpperArm: [0, 0, -70], rightUpperArm: [0, 0, 110], rightLowerArm: [0, -120, 0], head: [0, 0, 10] },
+    'ノリノリ': { leftUpperArm: [0, 0, 35], rightUpperArm: [0, 0, -35], leftLowerArm: [0, 0, 60], rightLowerArm: [0, 0, -60], spine: [0, 0, 8], head: [0, 0, -10], _gripL: 0.8, _gripR: 0.8 },
+    'ごろん': { hips: [-80, 0, 0], leftUpperArm: [0, 0, -60], rightUpperArm: [0, 0, 60], leftUpperLeg: [-20, 0, 0], rightUpperLeg: [-30, 0, 0], leftLowerLeg: [35, 0, 0], rightLowerLeg: [45, 0, 0], head: [20, 0, 0] },
+  },
+  sushifairy: {
+    'ネタぺこり': { leftUpperArm: [0, 0, -70], rightUpperArm: [0, 0, 70], spine: [25, 0, 0], chest: [15, 0, 0], head: [15, 0, 0] },
+    'ひらひら': { leftUpperArm: [0, -20, 20], rightUpperArm: [0, 20, -20], leftLowerArm: [0, -40, 0], rightLowerArm: [0, 40, 0], spine: [0, 0, 6], head: [0, 0, -8] },
+    'うきうき': { leftUpperArm: [0, 0, 45], rightUpperArm: [0, 0, -45], leftLowerArm: [0, 0, 30], rightLowerArm: [0, 0, -30], spine: [-6, 0, 0], head: [-8, 0, 0] },
+    'あのね': { leftUpperArm: [-40, 0, -50], rightUpperArm: [-40, 0, 50], leftLowerArm: [0, -45, 0], rightLowerArm: [0, 45, 0], head: [6, 0, 12], _gripL: 0.5, _gripR: 0.5 },
+  },
+};
 const EXPR_PRESETS = {
   'ふつう': {},
   'にっこり': { happy: 1 },
@@ -305,6 +358,7 @@ controls.update();
 
 const loader = new GLTFLoader();
 loader.register(p => new VRMLoaderPlugin(p));
+loader.setMeshoptDecoder(MeshoptDecoder);   // recordolphin が meshopt 圧縮を使用
 
 function defaultSettings() {
   return { outlineW: 0, outlineColor: '#ffffff', amb: 0.9, key: 1.0, keyAz: 30, keyEl: 40, shadow: true };
@@ -325,7 +379,7 @@ function normalizeText(t) {
 }
 function defaultModelData(i) {
   return { pos: [i === 0 ? 0 : (i % 2 ? 1 : -1) * Math.ceil(i / 2) * 0.8, 0, 0], rotY: 0, scale: 1, visible: true,
-    pose: structuredClone(REST), expr: {}, lookAtCam: true, anim: 0, animTime: 0 };
+    pose: structuredClone(REST), expr: {}, boneRot: {}, lookAtCam: true, anim: 0, animTime: 0 };
 }
 const clone = o => JSON.parse(JSON.stringify(o));
 
@@ -336,8 +390,25 @@ function uniqueName(n) {
   while (models.some(m => m.name === name)) name = `${n}(${k++})`;
   return name;
 }
+// ダブルクリック起動（file://）では fetch が使えないので、同梱モデルは base64 の .js（models/*.js）経由で読む
+async function presetUrl(url) {
+  if (!IS_FILE || !url.startsWith('models/')) return url;
+  const file = url.slice(7);
+  if (!window.__MODELS?.[file]) {
+    await new Promise((res, rej) => {
+      const sc = document.createElement('script');
+      sc.src = url + '.js';
+      sc.onload = res; sc.onerror = () => rej(new Error(url + '.js が見つかりません'));
+      document.head.appendChild(sc);
+    });
+  }
+  const b64 = window.__MODELS[file];
+  const bin = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  return URL.createObjectURL(new Blob([bin]));
+}
 async function loadModel(url, rawName) {
   setStatus(`${rawName} を読み込み中…`);
+  try { url = await presetUrl(url); } catch (e) { setStatus(`読み込み失敗: ${rawName}（${e.message}）`); return; }
   let gltf;
   try {
     gltf = await loader.loadAsync(url, ev => {
@@ -358,18 +429,26 @@ async function loadModel(url, rawName) {
   root.add(obj);
   scene.add(root);
   // 足元を原点に、GLB は身長を 1.4 にそろえる
-  let box = new THREE.Box3().setFromObject(obj);
+  let box = preciseBox(obj);
   const size = box.getSize(new THREE.Vector3());
-  if (!vrm && size.y > 0) { obj.scale.multiplyScalar(1.4 / size.y); box = new THREE.Box3().setFromObject(obj); }
+  if (!vrm && size.y > 0) { obj.scale.multiplyScalar(1.4 / size.y); box = preciseBox(obj); }
   const c = box.getCenter(new THREE.Vector3());
   obj.position.x -= c.x; obj.position.z -= c.z; obj.position.y -= box.min.y;
   const height = box.max.y - box.min.y;
 
   let mixer = null, clips = gltf.animations || [];
   if (clips.length) mixer = new THREE.AnimationMixer(obj);
+  // GLB用：ボーン一覧と初期ポーズ（ポーズプリセットの土台）
+  const bones = new Map(), rest = [];
+  if (!vrm) obj.traverse(o => {
+    // Bone だけでなく、メッシュを持たない関節ノードも対象（recordolphin は非スキンのリグ）
+    if ((o.isBone || (!o.isMesh && o.name && o !== obj)) && !bones.has(o.name)) {
+      bones.set(o.name, o); rest.push([o, { p: o.position.clone(), q: o.quaternion.clone(), s: o.scale.clone() }]);
+    }
+  });
   const exprNames = vrm?.expressionManager ? vrm.expressionManager.expressions.map(e => e.expressionName) : [];
 
-  const m = { name, root, obj, vrm, vrm0: vrm?.meta?.metaVersion === '0', mixer, clips, action: null, height, exprNames, data: null };
+  const m = { name, root, obj, vrm, vrm0: vrm?.meta?.metaVersion === '0', mixer, clips, bones, rest, action: null, height, exprNames, data: null };
   const saved = state.slots[state.active]?.models?.[name];
   m.data = saved ? { ...defaultModelData(models.length), ...clone(saved) } : defaultModelData(models.length);
   if (!vrm) m.data.pose = {};
@@ -510,6 +589,7 @@ function applyModelData(m) {
     m.vrm.lookAt.target = d.lookAtCam ? camera : undefined;
     if (!d.lookAtCam) { m.vrm.lookAt.yaw = 0; m.vrm.lookAt.pitch = 0; }
   }
+  if (m.rest) for (const [n, r] of m.rest) { n.position.copy(r.p); n.quaternion.copy(r.q); n.scale.copy(r.s); }
   if (m.mixer) {
     if (m.action) m.action.stop();
     m.action = null;
@@ -519,6 +599,16 @@ function applyModelData(m) {
       m.action.play(); m.action.paused = true;
       m.action.time = Math.min(d.animTime, clip.duration);
       m.mixer.update(0);
+    }
+  }
+  // GLBのボーン追加回転（クリップの上から足す）
+  if (m.bones && d.boneRot) {
+    const e = new THREE.Euler(), q = new THREE.Quaternion();
+    for (const [bn, r] of Object.entries(d.boneRot)) {
+      const b = m.bones.get(bn);
+      if (!b) continue;
+      e.set(r[0] * D2R, r[1] * D2R, r[2] * D2R);
+      b.quaternion.multiply(q.setFromEuler(e));
     }
   }
 }
@@ -559,9 +649,21 @@ function applyLights() {
 }
 
 // ===== カメラ =====
+// スキンメッシュはボーン変形後の形でボックスを取る（Box3.expandByObject は変形前の形しか見ない）
+function preciseBox(obj, box = new THREE.Box3()) {
+  obj.updateMatrixWorld(true);
+  obj.traverse(o => {
+    if (!o.isMesh || !o.geometry) return;
+    const b = new THREE.Box3();
+    if (o.isSkinnedMesh) { o.computeBoundingBox(); b.copy(o.boundingBox).applyMatrix4(o.matrixWorld); }
+    else b.setFromObject(o);
+    box.union(b);
+  });
+  return box;
+}
 function modelBox(list) {
   const box = new THREE.Box3();
-  for (const m of list) if (m.root.visible) box.expandByObject(m.obj);
+  for (const m of list) if (m.root.visible) preciseBox(m.obj, box);
   return box;
 }
 function boneY(m, name) {
@@ -1385,7 +1487,7 @@ function renderPanel() {
 function needModel(vrmOnly) {
   const m = curModel();
   if (!m) { body.append(el('p', { class: 'note' }, 'まず「モデル」タブでモデルを読み込んでね。')); return null; }
-  if (vrmOnly && !m.vrm) { body.append(el('p', { class: 'note' }, `${m.name} は VRM ではないので、この機能は使えません（GLB はモデルタブのアニメーションでポーズを選べます）。`)); return null; }
+  if (vrmOnly && !m.vrm) { body.append(el('p', { class: 'note' }, `${m.name} は VRM ではないので表情データがありません。ポーズタブでポーズは変えられます。`)); return null; }
   return m;
 }
 function modelPicker() {
@@ -1414,8 +1516,15 @@ function panelModel() {
       'sushihamster / sushifairy / recordolphin / kakapop / vibestar の .vrm・.glb が入ったフォルダを選んでね。サブフォルダの中も探します。'),
     fileBtns.length ? el('div', { class: 'btns' }, ...fileBtns) : null,
     rest.length > 1 ? el('div', { class: 'btns', style: 'margin-top:6px' }, btn(`まだの ${rest.length} 体をまとめて読み込む`, () => loadFromFolder(rest))) : null));
-  if (!IS_FILE) body.append(sec('サイト内のモデル',
-    el('div', { class: 'btns' }, ...PRESETS.map(p => btn(p.name, () => loadModel(p.url, p.name))))));
+  const avail = PRESETS.filter(p => !(IS_FILE && p.siteOnly));
+  if (avail.length) body.append(sec('同梱モデル（クリックで読み込み）',
+    el('div', { class: 'btns' }, ...avail.map(p => {
+      const has = models.some(m => m.name === p.name);
+      return btn((has ? '✓ ' : '') + p.name, () => {
+        const i = models.findIndex(m => m.name === p.name);
+        if (i >= 0) { selModel = i; renderPanel(); } else loadModel(p.url, p.name);
+      }, has ? 'on' : '');
+    }))));
   if (!models.length) return;
   const list = el('div', { class: 'list' });
   models.forEach((m, i) => {
@@ -1447,10 +1556,16 @@ function panelModel() {
 }
 
 function panelPose() {
-  const m = needModel(true);
-  if (!m) return;
-  const p = m.data.pose;
+  const m = curModel();
+  if (!m) { body.append(el('p', { class: 'note' }, 'まず「モデル」タブでモデルを読み込んでね。')); return; }
   const pk = modelPicker(); if (pk) body.append(pk);
+  if (!m.vrm) { panelPoseGLB(m); return; }
+  const p = m.data.pose;
+  const charPoses = VRM_CHAR_POSES[m.name];
+  if (charPoses) body.append(sec(`${m.name} 専用ポーズ`,
+    el('div', { class: 'btns' }, ...Object.entries(charPoses).map(([k, v]) => btn(k, () => {
+      m.data.pose = clone(v); settleModel(m); renderPanel(); markDirty();
+    })))));
   body.append(sec('ポーズプリセット',
     el('div', { class: 'btns' }, ...Object.entries(POSE_PRESETS).map(([k, v]) => btn(k, () => {
       m.data.pose = clone(v); settleModel(m); renderPanel(); markDirty();
@@ -1472,6 +1587,39 @@ function panelPose() {
     slider('左手にぎり', () => p._gripL ?? 0.15, v => p._gripL = v, 0, 1, 0.01, v => Math.round(v * 100) + '%'),
     slider('右手にぎり', () => p._gripR ?? 0.15, v => p._gripR = v, 0, 1, 0.01, v => Math.round(v * 100) + '%')));
   body.append(el('p', { class: 'note' }, '左右はキャラ視点です。腕を下ろす：左上腕 Z を −、右上腕 Z を ＋。ひじを前に曲げる：右ひじ Y を ＋、左ひじ Y を −。'));
+}
+// GLBモデル（recordolphin / kakapop / vibestar など）のポーズUI
+function panelPoseGLB(m) {
+  const d = m.data, upd = () => { applyModelData(m); markDirty(); };
+  const poses = GLB_POSES[m.name];
+  if (poses) body.append(sec(`${m.name} 専用ポーズ`,
+    el('div', { class: 'btns' }, ...poses.map(([label, clipName, t, rot]) => btn(label, () => {
+      d.anim = m.clips.findIndex(c => c.name === clipName);
+      d.animTime = t;
+      d.boneRot = clone(rot);
+      upd(); renderPanel();
+    })))));
+  if (m.clips.length) {
+    const dur = () => m.clips[d.anim]?.duration || 1;
+    body.append(sec('モーションのコマを選ぶ',
+      select('クリップ', [[-1, '（なし）'], ...m.clips.map((c, i) => [i, c.name || `clip ${i + 1}`])], () => d.anim,
+        v => { d.anim = +v; d.animTime = 0; upd(); renderPanel(); }),
+      d.anim >= 0 ? slider('時間', () => d.animTime, v => { d.animTime = v; upd(); }, 0, dur(), 0.01, v => v.toFixed(2) + 's') : null));
+  }
+  const names = [...m.bones.keys()].filter(n => !/record/i.test(n));
+  if (names.length) {
+    const boneSel = names.includes(state.boneSelGlb) ? state.boneSelGlb : names[0];
+    const r = d.boneRot[boneSel] || [0, 0, 0];
+    const setR = (ax, v) => { const a = d.boneRot[boneSel] || (d.boneRot[boneSel] = [0, 0, 0]); a[ax] = v; upd(); };
+    body.append(sec('ボーン調整（ポーズの上から足す）',
+      select('ボーン', names.map(n => [n, n]), () => boneSel, v => { state.boneSelGlb = v; renderPanel(); }),
+      slider('X', () => r[0], v => setR(0, v), -180, 180, 1, v => v + '°'),
+      slider('Y', () => r[1], v => setR(1, v), -180, 180, 1, v => v + '°'),
+      slider('Z', () => r[2], v => setR(2, v), -180, 180, 1, v => v + '°'),
+      el('div', { class: 'btns' },
+        btn('このボーンを0に', () => { delete d.boneRot[boneSel]; upd(); renderPanel(); }),
+        btn('全部リセット', () => { d.boneRot = {}; upd(); renderPanel(); }))));
+  }
 }
 function mirrorPose(p) {
   const out = {};
@@ -1665,6 +1813,8 @@ renderSlots();
 renderPanel();
 initFolder();
 // デバッグ・自動テスト用
+window.__applyMD = applyModelData;
+window.__selSet = i => { selModel = i; renderPanel(); };
 window.__studio = { state, models, textGroups, TYPE_STYLES, applyTypeStyle, glyphCache, buildGlyph, fontReady, camera, controls, frameCamera, setAngle, placeText, faceCamera, defaultText, MAT_PRESETS, SHAPE_PRESETS, POSE_PRESETS, settleModel, renderPanel, markDirty };
 })();
 </script>
