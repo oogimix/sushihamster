@@ -181,6 +181,27 @@ const MAT_PRESETS = {
   'ネオン':       { top: '#ffa6ea', bottom: '#d6007f', rough: 0.1, metal: 0.5, coat: 1, irid: 0.6, sheen: 0, opacity: 1, env: 1.3 },
   'ソーダ':       { top: '#8fe3ff', bottom: '#1b9be6', rough: 0.18, metal: 0, coat: 1, irid: 0, sheen: 0, opacity: 1, env: 1.1 },
 };
+// ワンタッチ完成スタイル（第一弾スタンプの文字を参考に、フォント・形・加工・素材をまとめて設定）
+const TYPE_STYLES = {
+  'ホロバルーン':   { ref: 'NO',       font: 'Fredoka', thick: 0.035, round: 0.02, fx: 'none', puff: 1.1, spacing: -0.06, mat: 'ホログラム' },
+  'ブルーホロ':     { ref: 'OK',       font: 'Fredoka', thick: 0.035, round: 0.02, fx: 'none', puff: 1.1, spacing: -0.06, mat: 'ブルーホロ' },
+  'ぷっくりピンク': { ref: 'Vibes',    font: 'Fredoka', thick: 0.05, round: 0.025, fx: 'none', puff: 1, spacing: -0.08, mat: 'バルーン' },
+  'もこもこ雲':     { ref: 'GOOD BYE', font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'cloud', fxAmt: 1, puff: 1, spacing: 0.02, mat: 'くも' },
+  'リキッドクローム': { ref: 'Tears',  font: 'Caveat', thick: 0.035, round: 0.02, fx: 'none', puff: 1.2, spacing: -0.02, mat: 'クローム' },
+  'ネオンチューブ': { ref: 'YO',       font: 'Fredoka', thick: 0, round: 0.01, fx: 'tube', fxAmt: 1, puff: 1, spacing: -0.04, mat: 'ネオン' },
+  'したたり':       { ref: 'Yo',       font: 'Gochi Hand', thick: 0.03, round: 0.015, fx: 'drip', fxAmt: 1, puff: 0.9, spacing: 0, mat: 'ミント',
+                      top: '#c8f7ee', bottom: '#5fd3c2', rough: 0.45, coat: 0.3 },
+  'ぷるぷる泡':     { ref: 'CHEERS',   font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'bubble', fxAmt: 1, puff: 1, spacing: -0.02, mat: 'ゼリー' },
+  'とろーんミント': { ref: 'PARTY',    font: 'Caveat', thick: 0.055, round: 0.03, fx: 'none', puff: 1, spacing: 0.04, mat: 'ミント', jitter3d: 15, bounce: 0.08 },
+  '和文ポップ':     { ref: '発射',     font: 'Mochiy Pop One', thick: 0.015, round: 0.012, fx: 'none', puff: 1, spacing: -0.03, mat: 'オレンジ' },
+  'パステル':       { ref: 'CHU',      font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'none', puff: 1, spacing: -0.02, mat: 'バルーン',
+                      top: '#ffe0f0', bottom: '#f5a3cf', rough: 0.5, coat: 0.3 },
+};
+function applyTypeStyle(L, name) {
+  const { ref, mat, ...st } = TYPE_STYLES[name];
+  Object.assign(L, { jitter3d: 0, bounce: 0, fxAmt: 1 }, MAT_PRESETS[mat], { mat, style: name }, st);
+}
+const FX = [['none', 'なし'], ['cloud', 'くも'], ['drip', 'したたり'], ['bubble', '泡'], ['tube', 'チューブ']];
 const SWATCHES = ['#ff5c98', '#ff8fb8', '#ff3b3b', '#ff9418', '#ffd23f', '#a6e34a', '#3ccf8e', '#2ec4d6', '#1b9be6', '#5b6cff',
   '#9b5cff', '#d6007f', '#8a5a44', '#ffffff', '#b8bcc8', '#2b2b35'];
 const SHAPE_PRESETS = {
@@ -275,7 +296,7 @@ function defaultText(text = 'よろしく') {
   return {
     id: Math.random().toString(36).slice(2, 10), text, font: 'Mochiy Pop One', visible: true,
     size: 0.25, spacing: -0.03, lineH: 1.05, curve: 0, jitter: 0, bounce: 0, jitter3d: 0,
-    ...SHAPE_PRESETS['ふつう'], puff: 1, quality: 64,
+    ...SHAPE_PRESETS['ふつう'], fx: 'none', fxAmt: 1, puff: 1, quality: 64,
     pos: [0, 1, 0.3], rot: [0, 0, 0],
     mat: 'バルーン', ...MAT_PRESETS['バルーン'],
   };
@@ -639,17 +660,81 @@ function fontReady(L) {
 }
 function hash(i) { const x = Math.sin(i * 12.9898 + 4.1414) * 43758.5453; return (x - Math.floor(x)) * 2 - 1; }
 
-function buildGlyph(ch, font, q, th, rd) {
+function rng(seed) {   // 文字ごとに毎回同じ形になる乱数
+  let t = seed >>> 0;
+  return () => { t += 0x6D2B79F5; let r = Math.imul(t ^ t >>> 15, 1 | t); r ^= r + Math.imul(r ^ r >>> 7, 61 | r); return ((r ^ r >>> 14) >>> 0) / 4294967296; };
+}
+// 文字デザイン（形の加工）：くも・したたり・泡・チューブ
+function applyFx(x, cw, chh, px, fx, amt, seed) {
+  const d = x.getImageData(0, 0, cw, chh).data;
+  const IN = (xx, yy) => xx >= 0 && yy >= 0 && xx < cw && yy < chh && d[(yy * cw + xx) * 4 + 3] >= 128;
+  const R = rng(seed);
+  x.fillStyle = x.strokeStyle = '#000';
+  const dot = (cx, cy, r) => { x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill(); };
+  let x0 = cw, y0 = chh, x1 = 0, y1 = 0;
+  const edge = [], bottom = [];
+  for (let yy = 1; yy < chh - 1; yy++) for (let xx = 1; xx < cw - 1; xx++) {
+    if (!IN(xx, yy)) continue;
+    x0 = Math.min(x0, xx); x1 = Math.max(x1, xx); y0 = Math.min(y0, yy); y1 = Math.max(y1, yy);
+    if (!IN(xx + 1, yy) || !IN(xx - 1, yy) || !IN(xx, yy + 1) || !IN(xx, yy - 1)) edge.push([xx, yy]);
+    if (!IN(xx, yy + 1) && !IN(xx, yy + 2)) bottom.push([xx, yy]);
+  }
+  if (!edge.length) return;
+  if (fx === 'cloud') {          // ふちに丸を並べて、もこもこの雲に
+    const r = px * 0.06 * amt, sp = r * 1.2, taken = new Set(), W = Math.ceil(r);
+    for (const [xx, yy] of edge) {
+      const k = Math.floor(xx / sp) + ',' + Math.floor(yy / sp);
+      if (taken.has(k)) continue;
+      taken.add(k);
+      // 内側の向きを推定し、丸の中心を内側へずらす（O の穴などがつぶれないように）
+      let nx = 0, ny = 0;
+      for (let dy = -W; dy <= W; dy += 2) for (let dx = -W; dx <= W; dx += 2) if (IN(xx + dx, yy + dy)) { nx += dx; ny += dy; }
+      const nl = Math.hypot(nx, ny) || 1, rr = r * (0.8 + 0.4 * R());
+      dot(xx + nx / nl * rr * 0.55, yy + ny / nl * rr * 0.55, rr);
+    }
+  } else if (fx === 'drip') {    // 下側から、たれるしずく
+    const bw = px * 0.14, buckets = new Map();
+    for (const [xx, yy] of bottom) {
+      const k = Math.floor(xx / bw);
+      const cur = buckets.get(k);
+      if (!cur || yy > cur[1]) buckets.set(k, [xx, yy]);
+    }
+    for (const [, [xx, yy]] of [...buckets].sort((p, q) => p[0] - q[0])) {
+      if (R() > 0.55) continue;
+      const w = px * (0.035 + 0.03 * R()) * Math.sqrt(amt), len = px * (0.08 + 0.3 * R()) * amt;
+      x.lineCap = 'round'; x.lineWidth = w;
+      x.beginPath(); x.moveTo(xx, yy - w); x.lineTo(xx, yy + len); x.stroke();
+      dot(xx, yy + len, w * 0.85);
+    }
+  } else if (fx === 'bubble') {  // まわりに泡（ふくらませると球になる）
+    const n = Math.round(2 + 3 * amt);
+    for (let i = 0; i < n; i++) {
+      const r = px * (0.035 + 0.07 * R());
+      const ang = R() * Math.PI * 2;
+      const cx = (x0 + x1) / 2 + Math.cos(ang) * ((x1 - x0) / 2 + r * 1.8);
+      const cy = (y0 + y1) / 2 + Math.sin(ang) * ((y1 - y0) / 2 + r * 1.8) - px * 0.08;
+      dot(Math.min(cw - r - 2, Math.max(r + 2, cx)), Math.min(chh - r - 2, Math.max(r + 2, cy)), r);
+    }
+  }
+}
+function buildGlyph(ch, font, q, th, rd, fx = 'none', amt = 1) {
   const px = GLYPH_PX, f = fontStr({ font }, px);
   measureCtx.font = f;
   const w = measureCtx.measureText(ch).width;
-  const pad = Math.ceil(px * (th + rd * 2 + 0.3));
+  const extra = fx === 'none' ? 0 : fx === 'drip' ? 0.5 * amt : 0.25 * amt;
+  const pad = Math.ceil(px * (th + rd * 2 + 0.3 + extra));
   const cw = Math.ceil(w + pad * 2), chh = Math.ceil(px * 1.4 + pad * 2);
   const c = document.createElement('canvas'); c.width = cw; c.height = chh;
   const x = c.getContext('2d', { willReadFrequently: true });
   x.font = f; x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineJoin = 'round'; x.fillStyle = x.strokeStyle = '#000';
-  x.fillText(ch, cw / 2, chh / 2);
-  if (th > 0) { x.lineWidth = th * px * 2; x.strokeText(ch, cw / 2, chh / 2); }
+  if (fx === 'tube') {           // 輪郭だけをチューブに（ネオン管・中抜き文字）
+    x.lineWidth = px * (0.07 * amt + th * 2);
+    x.strokeText(ch, cw / 2, chh / 2);
+  } else {
+    x.fillText(ch, cw / 2, chh / 2);
+    if (th > 0) { x.lineWidth = th * px * 2; x.strokeText(ch, cw / 2, chh / 2); }
+    if (fx !== 'none') applyFx(x, cw, chh, px, fx, amt, [...ch].reduce((h, c2) => h * 31 + c2.codePointAt(0), 7));
+  }
   let src = c;
   if (rd > 0) {   // ぼかして二値化 → 角がまるくなる
     const c2 = document.createElement('canvas'); c2.width = cw; c2.height = chh;
@@ -766,9 +851,10 @@ function glyphGeometry(ch, L) {
   // 漢字は画数が多くすき間がつぶれやすいので、太らせ・丸めを弱く、格子を細かく
   const han = /\p{Script=Han}/u.test(ch);
   const q = Math.round(L.quality * (han ? 1.4 : 1)), th = L.thick * (han ? 0.25 : 1), rd = L.round * (han ? 0.25 : 1);
-  const key = [L.font, ch, q, th, rd].join('|');
+  const fx = L.fx || 'none', amt = L.fxAmt ?? 1;
+  const key = [L.font, ch, q, th, rd, fx, amt].join('|');
   if (glyphCache.has(key)) { const g = glyphCache.get(key); glyphCache.delete(key); glyphCache.set(key, g); return g; }
-  const g = buildGlyph(ch, L.font, q, th, rd);
+  const g = buildGlyph(ch, L.font, q, th, rd, fx, amt);
   glyphCache.set(key, g);
   if (glyphCache.size > 300) {
     const used = new Set();
@@ -843,7 +929,7 @@ function syncTexts(force = false) {
     alive.add(L.id);
     let o = textGroups.get(L.id);
     if (!o) { o = { group: new THREE.Group(), mat: makeMaterial(), sig: '' }; scene.add(o.group); textGroups.set(L.id, o); }
-    const sig = [L.text, L.font, L.quality, L.thick, L.round, L.spacing, L.lineH, L.curve, L.jitter, L.bounce, L.jitter3d].join('|');
+    const sig = [L.text, L.font, L.quality, L.thick, L.round, L.fx, L.fxAmt, L.spacing, L.lineH, L.curve, L.jitter, L.bounce, L.jitter3d].join('|');
     if (sig !== o.sig && (force || fontReady(L))) {
       o.group.clear();
       for (const g of layoutGlyphs(L)) {
@@ -1401,6 +1487,15 @@ function panelText() {
     const nm = list.children[state.selText]?.querySelector('.nm');
     if (nm) nm.textContent = L.text.replace(/\n/g, ' ') || '（空）';
   };
+  const styleBtns = Object.entries(TYPE_STYLES).map(([k, v]) => {
+    const m = MAT_PRESETS[v.mat], top = v.top || m.top, bot = v.bottom || m.bottom;
+    const b = btn('', () => { applyTypeStyle(L, k); renderPanel(); markDirty(); }, L.style === k ? 'on' : '');
+    b.append(el('b', { style: `font-family:"${v.font}";font-size:16px;background:linear-gradient(${top},${bot});-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:.4px rgba(0,0,0,.25)` }, v.ref),
+      el('div', { style: 'font-size:10px;color:var(--sub)' }, k));
+    b.style.minWidth = '74px';
+    return b;
+  });
+  body.append(sec('スタイル（ワンタッチで完成）', el('div', { class: 'btns' }, ...styleBtns)));
   body.append(sec('テキスト', el('div', { class: 'row' }, ta),
     select('フォント', FONTS.map(([group, items]) => ({ group, items })), () => L.font, v => { L.font = v; }),
     slider('大きさ', () => L.size, v => L.size = v, 0.03, 1.2, 0.005)));
@@ -1435,9 +1530,12 @@ function panelText() {
     slider('映り込み', () => L.env, v => L.env = v, 0, 3, 0.05),
     slider('透け', () => 1 - L.opacity, v => L.opacity = 1 - v, 0, 0.8, 0.01, pct)));
 
-  body.append(sec('形（ふくらみ）',
+  body.append(sec('形（ふくらみ・加工）',
     el('div', { class: 'btns' }, ...Object.entries(SHAPE_PRESETS).map(([k, v]) =>
       btn(k, () => { Object.assign(L, v); renderPanel(); markDirty(); }, L.thick === v.thick && L.round === v.round ? 'on' : ''))),
+    el('div', { class: 'btns', style: 'margin-top:6px' }, ...FX.map(([k, t]) =>
+      btn(t, () => { L.fx = k; renderPanel(); markDirty(); }, (L.fx || 'none') === k ? 'on' : ''))),
+    (L.fx || 'none') !== 'none' ? slider('加工の強さ', () => L.fxAmt ?? 1, v => L.fxAmt = v, 0.3, 2, 0.05, v => v.toFixed(2), true) : null,
     slider('太らせる', () => L.thick, v => L.thick = v, 0, 0.12, 0.0025, v => v.toFixed(3), true),
     slider('角の丸み', () => L.round, v => L.round = v, 0, 0.06, 0.002, v => v.toFixed(3), true),
     slider('ぷっくり', () => L.puff, v => L.puff = v, 0.15, 2, 0.05),
@@ -1505,7 +1603,7 @@ renderSlots();
 renderPanel();
 initFolder();
 // デバッグ・自動テスト用
-window.__studio = { state, models, textGroups, glyphCache, buildGlyph, fontReady, camera, controls, frameCamera, setAngle, placeText, faceCamera, defaultText, MAT_PRESETS, SHAPE_PRESETS, POSE_PRESETS, settleModel, renderPanel, markDirty };
+window.__studio = { state, models, textGroups, TYPE_STYLES, applyTypeStyle, glyphCache, buildGlyph, fontReady, camera, controls, frameCamera, setAngle, placeText, faceCamera, defaultText, MAT_PRESETS, SHAPE_PRESETS, POSE_PRESETS, settleModel, renderPanel, markDirty };
 })();
 </script>
 </body>
