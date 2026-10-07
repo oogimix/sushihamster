@@ -312,7 +312,7 @@ function defaultSettings() {
 function defaultText(text = 'よろしく') {
   return {
     id: Math.random().toString(36).slice(2, 10), text, font: 'Mochiy Pop One', visible: true,
-    size: 0.25, spacing: -0.03, lineH: 1.05, curve: 0, jitter: 0, bounce: 0, jitter3d: 0,
+    size: 0.25, spacing: -0.03, lineH: 1.05, curve: 0, upright: false, jitter: 0, bounce: 0, jitter3d: 0,
     ...SHAPE_PRESETS['ふつう'], fx: 'none', fxAmt: 1, puff: 1, quality: 64,
     pos: [0, 1, 0.3], rot: [0, 0, 0],
     mat: 'バルーン', trans: 0, stripes: 0, stripeColor: '#8a4dff', ...MAT_PRESETS['バルーン'], jpFont: '',
@@ -929,7 +929,7 @@ function layoutGlyphs(L) {
       const u = cur + ws[ci] / 2;
       cur += ws[ci] + L.spacing;
       let x = u, y = 0, r = 0;
-      if (Math.abs(kk) > 1e-6) { const t = u * kk; x = Math.sin(t) / kk; y = (1 - Math.cos(t)) / kk; r = t; }
+      if (Math.abs(kk) > 1e-6) { const t = u * kk; x = Math.sin(t) / kk; y = (1 - Math.cos(t)) / kk; if (!L.upright) r = t; }
       y += ly + L.bounce * (gi % 2 ? 1 : -1);
       r += L.jitter * hash(gi) * D2R;
       const j3 = L.jitter3d * D2R;
@@ -985,7 +985,7 @@ function syncTexts(force = false) {
     alive.add(L.id);
     let o = textGroups.get(L.id);
     if (!o) { o = { group: new THREE.Group(), mat: makeMaterial(), sig: '' }; scene.add(o.group); textGroups.set(L.id, o); }
-    const sig = [L.text, L.font, L.jpFont, L.quality, L.thick, L.round, L.fx, L.fxAmt, L.spacing, L.lineH, L.curve, L.jitter, L.bounce, L.jitter3d].join('|');
+    const sig = [L.text, L.font, L.jpFont, L.upright, L.quality, L.thick, L.round, L.fx, L.fxAmt, L.spacing, L.lineH, L.curve, L.jitter, L.bounce, L.jitter3d].join('|');
     if (sig !== o.sig && (force || fontReady(L))) {
       o.group.clear();
       for (const g of layoutGlyphs(L)) {
@@ -1607,6 +1607,7 @@ function panelText() {
     slider('字間', () => L.spacing, v => L.spacing = v, -0.4, 0.6, 0.01),
     slider('行間', () => L.lineH, v => L.lineH = v, 0.6, 2, 0.05),
     slider('アーチ', () => L.curve, v => L.curve = v, -150, 150, 1, v => v + '°'),
+    check('アーチでも文字は立てたまま', () => L.upright, v => L.upright = v),
     slider('ゆらぎ', () => L.jitter, v => L.jitter = v, 0, 30, 0.5, v => v + '°'),
     slider('はずみ', () => L.bounce, v => L.bounce = v, 0, 0.3, 0.005),
     slider('3Dばらけ', () => L.jitter3d, v => L.jitter3d = v, 0, 45, 1, v => v + '°')));
