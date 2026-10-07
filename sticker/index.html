@@ -483,6 +483,7 @@ async function loadModel(url, rawName) {
   applyModelData(m);
   if (vrm) settleModel(m, 30);
   setupNeta(m);
+  applyModelEnv(m);
   document.getElementById('dropHint').style.display = 'none';
   if (!saved) {
     frameCamera('full');   // 新しく出したキャラが画面に入るように
@@ -605,6 +606,25 @@ stageWrap.addEventListener('dragover', e => { e.preventDefault(); stageWrap.clas
 stageWrap.addEventListener('dragleave', () => stageWrap.classList.remove('dragover'));
 stageWrap.addEventListener('drop', e => { e.preventDefault(); stageWrap.classList.remove('dragover'); loadFiles(e.dataTransfer.files); });
 
+// モデルごとの映り込み調整：元ビューアと同じ反射の強さにする（skip に合う材質＝本体は触らない）
+const MODEL_ENV = {
+  // ローラースケートだけ。元ビューアはトーン補正なし＋反射100%なので、それに合わせる。ボディ色・質感は変えない
+  vibestar: { skip: /^tripo_node/, intensity: 1.0, toneMapped: false },
+};
+function applyModelEnv(m) {
+  const cfg = MODEL_ENV[m.name];
+  if (!cfg) return;
+  m.obj.traverse(o => {
+    if (!o.isMesh) return;
+    for (const mt of Array.isArray(o.material) ? o.material : [o.material]) {
+      if (!mt || cfg.skip.test(mt.name || '')) continue;
+      mt.envMap = scene.environment;
+      mt.envMapIntensity = cfg.intensity;
+      if (cfg.toneMapped === false) mt.toneMapped = false;
+      mt.needsUpdate = true;
+    }
+  });
+}
 // ===== おすしネタ切り替え（sushifairy） =====
 const NETA_SCRIPTS = { sushifairy: 'models/sushifairy_neta.js' };
 function loadScript(src) {
