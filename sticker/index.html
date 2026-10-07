@@ -185,21 +185,21 @@ const MAT_PRESETS = {
 const TYPE_STYLES = {
   'ホロバルーン':   { ref: 'NO',       font: 'Fredoka', thick: 0.035, round: 0.02, fx: 'none', puff: 1.1, spacing: -0.06, mat: 'ホログラム' },
   'ブルーホロ':     { ref: 'OK',       font: 'Fredoka', thick: 0.035, round: 0.02, fx: 'none', puff: 1.1, spacing: -0.06, mat: 'ブルーホロ' },
-  'ぷっくりピンク': { ref: 'Vibes',    font: 'Fredoka', thick: 0.05, round: 0.025, fx: 'none', puff: 1, spacing: -0.08, mat: 'バルーン' },
+  'ぷっくりピンク': { ref: 'Vibes',    jpFont: 'Mochiy Pop One', font: 'Fredoka', thick: 0.05, round: 0.025, fx: 'none', puff: 1, spacing: -0.08, mat: 'バルーン' },
   'もこもこ雲':     { ref: 'GOOD BYE', font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'cloud', fxAmt: 1, puff: 1, spacing: 0.02, mat: 'くも' },
-  'リキッドクローム': { ref: 'Tears',  font: 'Caveat', thick: 0.035, round: 0.02, fx: 'none', puff: 1.2, spacing: -0.02, mat: 'クローム' },
+  'リキッドクローム': { ref: 'Tears',  jpFont: 'Yusei Magic', font: 'Caveat', thick: 0.035, round: 0.02, fx: 'none', puff: 1.2, spacing: -0.02, mat: 'クローム' },
   'ネオンチューブ': { ref: 'YO',       font: 'Fredoka', thick: 0, round: 0.01, fx: 'tube', fxAmt: 1, puff: 1, spacing: -0.04, mat: 'ネオン' },
-  'したたり':       { ref: 'Yo',       font: 'Gochi Hand', thick: 0.03, round: 0.015, fx: 'drip', fxAmt: 1, puff: 0.9, spacing: 0, mat: 'ミント',
+  'したたり':       { ref: 'Yo',       jpFont: 'Yusei Magic', font: 'Gochi Hand', thick: 0.03, round: 0.015, fx: 'drip', fxAmt: 1, puff: 0.9, spacing: 0, mat: 'ミント',
                       top: '#c8f7ee', bottom: '#5fd3c2', rough: 0.45, coat: 0.3 },
   'ぷるぷる泡':     { ref: 'CHEERS',   font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'bubble', fxAmt: 1, puff: 1, spacing: -0.02, mat: 'ゼリー' },
-  'とろーんミント': { ref: 'PARTY',    font: 'Caveat', thick: 0.055, round: 0.03, fx: 'none', puff: 1, spacing: 0.04, mat: 'ミント', jitter3d: 15, bounce: 0.08 },
+  'とろーんミント': { ref: 'PARTY',    jpFont: 'Yusei Magic', font: 'Caveat', thick: 0.055, round: 0.03, fx: 'none', puff: 1, spacing: 0.04, mat: 'ミント', jitter3d: 15, bounce: 0.08 },
   '和文ポップ':     { ref: '発射',     font: 'Mochiy Pop One', thick: 0.015, round: 0.012, fx: 'none', puff: 1, spacing: -0.03, mat: 'オレンジ' },
   'パステル':       { ref: 'CHU',      font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'none', puff: 1, spacing: -0.02, mat: 'バルーン',
                       top: '#ffe0f0', bottom: '#f5a3cf', rough: 0.5, coat: 0.3 },
 };
 function applyTypeStyle(L, name) {
   const { ref, mat, ...st } = TYPE_STYLES[name];
-  Object.assign(L, { jitter3d: 0, bounce: 0, fxAmt: 1 }, MAT_PRESETS[mat], { mat, style: name }, st);
+  Object.assign(L, { jitter3d: 0, bounce: 0, fxAmt: 1, jpFont: '' }, MAT_PRESETS[mat], { mat, style: name }, st);
 }
 const FX = [['none', 'なし'], ['cloud', 'くも'], ['drip', 'したたり'], ['bubble', '泡'], ['tube', 'チューブ']];
 const SWATCHES = ['#ff5c98', '#ff8fb8', '#ff3b3b', '#ff9418', '#ffd23f', '#a6e34a', '#3ccf8e', '#2ec4d6', '#1b9be6', '#5b6cff',
@@ -298,7 +298,7 @@ function defaultText(text = 'よろしく') {
     size: 0.25, spacing: -0.03, lineH: 1.05, curve: 0, jitter: 0, bounce: 0, jitter3d: 0,
     ...SHAPE_PRESETS['ふつう'], fx: 'none', fxAmt: 1, puff: 1, quality: 64,
     pos: [0, 1, 0.3], rot: [0, 0, 0],
-    mat: 'バルーン', ...MAT_PRESETS['バルーン'],
+    mat: 'バルーン', ...MAT_PRESETS['バルーン'], jpFont: '',
   };
 }
 // 古い（2D文字の）保存データや欠けた項目を補う
@@ -643,20 +643,47 @@ function studioEnv() {
 }
 const envMap = studioEnv();
 
-function fontStr(L, px = GLYPH_PX) {
-  return `${FONT_WEIGHT[L.font] || 400} ${px}px "${L.font}", "Hiragino Maru Gothic ProN", sans-serif`;
+// 英字フォントには日本語の字がないので、かな・カナ・漢字は相性のいい日本語フォントで作る
+const JP_FONT_LIST = FONTS.find(g => g[0] === '日本語')[1];
+const JP_PAIR = {
+  'Modak': 'Mochiy Pop One', 'Bagel Fat One': 'Mochiy Pop One', 'Titan One': 'Mochiy Pop One', 'Chewy': 'Mochiy Pop One',
+  'Fredoka': 'M PLUS Rounded 1c', 'Baloo 2': 'M PLUS Rounded 1c', 'Sniglet': 'Zen Maru Gothic', 'Lilita One': 'Dela Gothic One',
+  'Rubik Bubbles': 'Mochiy Pop One', 'Pacifico': 'Hachi Maru Pop', 'Caveat': 'Yusei Magic', 'Gochi Hand': 'Yusei Magic',
+};
+const isLatin = ch => { const c = ch.codePointAt(0); return c < 0x250 || (c >= 0x2000 && c < 0x2070); };
+function jpFontOf(L) { return L.jpFont || JP_PAIR[L.font] || 'Mochiy Pop One'; }
+function fontFor(L, ch) {
+  if (JP_FONT_LIST.includes(L.font)) return L.font;
+  return isLatin(ch) ? L.font : jpFontOf(L);
+}
+function fontSpec(font, px = GLYPH_PX) {
+  return `${FONT_WEIGHT[font] || 400} ${px}px "${font}", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif`;
+}
+// 使うフォントごとに、その文字だけを読み込む（日本語フォントは必要な字だけ配信される）
+function fontGroups(L) {
+  const m = new Map();
+  for (const ch of (L.text || '')) { if (!ch.trim()) continue; const f = fontFor(L, ch); m.set(f, (m.get(f) || '') + ch); }
+  if (!m.size) m.set(L.font, 'A');
+  return m;
 }
 function ensureFonts(L) {
-  const k = fontStr(L) + '|' + L.text;
-  if (fontState.get(k) === 'done') return Promise.resolve();
-  const p = document.fonts.load(fontStr(L), L.text || 'A').catch(() => {}).then(() => fontState.set(k, 'done'));
-  if (!fontState.has(k)) fontState.set(k, p);
-  return p;
+  return Promise.all([...fontGroups(L)].map(([f, t]) => {
+    const k = f + '|' + t;
+    if (fontState.get(k) === 'done') return null;
+    let p = fontState.get(k);
+    if (!p) { p = document.fonts.load(fontSpec(f), t).catch(() => {}).then(() => fontState.set(k, 'done')); fontState.set(k, p); }
+    return p;
+  }));
 }
 function fontReady(L) {
-  if (document.fonts.check(fontStr(L), L.text || 'A')) return true;
-  ensureFonts(L);
-  return fontState.get(fontStr(L) + '|' + L.text) === 'done';   // 読み込み失敗時は代わりのフォントで作る
+  let ok = true;
+  for (const [f, t] of fontGroups(L)) {
+    // 読み込みに失敗したときは代わりのフォントで作る
+    if (document.fonts.check(fontSpec(f), t) || fontState.get(f + '|' + t) === 'done') continue;
+    ok = false;
+  }
+  if (!ok) ensureFonts(L);
+  return ok;
 }
 function hash(i) { const x = Math.sin(i * 12.9898 + 4.1414) * 43758.5453; return (x - Math.floor(x)) * 2 - 1; }
 
@@ -718,7 +745,7 @@ function applyFx(x, cw, chh, px, fx, amt, seed) {
   }
 }
 function buildGlyph(ch, font, q, th, rd, fx = 'none', amt = 1) {
-  const px = GLYPH_PX, f = fontStr({ font }, px);
+  const px = GLYPH_PX, f = fontSpec(font, px);
   measureCtx.font = f;
   const w = measureCtx.measureText(ch).width;
   const extra = fx === 'none' ? 0 : fx === 'drip' ? 0.5 * amt : 0.25 * amt;
@@ -852,9 +879,10 @@ function glyphGeometry(ch, L) {
   const han = /\p{Script=Han}/u.test(ch);
   const q = Math.round(L.quality * (han ? 1.4 : 1)), th = L.thick * (han ? 0.25 : 1), rd = L.round * (han ? 0.25 : 1);
   const fx = L.fx || 'none', amt = L.fxAmt ?? 1;
-  const key = [L.font, ch, q, th, rd, fx, amt].join('|');
+  const font = fontFor(L, ch);
+  const key = [font, ch, q, th, rd, fx, amt].join('|');
   if (glyphCache.has(key)) { const g = glyphCache.get(key); glyphCache.delete(key); glyphCache.set(key, g); return g; }
-  const g = buildGlyph(ch, L.font, q, th, rd, fx, amt);
+  const g = buildGlyph(ch, font, q, th, rd, fx, amt);
   glyphCache.set(key, g);
   if (glyphCache.size > 300) {
     const used = new Set();
@@ -869,14 +897,13 @@ function glyphGeometry(ch, L) {
 }
 // 並び（em 単位）：字間・行間・アーチ・ゆらぎ・はずみ・3Dゆらぎ
 function layoutGlyphs(L) {
-  measureCtx.font = fontStr(L, 100);
   const lines = (L.text || '').split('\n');
   const out = [];
   const k = (L.curve || 0) * D2R;
   let gi = 0;
   lines.forEach((line, li) => {
     const chars = [...line];
-    const ws = chars.map(ch => measureCtx.measureText(ch).width / 100);
+    const ws = chars.map(ch => { measureCtx.font = fontSpec(fontFor(L, ch), 100); return measureCtx.measureText(ch).width / 100; });
     const total = ws.reduce((s, v) => s + v, 0) + L.spacing * Math.max(0, chars.length - 1);
     const kk = total > 0 ? k / total : 0;
     let cur = -total / 2;
@@ -929,7 +956,7 @@ function syncTexts(force = false) {
     alive.add(L.id);
     let o = textGroups.get(L.id);
     if (!o) { o = { group: new THREE.Group(), mat: makeMaterial(), sig: '' }; scene.add(o.group); textGroups.set(L.id, o); }
-    const sig = [L.text, L.font, L.quality, L.thick, L.round, L.fx, L.fxAmt, L.spacing, L.lineH, L.curve, L.jitter, L.bounce, L.jitter3d].join('|');
+    const sig = [L.text, L.font, L.jpFont, L.quality, L.thick, L.round, L.fx, L.fxAmt, L.spacing, L.lineH, L.curve, L.jitter, L.bounce, L.jitter3d].join('|');
     if (sig !== o.sig && (force || fontReady(L))) {
       o.group.clear();
       for (const g of layoutGlyphs(L)) {
@@ -1497,7 +1524,9 @@ function panelText() {
   });
   body.append(sec('スタイル（ワンタッチで完成）', el('div', { class: 'btns' }, ...styleBtns)));
   body.append(sec('テキスト', el('div', { class: 'row' }, ta),
-    select('フォント', FONTS.map(([group, items]) => ({ group, items })), () => L.font, v => { L.font = v; }),
+    select('フォント', FONTS.map(([group, items]) => ({ group, items })), () => L.font, v => { L.font = v; renderPanel(); }),
+    JP_FONT_LIST.includes(L.font) ? null : select('かな・漢字', [['', `おまかせ（${JP_PAIR[L.font] || 'Mochiy Pop One'}）`], ...JP_FONT_LIST.map(f => [f, f])],
+      () => L.jpFont || '', v => { L.jpFont = v; }),
     slider('大きさ', () => L.size, v => L.size = v, 0.03, 1.2, 0.005)));
 
   const matBtns = Object.entries(MAT_PRESETS).map(([k, v]) => {
