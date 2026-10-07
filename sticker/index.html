@@ -8,7 +8,7 @@
 <link rel="icon" href="../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Rampart+One&family=Reggae+One&family=RocknRoll+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kiwi+Maru:wght@500&family=Hachi+Maru+Pop&family=Yusei+Magic&family=DotGothic16&family=Train+One&family=Stick&family=Potta+One&family=Darumadrop+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Modak&family=Bagel+Fat+One&family=Titan+One&family=Chewy&family=Fredoka:wght@700&family=Baloo+2:wght@800&family=Sniglet:wght@800&family=Lilita+One&family=Rubik+Bubbles&family=Pacifico&family=Caveat:wght@700&family=Gochi+Hand&family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Potta+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kosugi+Maru&family=Hachi+Maru+Pop&family=Yusei+Magic&family=Darumadrop+One&family=RocknRoll+One&family=Kiwi+Maru:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#fff4f8; --panel:#ffffff; --ink:#4a2a3a; --sub:#9a7a8a; --line:#f3d2df;
@@ -159,21 +159,35 @@ const PRESETS = [
   { name: 'sushifairy',   url: '../game/vrm/shin_sushifairy.vrm' },
 ];
 
+// 3D文字のフォント（ふくらませる前提で、太め・丸めのものを中心に）
 const FONTS = [
-  'Mochiy Pop One', 'Dela Gothic One', 'Potta One', 'Rampart One', 'Reggae One', 'RocknRoll One',
-  'M PLUS Rounded 1c', 'Zen Maru Gothic', 'Kiwi Maru', 'Hachi Maru Pop', 'Darumadrop One',
-  'Yusei Magic', 'Train One', 'DotGothic16', 'Stick',
+  ['英字：ぷっくり', ['Modak', 'Bagel Fat One', 'Titan One', 'Chewy', 'Fredoka', 'Baloo 2', 'Sniglet', 'Lilita One', 'Rubik Bubbles']],
+  ['英字：手書き', ['Pacifico', 'Caveat', 'Gochi Hand']],
+  ['日本語', ['Mochiy Pop One', 'Dela Gothic One', 'Potta One', 'M PLUS Rounded 1c', 'Zen Maru Gothic', 'Kosugi Maru',
+    'Hachi Maru Pop', 'Yusei Magic', 'Darumadrop One', 'RocknRoll One', 'Kiwi Maru']],
 ];
+const FONT_WEIGHT = { 'Fredoka': 700, 'Baloo 2': 800, 'Sniglet': 800, 'Caveat': 700, 'M PLUS Rounded 1c': 900, 'Zen Maru Gothic': 900, 'Kiwi Maru': 500 };
 
-const TEXT_STYLES = {
-  'ポップピンク': { top: '#ffe0ec', bottom: '#ff4f93', edge: '#c2185b', depthColor: '#9c0f47', outline: '#ffffff' },
-  'すしレッド':   { top: '#fff1a8', bottom: '#ff5a2c', edge: '#a8321b', depthColor: '#6e1d0e', outline: '#ffffff' },
-  'サイダー':     { top: '#e6fcff', bottom: '#2fb6ff', edge: '#1565c0', depthColor: '#0d3477', outline: '#ffffff' },
-  'メロン':       { top: '#f6ffd2', bottom: '#5fd23c', edge: '#2e7d32', depthColor: '#174d1a', outline: '#ffffff' },
-  'ゴールド':     { top: '#fffbd6', bottom: '#ffae00', edge: '#8d5a00', depthColor: '#5e3a00', outline: '#ffffff' },
-  'グレープ':     { top: '#f5e2ff', bottom: '#9b4dff', edge: '#5e1fa8', depthColor: '#35106a', outline: '#ffffff' },
-  'ミルク':       { top: '#ffffff', bottom: '#ffe9f1', edge: '#ff6fa3', depthColor: '#ff6fa3', outline: '#5a2a3e' },
-  'ブラック':     { top: '#5a5a66', bottom: '#111116', edge: '#000000', depthColor: '#ff4f93', outline: '#ffffff' },
+// 素材プリセット（top/bottom：上下グラデ、rough：ざらつき、metal：金属感、coat：表面コート、irid：虹色、sheen：ふわふわ、env：映り込み）
+const MAT_PRESETS = {
+  'バルーン':     { top: '#ffc0da', bottom: '#ff5c98', rough: 0.22, metal: 0, coat: 1, irid: 0, sheen: 0, opacity: 1, env: 1 },
+  'ホログラム':   { top: '#ffd9ea', bottom: '#ff7eab', rough: 0.12, metal: 0.15, coat: 1, irid: 1, sheen: 0, opacity: 1, env: 1.3 },
+  'ブルーホロ':   { top: '#dfe6ff', bottom: '#8d9dff', rough: 0.12, metal: 0.15, coat: 1, irid: 1, sheen: 0, opacity: 1, env: 1.3 },
+  'クローム':     { top: '#f6e0ff', bottom: '#b8a2ff', rough: 0.08, metal: 0.75, coat: 1, irid: 1, sheen: 0, opacity: 1, env: 1.6 },
+  'ゼリー':       { top: '#effcff', bottom: '#45c3ff', rough: 0.04, metal: 0, coat: 1, irid: 0.3, sheen: 0, opacity: 0.82, env: 1.4 },
+  'くも':         { top: '#ffffff', bottom: '#e6eaf3', rough: 0.65, metal: 0, coat: 0.15, irid: 0, sheen: 1, opacity: 1, env: 0.9 },
+  'ミント':       { top: '#d4fae6', bottom: '#86dcb6', rough: 0.3, metal: 0, coat: 0.7, irid: 0, sheen: 0, opacity: 1, env: 1 },
+  'オレンジ':     { top: '#ffd76e', bottom: '#ff9418', rough: 0.28, metal: 0, coat: 0.8, irid: 0, sheen: 0, opacity: 1, env: 1 },
+  'ネオン':       { top: '#ffa6ea', bottom: '#d6007f', rough: 0.1, metal: 0.5, coat: 1, irid: 0.6, sheen: 0, opacity: 1, env: 1.3 },
+  'ソーダ':       { top: '#8fe3ff', bottom: '#1b9be6', rough: 0.18, metal: 0, coat: 1, irid: 0, sheen: 0, opacity: 1, env: 1.1 },
+};
+const SWATCHES = ['#ff5c98', '#ff8fb8', '#ff3b3b', '#ff9418', '#ffd23f', '#a6e34a', '#3ccf8e', '#2ec4d6', '#1b9be6', '#5b6cff',
+  '#9b5cff', '#d6007f', '#8a5a44', '#ffffff', '#b8bcc8', '#2b2b35'];
+const SHAPE_PRESETS = {
+  'くっきり': { thick: 0, round: 0 },
+  'ふつう':   { thick: 0.01, round: 0.012 },
+  'もちもち': { thick: 0.025, round: 0.02 },
+  'とろーん': { thick: 0.05, round: 0.03 },
 };
 
 const BONES = [
@@ -255,14 +269,21 @@ const loader = new GLTFLoader();
 loader.register(p => new VRMLoaderPlugin(p));
 
 function defaultSettings() {
-  return { outlineW: 6, outlineColor: '#ffffff', amb: 0.9, key: 1.0, keyAz: 30, keyEl: 40, shadow: true };
+  return { outlineW: 0, outlineColor: '#ffffff', amb: 0.9, key: 1.0, keyAz: 30, keyEl: 40, shadow: true };
 }
 function defaultText(text = 'よろしく') {
   return {
-    text, font: 'Mochiy Pop One', size: 62, spacing: 0, lineH: 1.1, x: W / 2, y: H - 60, rot: -4,
-    curve: 0, jitter: 5, bounce: 3, depth: 7, depthAngle: 70, edgeW: 2.5, outlineW: 6, highlight: 0.55,
-    shadow: true, behind: false, style: 'ポップピンク', ...TEXT_STYLES['ポップピンク'],
+    id: Math.random().toString(36).slice(2, 10), text, font: 'Mochiy Pop One', visible: true,
+    size: 0.25, spacing: -0.03, lineH: 1.05, curve: 0, jitter: 0, bounce: 0, jitter3d: 0,
+    ...SHAPE_PRESETS['ふつう'], puff: 1, quality: 64,
+    pos: [0, 1, 0.3], rot: [0, 0, 0],
+    mat: 'バルーン', ...MAT_PRESETS['バルーン'],
   };
+}
+// 古い（2D文字の）保存データや欠けた項目を補う
+function normalizeText(t) {
+  if (!t.pos) return defaultText(t.text || 'テキスト');
+  return { ...defaultText(), ...t };
 }
 function defaultModelData(i) {
   return { pos: [i === 0 ? 0 : (i % 2 ? 1 : -1) * Math.ceil(i / 2) * 0.8, 0, 0], rotY: 0, scale: 1, visible: true,
@@ -319,7 +340,10 @@ async function loadModel(url, rawName) {
   applyModelData(m);
   if (vrm) settleModel(m, 30);
   document.getElementById('dropHint').style.display = 'none';
-  if (!saved) frameCamera('full');   // 新しく出したキャラが画面に入るように
+  if (!saved) {
+    frameCamera('full');   // 新しく出したキャラが画面に入るように
+    if (models.length === 1) state.texts.forEach((L, i) => placeText(L, i ? -0.6 : 0.55));
+  }
   setStatus(`${name} を読み込みました${vrm ? '（VRM）' : '（GLB）'}`);
   renderPanel();
   markDirty();
@@ -568,38 +592,209 @@ function outlined(src, w, color) {
   return outlineCanvas;
 }
 
-// ===== 3D風文字 =====
+// ===== ぷっくり3D文字 =====
+// 文字を画像化 → 形の内側でポアソン方程式 ∇²h = -1 を解き、z = √(2h) にすると
+// 線の断面がまんまるの「風船」になる（漢字でも筆記体でも同じ方法でふくらむ）
+const GLYPH_PX = 192;
 const measureCtx = document.createElement('canvas').getContext('2d');
-const faceCanvas = document.createElement('canvas'); faceCanvas.width = CW; faceCanvas.height = CH;
-const faceCtx = faceCanvas.getContext('2d');
-const fontLoaded = new Set();
-function fontStr(L) {
-  const wt = ['M PLUS Rounded 1c', 'Zen Maru Gothic'].includes(L.font) ? 900 : 400;
-  return `${wt} ${L.size}px "${L.font}", "Hiragino Maru Gothic ProN", sans-serif`;
+const glyphCache = new Map();
+const fontState = new Map();
+const pmrem = new THREE.PMREMGenerator(renderer);
+// 映り込み用のスタジオ（細長いソフトボックス＋ほんのり色付きの反射板）→ くっきりしたツヤが出る
+function studioEnv() {
+  const env = new THREE.Scene();
+  const room = new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16), new THREE.MeshBasicMaterial({ side: THREE.BackSide, vertexColors: true }));
+  const cols = [], pa = room.geometry.attributes.position;
+  for (let i = 0; i < pa.count; i++) { const t = (pa.getY(i) / 10 + 1) / 2; const v = 0.12 + 0.5 * t * t; cols.push(v, v, v * 1.04); }
+  room.geometry.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+  env.add(room);
+  const panel = (w, h, pos, rgb, k) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(...rgb).multiplyScalar(k), side: THREE.DoubleSide }));
+    m.position.set(...pos); m.lookAt(0, 0, 0); env.add(m);
+  };
+  panel(6, 2.2, [0, 6, 2], [1, 1, 1], 7);          // 上のソフトボックス
+  panel(1.2, 7, [-6, 1, 3], [1, 1, 1], 6);         // 左のストリップ
+  panel(1.2, 7, [6, 1, 3], [1, 1, 1], 4);          // 右のストリップ
+  panel(3, 3, [-3, -2, 6], [0.55, 0.75, 1], 2.5);  // 左下：水色の反射
+  panel(3, 3, [4, -1, -5], [1, 0.55, 0.8], 2.5);   // 奥：ピンクの反射
+  panel(4, 2, [2, 3, 7], [1, 1, 1], 2);            // 正面上
+  return pmrem.fromScene(env, 0.02).texture;
 }
-function ensureFont(L) {
-  const key = fontStr(L) + '|' + L.text;
-  if (fontLoaded.has(key)) return Promise.resolve();
-  fontLoaded.add(key);
-  return document.fonts.load(fontStr(L), L.text || 'あ').catch(() => {});
+const envMap = studioEnv();
+
+function fontStr(L, px = GLYPH_PX) {
+  return `${FONT_WEIGHT[L.font] || 400} ${px}px "${L.font}", "Hiragino Maru Gothic ProN", sans-serif`;
+}
+function ensureFonts(L) {
+  const k = fontStr(L) + '|' + L.text;
+  if (fontState.get(k) === 'done') return Promise.resolve();
+  const p = document.fonts.load(fontStr(L), L.text || 'A').catch(() => {}).then(() => fontState.set(k, 'done'));
+  if (!fontState.has(k)) fontState.set(k, p);
+  return p;
+}
+function fontReady(L) {
+  if (document.fonts.check(fontStr(L), L.text || 'A')) return true;
+  ensureFonts(L);
+  return fontState.get(fontStr(L) + '|' + L.text) === 'done';   // 読み込み失敗時は代わりのフォントで作る
 }
 function hash(i) { const x = Math.sin(i * 12.9898 + 4.1414) * 43758.5453; return (x - Math.floor(x)) * 2 - 1; }
 
-function layoutText(L) {
-  measureCtx.font = fontStr(L);
+function buildGlyph(ch, font, q, th, rd) {
+  const px = GLYPH_PX, f = fontStr({ font }, px);
+  measureCtx.font = f;
+  const w = measureCtx.measureText(ch).width;
+  const pad = Math.ceil(px * (th + rd * 2 + 0.3));
+  const cw = Math.ceil(w + pad * 2), chh = Math.ceil(px * 1.4 + pad * 2);
+  const c = document.createElement('canvas'); c.width = cw; c.height = chh;
+  const x = c.getContext('2d', { willReadFrequently: true });
+  x.font = f; x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineJoin = 'round'; x.fillStyle = x.strokeStyle = '#000';
+  x.fillText(ch, cw / 2, chh / 2);
+  if (th > 0) { x.lineWidth = th * px * 2; x.strokeText(ch, cw / 2, chh / 2); }
+  let src = c;
+  if (rd > 0) {   // ぼかして二値化 → 角がまるくなる
+    const c2 = document.createElement('canvas'); c2.width = cw; c2.height = chh;
+    const x2 = c2.getContext('2d', { willReadFrequently: true });
+    x2.filter = `blur(${rd * px}px)`; x2.drawImage(c, 0, 0); x2.filter = 'none';
+    const id = x2.getImageData(0, 0, cw, chh), d = id.data;
+    for (let i = 3; i < d.length; i += 4) d[i] = d[i] >= 128 ? 255 : 0;
+    x2.putImageData(id, 0, 0);
+    src = c2;
+  }
+  // 計算用の格子（1em あたり q マス）
+  const sc = q / px;
+  const gw = Math.max(4, Math.ceil(cw * sc)), gh = Math.max(4, Math.ceil(chh * sc));
+  const gc = document.createElement('canvas'); gc.width = gw; gc.height = gh;
+  const gx = gc.getContext('2d', { willReadFrequently: true });
+  gx.imageSmoothingQuality = 'high';
+  gx.drawImage(src, 0, 0, gw, gh);
+  const a = gx.getImageData(0, 0, gw, gh).data;
+  const N = gw * gh, cov = new Float32Array(N), inside = new Uint8Array(N);
+  const cellList = [];
+  for (let y = 0; y < gh; y++) for (let xx = 0; xx < gw; xx++) {
+    const i = y * gw + xx;
+    cov[i] = a[i * 4 + 3] / 255;
+    if (cov[i] >= 0.5 && xx > 0 && y > 0 && xx < gw - 1 && y < gh - 1) { inside[i] = 1; cellList.push(i); }
+  }
+  if (!cellList.length) return null;
+  const cells = Int32Array.from(cellList);
+  // ポアソン方程式（SOR法）。ふちの位置は coverage からマス未満の精度で求める（段々のガタつき防止）
+  const h = new Float32Array(N), den = new Float32Array(cells.length);
+  for (let k = 0; k < cells.length; k++) {
+    const i = cells[k];
+    let d = 4;
+    for (const j of [i - 1, i + 1, i - gw, i + gw]) {
+      if (inside[j]) continue;
+      const th = Math.min(1, Math.max(0.08, (cov[i] - 0.5) / Math.max(1e-4, cov[i] - cov[j])));
+      d -= 1 - 1 / th;
+    }
+    den[k] = d;
+  }
+  for (let it = 0; it < 3000; it++) {
+    let md = 0;
+    for (let k = 0; k < cells.length; k++) {
+      const i = cells[k];
+      const dv = (h[i - 1] + h[i + 1] + h[i - gw] + h[i + gw] + 1) / den[k] - h[i];
+      h[i] += 1.9 * dv;
+      const ad = dv < 0 ? -dv : dv;
+      if (ad > md) md = ad;
+    }
+    if (md < 1e-3) break;
+  }
+  // メッシュ化（マーチングスクエア）：内側のマスは高さ √(2h)、輪郭上の点は z=0 で表裏共有
+  const em = 1 / q, ox = cw * sc / 2, oy = chh * sc / 2;
+  const pos = [];
+  const front = new Int32Array(N).fill(-1), back = new Int32Array(N).fill(-1);
+  const edgeV = new Map();
+  const cellV = (i, isBack) => {
+    const arr = isBack ? back : front;
+    if (arr[i] < 0) {
+      const z = Math.sqrt(2 * h[i]) * em;
+      arr[i] = pos.length / 3;
+      pos.push((i % gw + 0.5 - ox) * em, (oy - (Math.floor(i / gw) + 0.5)) * em, isBack ? -z : z);
+    }
+    return arr[i];
+  };
+  const edgeVert = (p0, p1) => {
+    const key = p0 < p1 ? p0 * 2 + (p1 - p0 === 1 ? 0 : 1) : p1 * 2 + (p0 - p1 === 1 ? 0 : 1);
+    let v = edgeV.get(key);
+    if (v === undefined) {
+      const [ii, oo] = inside[p0] ? [p0, p1] : [p1, p0];
+      const t = Math.min(1, Math.max(0, (cov[ii] - 0.5) / Math.max(1e-4, cov[ii] - cov[oo])));
+      const ix = ii % gw, iy = Math.floor(ii / gw), oxx = oo % gw, oyy = Math.floor(oo / gw);
+      const gx_ = ix + (oxx - ix) * t + 0.5, gy_ = iy + (oyy - iy) * t + 0.5;
+      v = pos.length / 3;
+      pos.push((gx_ - ox) * em, (oy - gy_) * em, 0);
+      edgeV.set(key, v);
+    }
+    return v;
+  };
+  const idx = [];
+  const emit = poly => {   // poly: [{c: セル番号} | {e: 頂点番号}]（3D で反時計回り）
+    const F = poly.map(p => p.c !== undefined ? cellV(p.c, false) : p.e);
+    const B = poly.map(p => p.c !== undefined ? cellV(p.c, true) : p.e);
+    for (let k = 1; k < F.length - 1; k++) idx.push(F[0], F[k], F[k + 1], B[0], B[k + 1], B[k]);
+  };
+  for (let y = 0; y < gh - 1; y++) for (let xx = 0; xx < gw - 1; xx++) {
+    const A = y * gw + xx, Bc = A + 1, C = A + gw, D = C + 1;   // A 左上, Bc 右上, C 左下, D 右下
+    const mask = inside[A] | inside[C] << 1 | inside[D] << 2 | inside[Bc] << 3;
+    if (!mask) continue;
+    const ring = [A, C, D, Bc];   // 3D で反時計回り
+    if (mask === 5 || mask === 10) {   // 対角だけ内側：くっつけずに2つの三角形に分ける
+      for (let k = 0; k < 4; k++) {
+        if (!inside[ring[k]]) continue;
+        const prev = ring[(k + 3) % 4], next = ring[(k + 1) % 4];
+        emit([{ c: ring[k] }, { e: edgeVert(ring[k], next) }, { e: edgeVert(prev, ring[k]) }]);
+      }
+      continue;
+    }
+    const poly = [];
+    for (let k = 0; k < 4; k++) {
+      const cur = ring[k], nxt = ring[(k + 1) % 4];
+      if (inside[cur]) poly.push({ c: cur });
+      if (inside[cur] !== inside[nxt]) poly.push({ e: edgeVert(cur, nxt) });
+    }
+    if (poly.length >= 3) emit(poly);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setIndex(idx);
+  geo.computeVertexNormals();
+  geo.computeBoundingBox(); geo.computeBoundingSphere();
+  return geo;
+}
+function glyphGeometry(ch, L) {
+  // 漢字は画数が多くすき間がつぶれやすいので、太らせ・丸めを弱く、格子を細かく
+  const han = /\p{Script=Han}/u.test(ch);
+  const q = Math.round(L.quality * (han ? 1.4 : 1)), th = L.thick * (han ? 0.25 : 1), rd = L.round * (han ? 0.25 : 1);
+  const key = [L.font, ch, q, th, rd].join('|');
+  if (glyphCache.has(key)) { const g = glyphCache.get(key); glyphCache.delete(key); glyphCache.set(key, g); return g; }
+  const g = buildGlyph(ch, L.font, q, th, rd);
+  glyphCache.set(key, g);
+  if (glyphCache.size > 300) {
+    const used = new Set();
+    for (const o of textGroups.values()) o.group.children.forEach(m => used.add(m.geometry));
+    for (const [k, gg] of glyphCache) {
+      if (glyphCache.size <= 240) break;
+      if (gg && used.has(gg)) continue;
+      gg?.dispose(); glyphCache.delete(k);
+    }
+  }
+  return g;
+}
+// 並び（em 単位）：字間・行間・アーチ・ゆらぎ・はずみ・3Dゆらぎ
+function layoutGlyphs(L) {
+  measureCtx.font = fontStr(L, 100);
   const lines = (L.text || '').split('\n');
-  const glyphs = [];
-  const lh = L.size * L.lineH;
-  const k = L.curve ? (L.curve * D2R) : 0;
-  const cr = Math.cos(L.rot * D2R), sr = Math.sin(L.rot * D2R);
+  const out = [];
+  const k = (L.curve || 0) * D2R;
   let gi = 0;
   lines.forEach((line, li) => {
     const chars = [...line];
-    const ws = chars.map(ch => measureCtx.measureText(ch).width);
-    const total = ws.reduce((a, b) => a + b, 0) + L.spacing * Math.max(0, chars.length - 1);
+    const ws = chars.map(ch => measureCtx.measureText(ch).width / 100);
+    const total = ws.reduce((s, v) => s + v, 0) + L.spacing * Math.max(0, chars.length - 1);
     const kk = total > 0 ? k / total : 0;
     let cur = -total / 2;
-    const ly = (li - (lines.length - 1) / 2) * lh;
+    const ly = (li - (lines.length - 1) / 2) * L.lineH;
     chars.forEach((ch, ci) => {
       const u = cur + ws[ci] / 2;
       cur += ws[ci] + L.spacing;
@@ -607,104 +802,89 @@ function layoutText(L) {
       if (Math.abs(kk) > 1e-6) { const t = u * kk; x = Math.sin(t) / kk; y = (1 - Math.cos(t)) / kk; r = t; }
       y += ly + L.bounce * (gi % 2 ? 1 : -1);
       r += L.jitter * hash(gi) * D2R;
+      const j3 = L.jitter3d * D2R;
+      out.push({ ch, x, y: -y, rz: -r, rx: j3 * hash(gi + 11), ry: j3 * hash(gi + 23), z: L.jitter3d / 60 * hash(gi + 37) });
       gi++;
-      if (ch.trim() === '') return;
-      glyphs.push({ ch, x: L.x + x * cr - y * sr, y: L.y + x * sr + y * cr, rot: r + L.rot * D2R });
     });
   });
-  const pad = L.size * 0.6 + L.outlineW + L.depth;
-  let bb = [Infinity, Infinity, -Infinity, -Infinity];
-  for (const g of glyphs) bb = [Math.min(bb[0], g.x - pad), Math.min(bb[1], g.y - pad), Math.max(bb[2], g.x + pad), Math.max(bb[3], g.y + pad)];
-  L._bbox = glyphs.length ? bb : null;
-  return glyphs;
+  return out.filter(g => g.ch.trim() !== '');
 }
-function eachGlyph(ctx, glyphs, ox, oy, fn) {
-  for (const g of glyphs) {
-    ctx.save();
-    ctx.translate(g.x + ox, g.y + oy);
-    ctx.rotate(g.rot);
-    fn(g);
-    ctx.restore();
-  }
+// 素材：上下グラデーションを shader に差し込む
+function makeMaterial() {
+  const mat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, envMap, iridescenceIOR: 1.8, iridescenceThicknessRange: [120, 820], clearcoatRoughness: 0.05 });
+  mat.userData.uTop = { value: new THREE.Color() };
+  mat.userData.uBot = { value: new THREE.Color() };
+  mat.onBeforeCompile = sh => {
+    sh.uniforms.uTop = mat.userData.uTop; sh.uniforms.uBot = mat.userData.uBot;
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vGy;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvGy = position.y;');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vGy;\nuniform vec3 uTop;\nuniform vec3 uBot;')
+      .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= mix(uBot, uTop, smoothstep(-0.42, 0.42, vGy));');
+  };
+  mat.customProgramCacheKey = () => 'puffyText';
+  return mat;
 }
-function mixColor(a, b, t) {
-  const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16);
-  const ch = s => Math.round(((pa >> s) & 255) * (1 - t) + ((pb >> s) & 255) * t);
-  return `rgb(${ch(16)},${ch(8)},${ch(0)})`;
+function updateMaterial(mat, L) {
+  mat.userData.uTop.value.set(L.top);
+  mat.userData.uBot.value.set(L.bottom);
+  mat.roughness = L.rough; mat.metalness = L.metal;
+  mat.clearcoat = L.coat; mat.iridescence = L.irid;
+  mat.sheen = L.sheen; mat.sheenColor.set(0xffffff); mat.sheenRoughness = 0.6;
+  mat.envMapIntensity = L.env;
+  const tr = L.opacity < 0.999;
+  if (mat.transparent !== tr) { mat.transparent = tr; mat.needsUpdate = true; }
+  mat.opacity = L.opacity;
 }
-function drawText(ctx, L) {
-  if (!L.text) return;
-  ensureFont(L);
-  const glyphs = layoutText(L);
-  if (!glyphs.length) return;
-  const font = fontStr(L);
-  const step = 0.5;
-  const n = Math.max(0, Math.ceil(L.depth / step));
-  const dx = Math.cos(L.depthAngle * D2R) * step, dy = Math.sin(L.depthAngle * D2R) * step;
-  const setup = c => { c.setTransform(S, 0, 0, S, 0, 0); c.font = font; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.miterLimit = 2; };
-  ctx.save();
-  setup(ctx);
-  // 1) 白フチ（押し出し部分ごと囲む）＋影
-  const ow = L.outlineW * 2 + L.edgeW * 2;
-  ctx.fillStyle = ctx.strokeStyle = L.outline;
-  ctx.lineWidth = ow;
-  if (L.shadow) {
-    ctx.save();
-    ctx.shadowColor = 'rgba(60,20,40,.35)'; ctx.shadowBlur = 8 * S; ctx.shadowOffsetY = 3 * S;
-    eachGlyph(ctx, glyphs, dx * n, dy * n, g => { if (ow > 0) ctx.strokeText(g.ch, 0, 0); ctx.fillText(g.ch, 0, 0); });
-    ctx.restore();
+const textGroups = new Map();   // 文字レイヤー id → { group, mat, sig }
+function syncTexts(force = false) {
+  const alive = new Set();
+  for (const L of state.texts) {
+    if (!L.id) L.id = Math.random().toString(36).slice(2, 10);
+    alive.add(L.id);
+    let o = textGroups.get(L.id);
+    if (!o) { o = { group: new THREE.Group(), mat: makeMaterial(), sig: '' }; scene.add(o.group); textGroups.set(L.id, o); }
+    const sig = [L.text, L.font, L.quality, L.thick, L.round, L.spacing, L.lineH, L.curve, L.jitter, L.bounce, L.jitter3d].join('|');
+    if (sig !== o.sig && (force || fontReady(L))) {
+      o.group.clear();
+      for (const g of layoutGlyphs(L)) {
+        const geo = glyphGeometry(g.ch, L);
+        if (!geo) continue;
+        const mesh = new THREE.Mesh(geo, o.mat);
+        mesh.position.set(g.x, g.y, g.z);
+        mesh.rotation.set(g.rx, g.ry, g.rz);
+        mesh.userData.textId = L.id;
+        o.group.add(mesh);
+      }
+      o.sig = sig;
+    }
+    o.group.position.fromArray(L.pos);
+    o.group.rotation.set(L.rot[0] * D2R, L.rot[1] * D2R, L.rot[2] * D2R);
+    o.group.scale.set(L.size, L.size, L.size * L.puff);
+    o.group.visible = L.visible !== false;
+    updateMaterial(o.mat, L);
   }
-  if (ow > 0) for (let i = 0; i <= n; i++) eachGlyph(ctx, glyphs, dx * i, dy * i, g => { ctx.strokeText(g.ch, 0, 0); ctx.fillText(g.ch, 0, 0); });
-  // 2) 押し出し（奥ほど暗く）
-  ctx.lineWidth = L.edgeW * 2;
-  for (let i = n; i >= 1; i--) {
-    const col = mixColor(L.depthColor, '#000000', (i / Math.max(1, n)) * 0.35);
-    ctx.fillStyle = ctx.strokeStyle = col;
-    eachGlyph(ctx, glyphs, dx * i, dy * i, g => { if (L.edgeW > 0) ctx.strokeText(g.ch, 0, 0); ctx.fillText(g.ch, 0, 0); });
-  }
-  // 3) 表面のフチ
-  if (L.edgeW > 0) {
-    ctx.strokeStyle = L.edge; ctx.lineWidth = L.edgeW * 2;
-    eachGlyph(ctx, glyphs, 0, 0, g => ctx.strokeText(g.ch, 0, 0));
-  }
-  ctx.restore();
-  // 4) 表面（グラデ＋ツヤ）は別キャンバスで描いて合成
-  faceCtx.setTransform(1, 0, 0, 1, 0, 0);
-  faceCtx.globalCompositeOperation = 'source-over';
-  faceCtx.clearRect(0, 0, CW, CH);
-  setup(faceCtx);
-  const hs = L.size / 2;
-  eachGlyph(faceCtx, glyphs, 0, 0, g => {
-    const gr = faceCtx.createLinearGradient(0, -hs * 0.8, 0, hs * 0.8);
-    gr.addColorStop(0, L.top); gr.addColorStop(1, L.bottom);
-    faceCtx.fillStyle = gr;
-    faceCtx.fillText(g.ch, 0, 0);
-  });
-  if (L.highlight > 0) {
-    faceCtx.globalCompositeOperation = 'source-atop';
-    eachGlyph(faceCtx, glyphs, 0, 0, () => {
-      const gr = faceCtx.createLinearGradient(0, -hs, 0, -hs * 0.05);
-      gr.addColorStop(0, `rgba(255,255,255,${L.highlight})`);
-      gr.addColorStop(1, 'rgba(255,255,255,0)');
-      faceCtx.fillStyle = gr;
-      faceCtx.fillRect(-L.size, -hs * 1.2, L.size * 2, hs * 1.15);
-    });
-    faceCtx.globalCompositeOperation = 'source-over';
-  }
-  ctx.drawImage(faceCanvas, 0, 0);
+  for (const [id, o] of textGroups) if (!alive.has(id)) { scene.remove(o.group); o.mat.dispose(); textGroups.delete(id); }
+}
+// 画面上の高さ ndcY（-1:下〜1:上）の位置に、キャラより手前（カメラとの距離 60%）に置く
+function placeText(L, ndcY = 0.55) {
+  camera.updateMatrixWorld();
+  const d = camera.position.distanceTo(controls.target) * 0.6;
+  L.size = +(2 * d * Math.tan(camera.fov * D2R / 2) * 0.24).toFixed(3);
+  const dir = new THREE.Vector3(0, ndcY, 0.5).unproject(camera).sub(camera.position).normalize();
+  L.pos = camera.position.clone().addScaledVector(dir, d).toArray().map(v => +v.toFixed(3));
+  faceCamera(L);
+}
+function faceCamera(L) {
+  const e = new THREE.Euler().setFromQuaternion(camera.quaternion, 'XYZ');
+  L.rot = [e.x, e.y, e.z].map(v => Math.round(v / D2R));
 }
 
 // ===== 描画 =====
 function compose(ctx) {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.clearRect(0, 0, CW, CH);
-  for (const L of state.texts) if (L.behind) drawText(ctx, L);
-  const s = state.settings;
-  const src = renderer.domElement;
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  const s = state.settings, src = renderer.domElement;
   ctx.drawImage(s.outlineW > 0 ? outlined(src, s.outlineW, s.outlineColor) : src, 0, 0);
-  for (const L of state.texts) if (!L.behind) drawText(ctx, L);
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
 }
 function drawGuide() {
   const g = guide.getContext('2d');
@@ -712,17 +892,24 @@ function drawGuide() {
   if (!showGuide) return;
   g.strokeStyle = 'rgba(255,111,163,.7)'; g.setLineDash([8, 6]); g.lineWidth = 2;
   g.strokeRect(MARGIN * S, MARGIN * S, (W - MARGIN * 2) * S, (H - MARGIN * 2) * S);
-  const L = state.texts[state.selText];
-  if (tab === 'text' && L?._bbox) {
+  const L = state.texts[state.selText], o = L && textGroups.get(L.id);
+  if (tab === 'text' && o?.group.children.length) {
+    const box = new THREE.Box3().setFromObject(o.group);
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (let i = 0; i < 8; i++) {
+      const v = new THREE.Vector3(i & 1 ? box.max.x : box.min.x, i & 2 ? box.max.y : box.min.y, i & 4 ? box.max.z : box.min.z).project(camera);
+      const sx = (v.x + 1) / 2 * CW, sy = (1 - v.y) / 2 * CH;
+      x0 = Math.min(x0, sx); y0 = Math.min(y0, sy); x1 = Math.max(x1, sx); y1 = Math.max(y1, sy);
+    }
     g.strokeStyle = 'rgba(60,140,255,.6)'; g.setLineDash([4, 4]);
-    const b = L._bbox;
-    g.strokeRect(b[0] * S, b[1] * S, (b[2] - b[0]) * S, (b[3] - b[1]) * S);
+    g.strokeRect(x0, y0, x1 - x0, y1 - y0);
   }
 }
 function renderFrame(dt) {
   for (const m of models) {
     if (m.vrm) { applyPose(m); m.vrm.update(dt); }
   }
+  syncTexts();
   renderer.render(scene, camera);
   compose(stageCtx);
 }
@@ -734,35 +921,34 @@ function loop(now) {
 }
 requestAnimationFrame(loop);
 
-// ===== 文字のドラッグ =====
+// ===== 文字のドラッグ（カメラに平行な面の上で動かす） =====
+const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
 let drag = null;
-function toStage(e) {
+function pickRay(e) {
   const r = stage.getBoundingClientRect();
-  return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H };
-}
-function hitText(p) {
-  for (let i = state.texts.length - 1; i >= 0; i--) {
-    const b = state.texts[i]._bbox;
-    if (b && p.x >= b[0] && p.x <= b[2] && p.y >= b[1] && p.y <= b[3]) return i;
-  }
-  return -1;
+  ndc.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+  raycaster.setFromCamera(ndc, camera);
 }
 stageWrap.addEventListener('pointerdown', e => {
   if (e.button !== 0) return;
-  const p = toStage(e);
-  const i = hitText(p);
+  pickRay(e);
+  const meshes = [...textGroups.values()].filter(o => o.group.visible).flatMap(o => o.group.children);
+  const hit = raycaster.intersectObjects(meshes, false)[0];
+  if (!hit) return;
+  const i = state.texts.findIndex(L => L.id === hit.object.userData.textId);
   if (i < 0) return;
   e.stopPropagation(); e.preventDefault();
   const L = state.texts[i];
-  drag = { L, sx: p.x, sy: p.y, ox: L.x, oy: L.y, id: e.pointerId };
+  const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(camera.getWorldDirection(new THREE.Vector3()), hit.point);
+  drag = { L, plane, offset: new THREE.Vector3().fromArray(L.pos).sub(hit.point) };
   stageWrap.setPointerCapture(e.pointerId);
   if (state.selText !== i || tab !== 'text') { state.selText = i; showTab('text'); }
 }, { capture: true });
 stageWrap.addEventListener('pointermove', e => {
   if (!drag) return;
-  const p = toStage(e);
-  drag.L.x = Math.round(drag.ox + p.x - drag.sx);
-  drag.L.y = Math.round(drag.oy + p.y - drag.sy);
+  pickRay(e);
+  const p = new THREE.Vector3();
+  if (raycaster.ray.intersectPlane(drag.plane, p)) drag.L.pos = p.add(drag.offset).toArray().map(v => +v.toFixed(3));
 });
 stageWrap.addEventListener('pointerup', () => { if (drag) { drag = null; renderPanel(); markDirty(); } });
 
@@ -773,7 +959,7 @@ function serialize() {
   return {
     models: ms,
     camera: { pos: camera.position.toArray(), target: controls.target.toArray(), fov: camera.fov },
-    texts: clone(state.texts.map(({ _bbox, ...t }) => t)),
+    texts: clone(state.texts),
     settings: clone(state.settings),
   };
 }
@@ -791,7 +977,7 @@ function applySlot(slot, settle = true) {
     camera.fov = slot.camera.fov; camera.updateProjectionMatrix();
     controls.update();
   }
-  state.texts = clone(slot.texts || []);
+  state.texts = clone(slot.texts || []).map(normalizeText);
   state.selText = Math.min(state.selText, Math.max(0, state.texts.length - 1));
   state.settings = { ...defaultSettings(), ...clone(slot.settings || {}) };
   applyLights();
@@ -927,8 +1113,9 @@ const work = document.createElement('canvas'); work.width = CW; work.height = CH
 const workCtx = work.getContext('2d', { willReadFrequently: true });
 async function renderSlotStill(slot) {
   applySlot(slot, true);
-  await Promise.all(state.texts.map(ensureFont));
+  await Promise.all(state.texts.map(ensureFonts));
   await document.fonts.ready;
+  syncTexts(true);
   for (const m of models) if (m.vrm) applyPose(m), m.vrm.update(0);
   renderer.render(scene, camera);
   compose(workCtx);
@@ -1008,11 +1195,14 @@ function el(tag, attrs = {}, ...kids) {
   return e;
 }
 function sec(title, ...kids) { return el('div', { class: 'sec' }, title ? el('h3', {}, title) : null, ...kids); }
-function slider(label, get, set, min, max, step = 1, fmt = v => v) {
+function slider(label, get, set, min, max, step = 1, fmt = v => v, lazy = false) {
   const val = el('span', { class: 'val' }, String(fmt(get())));
   const inp = el('input', { type: 'range', min, max, step });
   inp.value = get();
-  inp.oninput = () => { set(+inp.value); val.textContent = fmt(+inp.value); markDirty(); };
+  // lazy：重い処理（形の作り直し）は手を離したときだけ
+  const apply = () => { set(+inp.value); markDirty(); };
+  inp.oninput = () => { val.textContent = fmt(+inp.value); if (!lazy) apply(); };
+  if (lazy) inp.onchange = apply;
   inp.ondblclick = () => { inp.value = Math.min(max, Math.max(min, 0)); inp.oninput(); };
   return el('div', { class: 'row' }, el('label', {}, label), inp, val);
 }
@@ -1023,7 +1213,10 @@ function color(label, get, set) {
 }
 function select(label, opts, get, set) {
   const s = el('select');
-  for (const o of opts) { const [v, t] = Array.isArray(o) ? o : [o, o]; s.append(el('option', { value: v }, t)); }
+  for (const o of opts) {
+    if (o.group) { const g = el('optgroup', { label: o.group }); o.items.forEach(v => g.append(el('option', { value: v }, v))); s.append(g); continue; }
+    const [v, t] = Array.isArray(o) ? o : [o, o]; s.append(el('option', { value: v }, t));
+  }
   s.value = get();
   s.onchange = () => { set(s.value); markDirty(); };
   return el('div', { class: 'row' }, el('label', {}, label), s);
@@ -1186,11 +1379,19 @@ function panelCamera() {
 function panelText() {
   const T = state.texts;
   const list = el('div', { class: 'list' });
-  T.forEach((L, i) => list.append(el('div', { class: 'item' + (i === state.selText ? ' sel' : ''), onclick: () => { state.selText = i; renderPanel(); } },
-    el('span', { class: 'nm' }, L.text.replace(/\n/g, ' ') || '（空）'))));
+  T.forEach((L, i) => {
+    const vis = el('input', { type: 'checkbox' }); vis.checked = L.visible !== false;
+    vis.onclick = e => e.stopPropagation();
+    vis.onchange = () => { L.visible = vis.checked; markDirty(); };
+    list.append(el('div', { class: 'item' + (i === state.selText ? ' sel' : ''), onclick: () => { state.selText = i; renderPanel(); } },
+      vis, el('span', { class: 'nm' }, L.text.replace(/\n/g, ' ') || '（空）')));
+  });
   body.append(sec('文字レイヤー', list, el('div', { class: 'btns', style: 'margin-top:6px' },
-    btn('＋ 追加', () => { T.push(defaultText('テキスト')); state.selText = T.length - 1; renderPanel(); markDirty(); }),
-    T.length ? btn('複製', () => { const c = clone(T[state.selText]); c.y = Math.max(40, c.y - 60); T.push(c); state.selText = T.length - 1; renderPanel(); markDirty(); }) : null,
+    btn('＋ 追加', () => { const L = defaultText('テキスト'); placeText(L, 0.55); T.push(L); state.selText = T.length - 1; renderPanel(); markDirty(); }),
+    T.length ? btn('複製', () => {
+      const c = clone(T[state.selText]); c.id = defaultText().id; c.pos[1] -= c.size * 1.2;
+      T.push(c); state.selText = T.length - 1; renderPanel(); markDirty();
+    }) : null,
     T.length ? btn('削除', () => { T.splice(state.selText, 1); state.selText = Math.max(0, state.selText - 1); renderPanel(); markDirty(); }) : null)));
   const L = T[state.selText];
   if (!L) return;
@@ -1201,37 +1402,69 @@ function panelText() {
     if (nm) nm.textContent = L.text.replace(/\n/g, ' ') || '（空）';
   };
   body.append(sec('テキスト', el('div', { class: 'row' }, ta),
-    select('フォント', FONTS.map(f => [f, f]), () => L.font, v => { L.font = v; }),
-    slider('サイズ', () => L.size, v => L.size = v, 16, 160, 1),
-    slider('字間', () => L.spacing, v => L.spacing = v, -20, 40, 1),
-    slider('行間', () => L.lineH, v => L.lineH = v, 0.7, 2, 0.05),
-    check('キャラの後ろ', () => L.behind, v => L.behind = v)));
-  body.append(sec('配色',
-    el('div', { class: 'btns' }, ...Object.entries(TEXT_STYLES).map(([k, v]) => {
-      const b = btn(k, () => { Object.assign(L, v); L.style = k; renderPanel(); markDirty(); }, L.style === k ? 'on' : '');
-      b.style.background = `linear-gradient(${v.top},${v.bottom})`; b.style.color = v.edge; b.style.fontWeight = 800;
-      return b;
-    })),
-    color('表面 上', () => L.top, v => L.top = v),
-    color('表面 下', () => L.bottom, v => L.bottom = v),
-    color('ふちどり', () => L.edge, v => L.edge = v),
-    color('厚み', () => L.depthColor, v => L.depthColor = v),
-    color('外側フチ', () => L.outline, v => L.outline = v)));
-  body.append(sec('立体感',
-    slider('厚み', () => L.depth, v => L.depth = v, 0, 24, 0.5),
-    slider('厚みの向き', () => L.depthAngle, v => L.depthAngle = v, 0, 360, 1, v => v + '°'),
-    slider('ふちどり幅', () => L.edgeW, v => L.edgeW = v, 0, 8, 0.5),
-    slider('外側フチ幅', () => L.outlineW, v => L.outlineW = v, 0, 16, 0.5),
-    slider('ツヤ', () => L.highlight, v => L.highlight = v, 0, 1, 0.05),
-    check('影', () => L.shadow, v => L.shadow = v)));
-  body.append(sec('配置・動き',
-    slider('X', () => L.x, v => L.x = v, 0, W, 1),
-    slider('Y', () => L.y, v => L.y = v, 0, H, 1),
-    slider('回転', () => L.rot, v => L.rot = v, -45, 45, 1, v => v + '°'),
-    slider('アーチ', () => L.curve, v => L.curve = v, -120, 120, 1, v => v + '°'),
-    slider('ゆらぎ', () => L.jitter, v => L.jitter = v, 0, 20, 0.5, v => v + '°'),
-    slider('はずみ', () => L.bounce, v => L.bounce = v, 0, 20, 0.5),
-    el('p', { class: 'note' }, 'ステージ上の文字はドラッグで動かせます。')));
+    select('フォント', FONTS.map(([group, items]) => ({ group, items })), () => L.font, v => { L.font = v; }),
+    slider('大きさ', () => L.size, v => L.size = v, 0.03, 1.2, 0.005)));
+
+  const matBtns = Object.entries(MAT_PRESETS).map(([k, v]) => {
+    const b = btn(k, () => { Object.assign(L, v); L.mat = k; renderPanel(); markDirty(); }, L.mat === k ? 'on' : '');
+    b.style.background = `radial-gradient(circle at 35% 30%, #fff 0 12%, ${v.top} 35%, ${v.bottom})`;
+    b.style.color = '#3a2030'; b.style.fontWeight = 800; b.style.textShadow = '0 0 3px #fff';
+    return b;
+  });
+  const pct = v => Math.round(v * 100) + '%';
+  // ワンタッチ配色：選んだ色を下に、明るくした色を上に置いて立体感のあるグラデに
+  const lighten = (hex, t) => '#' + new THREE.Color(hex).lerp(new THREE.Color('#ffffff'), t).getHexString();
+  const swatches = el('div', { class: 'btns', style: 'margin:8px 0 4px' }, ...SWATCHES.map(c => {
+    const b = el('button', { title: c, style: `width:26px;height:26px;padding:0;border-radius:50%;background:radial-gradient(circle at 35% 30%, ${lighten(c, 0.6)}, ${c})` });
+    b.onclick = () => { L.bottom = c; L.top = lighten(c, 0.55); renderPanel(); markDirty(); };
+    return b;
+  }));
+  body.append(sec('素材', el('div', { class: 'btns' }, ...matBtns),
+    el('p', { class: 'note', style: 'margin:8px 0 0' }, '色だけ変える（素材の質感はそのまま）'),
+    swatches,
+    color('色 上', () => L.top, v => L.top = v),
+    color('色 下', () => L.bottom, v => L.bottom = v),
+    el('div', { class: 'btns' },
+      btn('上下を入れ替え', () => { [L.top, L.bottom] = [L.bottom, L.top]; renderPanel(); markDirty(); }),
+      btn('単色にする', () => { L.top = L.bottom; renderPanel(); markDirty(); })),
+    slider('つや', () => 1 - L.rough, v => L.rough = 1 - v, 0, 1, 0.01, pct),
+    slider('メタル', () => L.metal, v => L.metal = v, 0, 1, 0.01, pct),
+    slider('コーティング', () => L.coat, v => L.coat = v, 0, 1, 0.01, pct),
+    slider('虹色', () => L.irid, v => L.irid = v, 0, 1, 0.01, pct),
+    slider('ふわふわ', () => L.sheen, v => L.sheen = v, 0, 1, 0.01, pct),
+    slider('映り込み', () => L.env, v => L.env = v, 0, 3, 0.05),
+    slider('透け', () => 1 - L.opacity, v => L.opacity = 1 - v, 0, 0.8, 0.01, pct)));
+
+  body.append(sec('形（ふくらみ）',
+    el('div', { class: 'btns' }, ...Object.entries(SHAPE_PRESETS).map(([k, v]) =>
+      btn(k, () => { Object.assign(L, v); renderPanel(); markDirty(); }, L.thick === v.thick && L.round === v.round ? 'on' : ''))),
+    slider('太らせる', () => L.thick, v => L.thick = v, 0, 0.12, 0.0025, v => v.toFixed(3), true),
+    slider('角の丸み', () => L.round, v => L.round = v, 0, 0.06, 0.002, v => v.toFixed(3), true),
+    slider('ぷっくり', () => L.puff, v => L.puff = v, 0.15, 2, 0.05),
+    slider('なめらかさ', () => L.quality, v => L.quality = v, 24, 120, 4, v => v, true),
+    el('p', { class: 'note' }, '細いフォントや手書きフォントは「太らせる」を上げると、PARTY や YO のような“とろっとした”文字になります。上げすぎると文字のすき間がつぶれるので注意。')));
+
+  body.append(sec('並び',
+    slider('字間', () => L.spacing, v => L.spacing = v, -0.4, 0.6, 0.01),
+    slider('行間', () => L.lineH, v => L.lineH = v, 0.6, 2, 0.05),
+    slider('アーチ', () => L.curve, v => L.curve = v, -150, 150, 1, v => v + '°'),
+    slider('ゆらぎ', () => L.jitter, v => L.jitter = v, 0, 30, 0.5, v => v + '°'),
+    slider('はずみ', () => L.bounce, v => L.bounce = v, 0, 0.3, 0.005),
+    slider('3Dばらけ', () => L.jitter3d, v => L.jitter3d = v, 0, 45, 1, v => v + '°')));
+
+  const P = L.pos, R = L.rot;
+  body.append(sec('位置・向き（ステージ上でドラッグでも動かせます）',
+    el('div', { class: 'btns' },
+      btn('カメラに向ける', () => { faceCamera(L); renderPanel(); markDirty(); }),
+      btn('画面の上へ', () => { placeText(L, 0.55); renderPanel(); markDirty(); }),
+      btn('画面の下へ', () => { placeText(L, -0.6); renderPanel(); markDirty(); })),
+    slider('左右', () => P[0], v => P[0] = v, -3, 3, 0.005),
+    slider('上下', () => P[1], v => P[1] = v, -1, 3, 0.005),
+    slider('前後', () => P[2], v => P[2] = v, -3, 3, 0.005),
+    slider('傾き X', () => R[0], v => R[0] = v, -180, 180, 1, v => v + '°'),
+    slider('向き Y', () => R[1], v => R[1] = v, -180, 180, 1, v => v + '°'),
+    slider('回転 Z', () => R[2], v => R[2] = v, -180, 180, 1, v => v + '°'),
+    el('p', { class: 'note' }, '「前後」でキャラの後ろに回すと、O の穴からのぞく構図なども作れます。')));
 }
 
 function panelExport() {
@@ -1271,6 +1504,8 @@ suppressDirty = false;
 renderSlots();
 renderPanel();
 initFolder();
+// デバッグ・自動テスト用
+window.__studio = { state, models, textGroups, glyphCache, buildGlyph, fontReady, camera, controls, frameCamera, setAngle, placeText, faceCamera, defaultText, MAT_PRESETS, SHAPE_PRESETS, POSE_PRESETS, settleModel, renderPanel, markDirty };
 })();
 </script>
 </body>
