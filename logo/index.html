@@ -178,7 +178,7 @@ input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px s
         <button class="btn" id="savePng" type="button">PNGを書き出す</button>
         <button class="btn alt" id="saveGlb" type="button">GLB（3D）</button>
       </div>
-      <p class="note">PNGは今のポーズのまま、背景透過・余白10px相当で切り抜きます。GLBはUnity・Blender・three.jsでそのまま動かせる3Dモデルです。</p>
+      <p class="note">PNGは今のポーズのまま、背景透過・余白10px相当で切り抜きます。GLBはUnity・Blender・three.jsでそのまま動かせる3Dモデルです（claude.ai上ではzipに入れて保存します）。</p>
       <p class="note" id="status" role="status"></p>
     </fieldset>
   </aside>
@@ -606,29 +606,64 @@ function exportGLB() {
     new GLTFExporter().parse(clone, resolve, reject, { binary: true });
   });
 }
-function download(href, name) {
-  const a = document.createElement('a'); a.href = href; a.download = name;
-  document.body.append(a); a.click(); a.remove();
+// In the claude.ai viewer, files go through the `downloads` capability; on the website, a plain link works.
+const dlCap = window.claude?.use ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
+function crc32(bytes) {
+  let c, crc = -1;
+  for (let i = 0; i < bytes.length; i++) {
+    c = (crc ^ bytes[i]) & 0xff;
+    for (let k = 0; k < 8; k++) c = c & 1 ? (c >>> 1) ^ 0xedb88320 : c >>> 1;
+    crc = (crc >>> 8) ^ c;
+  }
+  return (crc ^ -1) >>> 0;
 }
+function zipOne(name, bytes) {   // single uncompressed entry, enough to carry a .glb
+  const n = new TextEncoder().encode(name), crc = crc32(bytes), len = bytes.length;
+  const lh = new DataView(new ArrayBuffer(30)), ch = new DataView(new ArrayBuffer(46)), end = new DataView(new ArrayBuffer(22));
+  [[0, 0x04034b50, 4], [4, 20, 2], [14, crc, 4], [18, len, 4], [22, len, 4], [26, n.length, 2]].forEach(([o, v, z]) => z === 4 ? lh.setUint32(o, v, true) : lh.setUint16(o, v, true));
+  [[0, 0x02014b50, 4], [4, 20, 2], [6, 20, 2], [16, crc, 4], [20, len, 4], [24, len, 4], [28, n.length, 2]].forEach(([o, v, z]) => z === 4 ? ch.setUint32(o, v, true) : ch.setUint16(o, v, true));
+  const cdOff = 30 + n.length + len;
+  [[0, 0x06054b50, 4], [8, 1, 2], [10, 1, 2], [12, 46 + n.length, 4], [16, cdOff, 4]].forEach(([o, v, z]) => z === 4 ? end.setUint32(o, v, true) : end.setUint16(o, v, true));
+  return new Blob([lh, n, bytes, ch, n, end], { type: 'application/zip' });
+}
+async function saveFile(blob, name) {
+  const dl = await dlCap;
+  if (dl) {
+    try {
+      if (name.endsWith('.glb')) { blob = zipOne(name, new Uint8Array(await blob.arrayBuffer())); name = name.replace(/\.glb$/, '-glb.zip'); }
+      await dl.save({ filename: name, data: blob });
+      return `${name} を保存しました。`;
+    } catch (e) {
+      return e?.code === 'declined' ? '保存をキャンセルしました。' : 'ここでは保存できませんでした。画像は長押し（右クリック）で保存できます。';
+    }
+  }
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+  return `${name} を保存しました。`;
+}
+const dataUrlToBlob = (u) => fetch(u).then((r) => r.blob());
 let lastPng = null;
 $('savePng').onclick = () => {
   const [W, H] = $('size').value.split('x').map(Number);
   const url = exportPNG(W, H);
   lastPng = { url, name: `sushihamster-logo-${W}x${H}.png` };
   $('outImg').src = url;
-  $('outInfo').textContent = `${W}×${H}px・背景透過。保存できないときは画像を長押し（右クリック）して保存してください。`;
+  $('outInfo').textContent = `${W}×${H}px・背景透過。「ダウンロード」で保存するか、画像を長押し（右クリック）して保存してください。`;
   $('modal').hidden = false;
-  download(url, lastPng.name);
 };
-$('dlAgain').onclick = () => lastPng && download(lastPng.url, lastPng.name);
+$('dlAgain').onclick = async () => {
+  if (!lastPng) return;
+  $('outInfo').textContent = await saveFile(await dataUrlToBlob(lastPng.url), lastPng.name);
+};
 $('closeModal').onclick = () => { $('modal').hidden = true; };
 $('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') $('modal').hidden = true; });
 $('saveGlb').onclick = async () => {
+  $('status').textContent = 'GLBをつくっています…';
   try {
     const buf = await exportGLB();
-    const url = URL.createObjectURL(new Blob([buf], { type: 'model/gltf-binary' }));
-    download(url, 'sushihamster-logo.glb');
-    $('status').textContent = `GLBを書き出しました（${(buf.byteLength / 1024 / 1024).toFixed(1)}MB）。ダウンロードが始まらない場合は、サイトに置いた版から書き出してください。`;
+    const msg = await saveFile(new Blob([buf], { type: 'model/gltf-binary' }), 'sushihamster-logo.glb');
+    $('status').textContent = `${msg}（${(buf.byteLength / 1024 / 1024).toFixed(1)}MB）`;
   } catch (e) {
     $('status').textContent = 'GLBの書き出しに失敗しました。もう一度お試しください。';
   }
