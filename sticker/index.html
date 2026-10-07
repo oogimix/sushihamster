@@ -8,7 +8,7 @@
 <link rel="icon" href="../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Modak&family=Bagel+Fat+One&family=Titan+One&family=Chewy&family=Fredoka:wght@700&family=Baloo+2:wght@800&family=Sniglet:wght@800&family=Lilita+One&family=Rubik+Bubbles&family=DM+Serif+Display&family=Lobster&family=Yellowtail&family=Monoton&family=Shippori+Mincho+B1:wght@800&family=Comfortaa:wght@700&family=Quicksand:wght@700&family=Audiowide&family=Orbitron:wght@800&family=Righteous&family=Pacifico&family=Caveat:wght@700&family=Gochi+Hand&family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Potta+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kosugi+Maru&family=Hachi+Maru+Pop&family=Yusei+Magic&family=Darumadrop+One&family=RocknRoll+One&family=Kiwi+Maru:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Modak&family=Bagel+Fat+One&family=Titan+One&family=Chewy&family=Fredoka:wght@700&family=Baloo+2:wght@800&family=Sniglet:wght@800&family=Lilita+One&family=Rubik+Bubbles&family=DM+Serif+Display&family=Lobster&family=Yellowtail&family=Monoton&family=Shippori+Mincho+B1:wght@800&family=Press+Start+2P&family=Silkscreen:wght@700&family=VT323&family=Rubik+Glitch&family=Rubik+Iso&family=Rubik+Vinyl&family=Rubik+80s+Fade&family=Rubik+Broken+Fax&family=Bungee&family=Shrikhand&family=Eater&family=Pirata+One&family=Comic+Neue:wght@700&family=Zen+Dots&family=DotGothic16&family=Comfortaa:wght@700&family=Quicksand:wght@700&family=Audiowide&family=Orbitron:wght@800&family=Righteous&family=Pacifico&family=Caveat:wght@700&family=Gochi+Hand&family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Potta+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kosugi+Maru&family=Hachi+Maru+Pop&family=Yusei+Magic&family=Darumadrop+One&family=RocknRoll+One&family=Kiwi+Maru:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#fff4f8; --panel:#ffffff; --ink:#4a2a3a; --sub:#9a7a8a; --line:#f3d2df;
@@ -169,10 +169,12 @@ const FONTS = [
   ['英字：手書き', ['Pacifico', 'Caveat', 'Gochi Hand']],
   ['英字：Y2K・エアロ', ['Comfortaa', 'Quicksand', 'Audiowide', 'Orbitron', 'Righteous']],
   ['英字：レトロ', ['DM Serif Display', 'Lobster', 'Yellowtail', 'Monoton']],
+  ['英字：ネット系', ['Press Start 2P', 'Silkscreen', 'VT323', 'Rubik Glitch', 'Rubik Iso', 'Rubik Vinyl', 'Rubik 80s Fade',
+    'Rubik Broken Fax', 'Bungee', 'Shrikhand', 'Eater', 'Pirata One', 'Comic Neue', 'Zen Dots']],
   ['日本語', ['Mochiy Pop One', 'Dela Gothic One', 'Potta One', 'M PLUS Rounded 1c', 'Zen Maru Gothic', 'Kosugi Maru',
-    'Hachi Maru Pop', 'Yusei Magic', 'Darumadrop One', 'RocknRoll One', 'Kiwi Maru', 'Shippori Mincho B1']],
+    'Hachi Maru Pop', 'Yusei Magic', 'Darumadrop One', 'RocknRoll One', 'Kiwi Maru', 'Shippori Mincho B1', 'DotGothic16']],
 ];
-const FONT_WEIGHT = { 'Shippori Mincho B1': 800, 'Comfortaa': 700, 'Quicksand': 700, 'Orbitron': 800, 'Fredoka': 700, 'Baloo 2': 800, 'Sniglet': 800, 'Caveat': 700, 'M PLUS Rounded 1c': 900, 'Zen Maru Gothic': 900, 'Kiwi Maru': 500 };
+const FONT_WEIGHT = { 'Silkscreen': 700, 'Comic Neue': 700, 'Shippori Mincho B1': 800, 'Comfortaa': 700, 'Quicksand': 700, 'Orbitron': 800, 'Fredoka': 700, 'Baloo 2': 800, 'Sniglet': 800, 'Caveat': 700, 'M PLUS Rounded 1c': 900, 'Zen Maru Gothic': 900, 'Kiwi Maru': 500 };
 
 // 素材プリセット（top/bottom：上下グラデ、rough：ざらつき、metal：金属感、coat：表面コート、irid：虹色、sheen：ふわふわ、env：映り込み）
 const MAT_PRESETS = {
@@ -213,6 +215,12 @@ const TYPE_STYLES = {
   'Y2Kクローム':    { ref: 'Y2K',      font: 'Audiowide', thick: 0.02, round: 0.012, fx: 'none', puff: 0.9, spacing: 0.02, mat: 'Y2Kシルバー' },
   'サイバー':       { ref: '2000',     font: 'Orbitron', thick: 0.015, round: 0.01, fx: 'tube', fxAmt: 0.9, puff: 1, spacing: 0.04, mat: 'クリアアクア',
                       top: '#d8fbff', bottom: '#19c8e8' },
+  '8ビット':         { ref: 'LVUP',     jpFont: 'DotGothic16', font: 'Press Start 2P', thick: 0, round: 0, fx: 'none', puff: 0.9, spacing: 0.06, quality: 88, mat: 'ソーダ' },
+  'グリッチ':       { ref: 'BZZT',     jpFont: 'DotGothic16', font: 'Rubik Glitch', thick: 0, round: 0.004, fx: 'none', puff: 0.8, spacing: 0.04, quality: 88, mat: 'ネオン' },
+  'ドレイン':       { ref: 'Pain',     jpFont: 'Shippori Mincho B1', font: 'Pirata One', thick: 0.012, round: 0.008, fx: 'none', puff: 0.85, spacing: 0.05, mat: 'クローム',
+                      top: '#e8e8f2', bottom: '#8f8fb4' },
+  'スライム':       { ref: 'Yum',      jpFont: 'Yusei Magic', font: 'Eater', thick: 0.012, round: 0.01, fx: 'drip', fxAmt: 0.7, puff: 0.95, spacing: 0.05, mat: 'ゼリー',
+                      top: '#d6f7a8', bottom: '#3cb81e', opacity: 1, trans: 0.25 },
   'ベイパーウェイブ': { ref: 'VAPOR',  jpFont: 'Shippori Mincho B1', font: 'DM Serif Display', thick: 0.022, round: 0.012, fx: 'none', puff: 0.85, spacing: 0.16, mat: 'ベイパー' },
   'シティポップ':   { ref: 'City',     jpFont: 'Yusei Magic', font: 'Yellowtail', thick: 0.04, round: 0.02, fx: 'none', puff: 1.05, spacing: 0.02, mat: 'サンセット' },
   'パステル':       { ref: 'CHU',      font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'none', puff: 1, spacing: -0.02, mat: 'バルーン',
@@ -836,7 +844,11 @@ const JP_FONT_LIST = FONTS.find(g => g[0] === '日本語')[1];
 const JP_PAIR = {
   'Modak': 'Mochiy Pop One', 'Bagel Fat One': 'Mochiy Pop One', 'Titan One': 'Mochiy Pop One', 'Chewy': 'Mochiy Pop One',
   'Fredoka': 'M PLUS Rounded 1c', 'Baloo 2': 'M PLUS Rounded 1c', 'Sniglet': 'Zen Maru Gothic', 'Lilita One': 'Dela Gothic One',
-  'Rubik Bubbles': 'Mochiy Pop One', 'Comfortaa': 'Zen Maru Gothic', 'Quicksand': 'Zen Maru Gothic', 'Audiowide': 'Dela Gothic One', 'Orbitron': 'Dela Gothic One', 'Righteous': 'Dela Gothic One', 'DM Serif Display': 'Shippori Mincho B1', 'Monoton': 'Dela Gothic One', 'Lobster': 'Yusei Magic', 'Yellowtail': 'Yusei Magic', 'Pacifico': 'Hachi Maru Pop', 'Caveat': 'Yusei Magic', 'Gochi Hand': 'Yusei Magic',
+  'Rubik Bubbles': 'Mochiy Pop One', 'Comfortaa': 'Zen Maru Gothic', 'Quicksand': 'Zen Maru Gothic', 'Audiowide': 'Dela Gothic One', 'Orbitron': 'Dela Gothic One', 'Righteous': 'Dela Gothic One', 'DM Serif Display': 'Shippori Mincho B1', 'Monoton': 'Dela Gothic One', 'Lobster': 'Yusei Magic', 'Yellowtail': 'Yusei Magic',
+  'Press Start 2P': 'DotGothic16', 'Silkscreen': 'DotGothic16', 'VT323': 'DotGothic16', 'Rubik Glitch': 'DotGothic16',
+  'Rubik Broken Fax': 'DotGothic16', 'Rubik Iso': 'Dela Gothic One', 'Rubik Vinyl': 'Dela Gothic One',
+  'Rubik 80s Fade': 'Dela Gothic One', 'Bungee': 'Dela Gothic One', 'Shrikhand': 'Mochiy Pop One',
+  'Eater': 'Shippori Mincho B1', 'Pirata One': 'Shippori Mincho B1', 'Comic Neue': 'Yusei Magic', 'Zen Dots': 'Dela Gothic One', 'Pacifico': 'Hachi Maru Pop', 'Caveat': 'Yusei Magic', 'Gochi Hand': 'Yusei Magic',
 };
 const isLatin = ch => { const c = ch.codePointAt(0); return c < 0x250 || (c >= 0x2000 && c < 0x2070); };
 function jpFontOf(L) { return L.jpFont || JP_PAIR[L.font] || 'Mochiy Pop One'; }
