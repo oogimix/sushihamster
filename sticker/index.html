@@ -8,7 +8,7 @@
 <link rel="icon" href="../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Modak&family=Bagel+Fat+One&family=Titan+One&family=Chewy&family=Fredoka:wght@700&family=Baloo+2:wght@800&family=Sniglet:wght@800&family=Lilita+One&family=Rubik+Bubbles&family=Pacifico&family=Caveat:wght@700&family=Gochi+Hand&family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Potta+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kosugi+Maru&family=Hachi+Maru+Pop&family=Yusei+Magic&family=Darumadrop+One&family=RocknRoll+One&family=Kiwi+Maru:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Modak&family=Bagel+Fat+One&family=Titan+One&family=Chewy&family=Fredoka:wght@700&family=Baloo+2:wght@800&family=Sniglet:wght@800&family=Lilita+One&family=Rubik+Bubbles&family=Comfortaa:wght@700&family=Quicksand:wght@700&family=Audiowide&family=Orbitron:wght@800&family=Righteous&family=Pacifico&family=Caveat:wght@700&family=Gochi+Hand&family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Potta+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kosugi+Maru&family=Hachi+Maru+Pop&family=Yusei+Magic&family=Darumadrop+One&family=RocknRoll+One&family=Kiwi+Maru:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#fff4f8; --panel:#ffffff; --ink:#4a2a3a; --sub:#9a7a8a; --line:#f3d2df;
@@ -163,13 +163,15 @@ const PRESETS = [
 const FONTS = [
   ['英字：ぷっくり', ['Modak', 'Bagel Fat One', 'Titan One', 'Chewy', 'Fredoka', 'Baloo 2', 'Sniglet', 'Lilita One', 'Rubik Bubbles']],
   ['英字：手書き', ['Pacifico', 'Caveat', 'Gochi Hand']],
+  ['英字：Y2K・エアロ', ['Comfortaa', 'Quicksand', 'Audiowide', 'Orbitron', 'Righteous']],
   ['日本語', ['Mochiy Pop One', 'Dela Gothic One', 'Potta One', 'M PLUS Rounded 1c', 'Zen Maru Gothic', 'Kosugi Maru',
     'Hachi Maru Pop', 'Yusei Magic', 'Darumadrop One', 'RocknRoll One', 'Kiwi Maru']],
 ];
-const FONT_WEIGHT = { 'Fredoka': 700, 'Baloo 2': 800, 'Sniglet': 800, 'Caveat': 700, 'M PLUS Rounded 1c': 900, 'Zen Maru Gothic': 900, 'Kiwi Maru': 500 };
+const FONT_WEIGHT = { 'Comfortaa': 700, 'Quicksand': 700, 'Orbitron': 800, 'Fredoka': 700, 'Baloo 2': 800, 'Sniglet': 800, 'Caveat': 700, 'M PLUS Rounded 1c': 900, 'Zen Maru Gothic': 900, 'Kiwi Maru': 500 };
 
 // 素材プリセット（top/bottom：上下グラデ、rough：ざらつき、metal：金属感、coat：表面コート、irid：虹色、sheen：ふわふわ、env：映り込み）
 const MAT_PRESETS = {
+  // trans：ガラスのような透け（クリア素材用）。opacity の透けと違い、光がガラスっぽく通る
   'バルーン':     { top: '#ffc0da', bottom: '#ff5c98', rough: 0.22, metal: 0, coat: 1, irid: 0, sheen: 0, opacity: 1, env: 1 },
   'ホログラム':   { top: '#ffd9ea', bottom: '#ff7eab', rough: 0.12, metal: 0.15, coat: 1, irid: 1, sheen: 0, opacity: 1, env: 1.3 },
   'ブルーホロ':   { top: '#dfe6ff', bottom: '#8d9dff', rough: 0.12, metal: 0.15, coat: 1, irid: 1, sheen: 0, opacity: 1, env: 1.3 },
@@ -180,6 +182,10 @@ const MAT_PRESETS = {
   'オレンジ':     { top: '#ffd76e', bottom: '#ff9418', rough: 0.28, metal: 0, coat: 0.8, irid: 0, sheen: 0, opacity: 1, env: 1 },
   'ネオン':       { top: '#ffa6ea', bottom: '#d6007f', rough: 0.1, metal: 0.5, coat: 1, irid: 0.6, sheen: 0, opacity: 1, env: 1.3 },
   'ソーダ':       { top: '#8fe3ff', bottom: '#1b9be6', rough: 0.18, metal: 0, coat: 1, irid: 0, sheen: 0, opacity: 1, env: 1.1 },
+  'クリアアクア': { top: '#c8f3ff', bottom: '#1fb6e8', rough: 0.05, metal: 0, coat: 1, irid: 0.15, sheen: 0, opacity: 1, env: 1.4, trans: 0.6 },
+  'クリアライム': { top: '#e4ffc2', bottom: '#6fd222', rough: 0.05, metal: 0, coat: 1, irid: 0.15, sheen: 0, opacity: 1, env: 1.4, trans: 0.6 },
+  'クリアピンク': { top: '#ffd9ec', bottom: '#ff58a8', rough: 0.05, metal: 0, coat: 1, irid: 0.2, sheen: 0, opacity: 1, env: 1.4, trans: 0.6 },
+  'Y2Kシルバー':  { top: '#ffffff', bottom: '#c9d4e4', rough: 0.05, metal: 1, coat: 1, irid: 0.5, sheen: 0, opacity: 1, env: 1.8 },
 };
 // ワンタッチ完成スタイル（第一弾スタンプの文字を参考に、フォント・形・加工・素材をまとめて設定）
 const TYPE_STYLES = {
@@ -194,12 +200,17 @@ const TYPE_STYLES = {
   'ぷるぷる泡':     { ref: 'CHEERS',   font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'bubble', fxAmt: 1, puff: 1, spacing: -0.02, mat: 'ゼリー' },
   'とろーんミント': { ref: 'PARTY',    jpFont: 'Yusei Magic', font: 'Caveat', thick: 0.055, round: 0.03, fx: 'none', puff: 1, spacing: 0.04, mat: 'ミント', jitter3d: 15, bounce: 0.08 },
   '和文ポップ':     { ref: '発射',     font: 'Mochiy Pop One', thick: 0.015, round: 0.012, fx: 'none', puff: 1, spacing: -0.03, mat: 'オレンジ' },
+  'エアロクリア':   { ref: 'Aero',     font: 'Comfortaa', thick: 0.045, round: 0.02, fx: 'bubble', fxAmt: 0.6, puff: 1.15, spacing: 0, mat: 'クリアアクア' },
+  'クリアキャンディ': { ref: 'CUTE',   font: 'Fredoka', thick: 0.045, round: 0.025, fx: 'none', puff: 1.1, spacing: -0.05, mat: 'クリアピンク' },
+  'Y2Kクローム':    { ref: 'Y2K',      font: 'Audiowide', thick: 0.02, round: 0.012, fx: 'none', puff: 0.9, spacing: 0.02, mat: 'Y2Kシルバー' },
+  'サイバー':       { ref: '2000',     font: 'Orbitron', thick: 0.015, round: 0.01, fx: 'tube', fxAmt: 0.9, puff: 1, spacing: 0.04, mat: 'クリアアクア',
+                      top: '#d8fbff', bottom: '#19c8e8' },
   'パステル':       { ref: 'CHU',      font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'none', puff: 1, spacing: -0.02, mat: 'バルーン',
                       top: '#ffe0f0', bottom: '#f5a3cf', rough: 0.5, coat: 0.3 },
 };
 function applyTypeStyle(L, name) {
   const { ref, mat, ...st } = TYPE_STYLES[name];
-  Object.assign(L, { jitter3d: 0, bounce: 0, fxAmt: 1, jpFont: '' }, MAT_PRESETS[mat], { mat, style: name }, st);
+  Object.assign(L, { jitter3d: 0, bounce: 0, fxAmt: 1, jpFont: '', trans: 0 }, MAT_PRESETS[mat], { mat, style: name }, st);
 }
 const FX = [['none', 'なし'], ['cloud', 'くも'], ['drip', 'したたり'], ['bubble', '泡'], ['tube', 'チューブ']];
 const SWATCHES = ['#ff5c98', '#ff8fb8', '#ff3b3b', '#ff9418', '#ffd23f', '#a6e34a', '#3ccf8e', '#2ec4d6', '#1b9be6', '#5b6cff',
@@ -298,7 +309,7 @@ function defaultText(text = 'よろしく') {
     size: 0.25, spacing: -0.03, lineH: 1.05, curve: 0, jitter: 0, bounce: 0, jitter3d: 0,
     ...SHAPE_PRESETS['ふつう'], fx: 'none', fxAmt: 1, puff: 1, quality: 64,
     pos: [0, 1, 0.3], rot: [0, 0, 0],
-    mat: 'バルーン', ...MAT_PRESETS['バルーン'], jpFont: '',
+    mat: 'バルーン', trans: 0, ...MAT_PRESETS['バルーン'], jpFont: '',
   };
 }
 // 古い（2D文字の）保存データや欠けた項目を補う
@@ -648,7 +659,7 @@ const JP_FONT_LIST = FONTS.find(g => g[0] === '日本語')[1];
 const JP_PAIR = {
   'Modak': 'Mochiy Pop One', 'Bagel Fat One': 'Mochiy Pop One', 'Titan One': 'Mochiy Pop One', 'Chewy': 'Mochiy Pop One',
   'Fredoka': 'M PLUS Rounded 1c', 'Baloo 2': 'M PLUS Rounded 1c', 'Sniglet': 'Zen Maru Gothic', 'Lilita One': 'Dela Gothic One',
-  'Rubik Bubbles': 'Mochiy Pop One', 'Pacifico': 'Hachi Maru Pop', 'Caveat': 'Yusei Magic', 'Gochi Hand': 'Yusei Magic',
+  'Rubik Bubbles': 'Mochiy Pop One', 'Comfortaa': 'Zen Maru Gothic', 'Quicksand': 'Zen Maru Gothic', 'Audiowide': 'Dela Gothic One', 'Orbitron': 'Dela Gothic One', 'Righteous': 'Dela Gothic One', 'Pacifico': 'Hachi Maru Pop', 'Caveat': 'Yusei Magic', 'Gochi Hand': 'Yusei Magic',
 };
 const isLatin = ch => { const c = ch.codePointAt(0); return c < 0x250 || (c >= 0x2000 && c < 0x2070); };
 function jpFontOf(L) { return L.jpFont || JP_PAIR[L.font] || 'Mochiy Pop One'; }
@@ -944,6 +955,13 @@ function updateMaterial(mat, L) {
   mat.clearcoat = L.coat; mat.iridescence = L.irid;
   mat.sheen = L.sheen; mat.sheenColor.set(0xffffff); mat.sheenRoughness = 0.6;
   mat.envMapIntensity = L.env;
+  // クリア素材（ガラス透過）。背景が透明な場所では透けが見えないので、映り込みでガラス感を出す
+  const t = L.trans || 0;
+  if ((mat.transmission > 0) !== (t > 0)) mat.needsUpdate = true;
+  mat.transmission = t;
+  mat.thickness = t > 0 ? 0.5 : 0;
+  mat.ior = 1.45;
+  mat.attenuationColor.set(L.bottom); mat.attenuationDistance = 0.5;
   const tr = L.opacity < 0.999;
   if (mat.transparent !== tr) { mat.transparent = tr; mat.needsUpdate = true; }
   mat.opacity = L.opacity;
@@ -1557,7 +1575,8 @@ function panelText() {
     slider('虹色', () => L.irid, v => L.irid = v, 0, 1, 0.01, pct),
     slider('ふわふわ', () => L.sheen, v => L.sheen = v, 0, 1, 0.01, pct),
     slider('映り込み', () => L.env, v => L.env = v, 0, 3, 0.05),
-    slider('透け', () => 1 - L.opacity, v => L.opacity = 1 - v, 0, 0.8, 0.01, pct)));
+    slider('透け', () => 1 - L.opacity, v => L.opacity = 1 - v, 0, 0.8, 0.01, pct),
+    slider('クリア感', () => L.trans || 0, v => L.trans = v, 0, 1, 0.01, pct)));
 
   body.append(sec('形（ふくらみ・加工）',
     el('div', { class: 'btns' }, ...Object.entries(SHAPE_PRESETS).map(([k, v]) =>
