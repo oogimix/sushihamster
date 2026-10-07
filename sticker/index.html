@@ -144,7 +144,7 @@ input[type=file]{display:none}
 <script>
 (() => {
 // three.js / three-vrm / JSZip は lib/vendor.js に同梱（ダブルクリックで開いてもオフラインで動く）
-const { THREE, GLTFLoader, OrbitControls, VRMLoaderPlugin, MeshoptDecoder, JSZip, UPNG } = window.Vendor;
+const { THREE, GLTFLoader, OrbitControls, VRMLoaderPlugin, RoomEnvironment, MeshoptDecoder, JSZip, UPNG } = window.Vendor;
 const IS_FILE = location.protocol === 'file:';
 
 // ===== 定数 =====
@@ -356,12 +356,15 @@ renderer.setPixelRatio(1);
 renderer.setSize(CW, CH, false);
 renderer.setClearColor(0x000000, 0);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NeutralToneMapping;   // 過去ビューアと同じトーン（白とびを自然に抑える）
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(30, W / H, 0.01, 100);
 camera.position.set(0, 0.8, 3.2);
-const ambLight = new THREE.AmbientLight(0xffffff, 0.9); scene.add(ambLight);
-const keyLight = new THREE.DirectionalLight(0xffffff, 1.0); scene.add(keyLight);
+// ライティングは過去ビューア（SUSHIFAIRY_Viewer 等）と同じ構成
+const ambLight = new THREE.HemisphereLight(0xf4f9ff, 0x4f5d6a, 0.9); scene.add(ambLight);
+const keyLight = new THREE.DirectionalLight(0xffffff, 1.6); scene.add(keyLight);
+const fillLight = new THREE.DirectionalLight(0xdff0ff, 0.7); fillLight.position.set(2, 1.5, -2); scene.add(fillLight);
 
 const stage = document.getElementById('stage');
 const stageCtx = stage.getContext('2d');
@@ -384,7 +387,7 @@ function defaultAnime() {
 const CHAR_MOTIONS = ['なし', 'ゆらゆら', 'ぴょんぴょん', 'ぷるぷる', 'くるくる', 'のりのり'];
 const TEXT_MOTIONS = ['なし', 'ぷかぷか', 'ドキドキ', 'ゆれる', 'ジャンプ'];
 function defaultSettings() {
-  return { outlineW: 0, outlineColor: '#ffffff', amb: 0.9, key: 1.0, keyAz: 30, keyEl: 40, shadow: true };
+  return { outlineW: 0, outlineColor: '#ffffff', amb: 0.9, key: 1.6, keyAz: -36, keyEl: 50, shadow: true };
 }
 function defaultText(text = 'よろしく') {
   return {
@@ -845,6 +848,8 @@ function studioEnv() {
   return pmrem.fromScene(env, 0.02).texture;
 }
 const envMap = studioEnv();
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;   // キャラ用の環境ライト
+scene.environmentIntensity = 0.55;
 
 // 英字フォントには日本語の字がないので、かな・カナ・漢字は相性のいい日本語フォントで作る
 const JP_FONT_LIST = FONTS.find(g => g[0] === '日本語')[1];
@@ -1369,6 +1374,9 @@ function applySlot(slot, settle = true) {
   state.texts = clone(slot.texts || []).map(normalizeText);
   state.selText = Math.min(state.selText, Math.max(0, state.texts.length - 1));
   state.settings = { ...defaultSettings(), ...clone(slot.settings || {}) };
+  if (slot.settings && slot.settings.key === 1 && slot.settings.keyAz === 30 && slot.settings.keyEl === 40) {
+    Object.assign(state.settings, { key: 1.6, keyAz: -36, keyEl: 50 });   // 旧ライト初期値は新しい初期値へ
+  }
   state.anime = { ...defaultAnime(), ...clone(slot.anime || {}) };
   applyLights();
 }
