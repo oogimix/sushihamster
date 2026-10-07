@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Rampart+One&family=Reggae+One&family=RocknRoll+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kiwi+Maru:wght@500&family=Hachi+Maru+Pop&family=Yusei+Magic&family=DotGothic16&family=Train+One&family=Stick&family=Potta+One&family=Darumadrop+One&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 :root{
   --bg:#fff4f8; --panel:#ffffff; --ink:#4a2a3a; --sub:#9a7a8a; --line:#f3d2df;
@@ -81,15 +80,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;padding:16p
 .progress.show{display:flex}
 input[type=file]{display:none}
 </style>
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/",
-    "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@2.1.1/lib/three-vrm.module.min.js"
-  }
-}
-</script>
+<script src="lib/vendor.js"></script>
 </head>
 <body>
 <header>
@@ -106,7 +97,7 @@ input[type=file]{display:none}
     <div class="stage-wrap bg-checker" id="stageWrap">
       <canvas id="stage" width="740" height="640"></canvas>
       <canvas id="guide" width="740" height="640"></canvas>
-      <div class="drop-hint" id="dropHint">右の「モデル」タブからプリセットを読み込むか、<br>.vrm / .glb ファイルをここにドロップしてね</div>
+      <div class="drop-hint" id="dropHint">右の「モデル」タブで「📁 モデルフォルダを開く」を押すか、<br>.vrm / .glb ファイルをここにドロップしてね</div>
     </div>
     <div class="toolbar">
       <span class="lbl">背景プレビュー</span>
@@ -146,13 +137,14 @@ input[type=file]{display:none}
   </aside>
 </main>
 <input type="file" id="modelFile" accept=".vrm,.glb" multiple>
+<input type="file" id="folderInput" webkitdirectory multiple>
 <div class="progress" id="progress">処理中…</div>
 
-<script type="module">
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { VRMLoaderPlugin } from '@pixiv/three-vrm';
+<script>
+(() => {
+// three.js / three-vrm / JSZip は lib/vendor.js に同梱（ダブルクリックで開いてもオフラインで動く）
+const { THREE, GLTFLoader, OrbitControls, VRMLoaderPlugin, JSZip } = window.Vendor;
+const IS_FILE = location.protocol === 'file:';
 
 // ===== 定数 =====
 const W = 370, H = 320, S = 2, CW = W * S, CH = H * S;   // LINEスタンプ最大サイズ×2で内部描画
@@ -267,7 +259,7 @@ function defaultSettings() {
 }
 function defaultText(text = 'よろしく') {
   return {
-    text, font: 'Mochiy Pop One', size: 62, spacing: 0, lineH: 1.1, x: W / 2, y: H - 52, rot: -4,
+    text, font: 'Mochiy Pop One', size: 62, spacing: 0, lineH: 1.1, x: W / 2, y: H - 60, rot: -4,
     curve: 0, jitter: 5, bounce: 3, depth: 7, depthAngle: 70, edgeW: 2.5, outlineW: 6, highlight: 0.55,
     shadow: true, behind: false, style: 'ポップピンク', ...TEXT_STYLES['ポップピンク'],
   };
@@ -327,7 +319,7 @@ async function loadModel(url, rawName) {
   applyModelData(m);
   if (vrm) settleModel(m, 30);
   document.getElementById('dropHint').style.display = 'none';
-  if (models.length === 1 && !saved) frameCamera('full');
+  if (!saved) frameCamera('full');   // 新しく出したキャラが画面に入るように
   setStatus(`${name} を読み込みました${vrm ? '（VRM）' : '（GLB）'}`);
   renderPanel();
   markDirty();
@@ -345,12 +337,100 @@ function removeModel(i) {
   if (!models.length) document.getElementById('dropHint').style.display = '';
   renderPanel(); markDirty();
 }
-function loadFiles(files) {
-  for (const f of files) {
-    if (!/\.(vrm|glb)$/i.test(f.name)) { setStatus(`${f.name} は未対応（.vrm / .glb のみ）`); continue; }
-    const url = URL.createObjectURL(f);
-    loadModel(url, f.name.replace(/\.(vrm|glb)$/i, '').replace(/^shin_/, '')).finally(() => URL.revokeObjectURL(url));
+const modelNameOf = fileName => fileName.replace(/\.(vrm|glb)$/i, '').replace(/^shin_/, '');
+async function loadFile(f) {
+  if (!/\.(vrm|glb)$/i.test(f.name)) { setStatus(`${f.name} は未対応（.vrm / .glb のみ）`); return; }
+  const url = URL.createObjectURL(f);
+  try { await loadModel(url, modelNameOf(f.name)); } finally { URL.revokeObjectURL(url); }
+}
+async function loadFiles(files) {
+  for (const f of [...files]) await loadFile(f);
+}
+
+// ===== モデルフォルダ（Cドライブなどのフォルダをまるごと開く） =====
+// Chrome / Edge は File System Access API でフォルダを覚えておき、次回はワンクリックで開ける
+let folderName = '', folderFiles = [], savedHandle = null;
+const idb = (mode, fn) => new Promise((res, rej) => {
+  const rq = indexedDB.open('sushiStickerStudio', 1);
+  rq.onupgradeneeded = () => rq.result.createObjectStore('kv');
+  rq.onerror = () => rej(rq.error);
+  rq.onsuccess = () => {
+    const tx = rq.result.transaction('kv', mode);
+    const r = fn(tx.objectStore('kv'));
+    tx.oncomplete = () => res(r?.result);
+    tx.onerror = () => rej(tx.error);
+  };
+});
+const idbGet = k => idb('readonly', st => st.get(k)).catch(() => null);
+const idbSet = (k, v) => idb('readwrite', st => st.put(v, k)).catch(() => {});
+async function walkDir(dir, depth, out) {
+  for await (const [name, entry] of dir.entries()) {
+    if (out.length >= 200) return;
+    if (entry.kind === 'file' && /\.(vrm|glb)$/i.test(name)) out.push({ name, path: dir.name + '/' + name, get: () => entry.getFile() });
+    else if (entry.kind === 'directory' && depth < 3 && !name.startsWith('.') && !/^(node_modules|AppData)$/i.test(name)) await walkDir(entry, depth + 1, out);
   }
+}
+async function useHandle(h) {
+  setStatus(`フォルダ「${h.name}」を探しています…`);
+  const out = [];
+  await walkDir(h, 0, out);
+  setFolder(h.name, out);
+}
+function setFolder(name, files) {
+  folderName = name;
+  folderFiles = files.sort((a, b) => a.name.localeCompare(b.name));
+  setStatus(folderFiles.length ? `「${name}」に ${folderFiles.length} 個のモデルがあります` : `「${name}」に .vrm / .glb が見つかりませんでした`);
+  if (tab !== 'model') showTab('model'); else renderPanel();
+  autoLoadUsedModels();
+}
+// 保存済みスタンプで使っているモデルがフォルダにあれば自動で読み込む
+async function autoLoadUsedModels() {
+  const used = new Set(state.slots.flatMap(s => Object.keys(s.models || {})));
+  for (const f of folderFiles) {
+    const nm = modelNameOf(f.name);
+    if (used.has(nm) && !models.some(m => m.name === nm)) await loadFile(await f.get());
+  }
+}
+async function openFolder() {
+  if (window.showDirectoryPicker) {
+    try {
+      const h = await window.showDirectoryPicker({ id: 'sticker-models', mode: 'read' });
+      savedHandle = h;
+      await idbSet('folder', h);
+      await useHandle(h);
+    } catch (e) {
+      if (e.name !== 'AbortError') { console.error(e); document.getElementById('folderInput').click(); }
+    }
+  } else {
+    document.getElementById('folderInput').click();
+  }
+}
+async function reopenFolder() {
+  const h = savedHandle;
+  if (!h) return;
+  try {
+    let perm = await h.queryPermission({ mode: 'read' });
+    if (perm !== 'granted') perm = await h.requestPermission({ mode: 'read' });
+    if (perm !== 'granted') { setStatus('フォルダへのアクセスが許可されませんでした'); return; }
+    await useHandle(h);
+  } catch (e) {
+    console.error(e);
+    setStatus('前回のフォルダを開けませんでした。もう一度「モデルフォルダを開く」から選んでね');
+  }
+}
+async function initFolder() {
+  if (!window.showDirectoryPicker) return;
+  savedHandle = await idbGet('folder');
+  if (savedHandle) renderPanel();
+}
+document.getElementById('folderInput').addEventListener('change', e => {
+  const fs = [...e.target.files].filter(f => /\.(vrm|glb)$/i.test(f.name));
+  const root = (e.target.files[0]?.webkitRelativePath || '').split('/')[0] || 'フォルダ';
+  setFolder(root, fs.map(f => ({ name: f.name, path: f.webkitRelativePath, get: async () => f })));
+  e.target.value = '';
+});
+async function loadFromFolder(list) {
+  for (const f of list) await loadFile(await f.get());
 }
 document.getElementById('modelFile').addEventListener('change', e => { loadFiles(e.target.files); e.target.value = ''; });
 stageWrap.addEventListener('dragover', e => { e.preventDefault(); stageWrap.classList.add('dragover'); });
@@ -812,7 +892,11 @@ function trimToCanvas(src, maxW, maxH, margin, exact) {
     if (data[(y * src.width + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
   }
   const out = document.createElement('canvas');
-  out.clipped = x1 >= 0 && (x0 === 0 || y0 === 0 || x1 === src.width - 1 || y1 === src.height - 1);
+  // 端にしっかり色がある＝切れている（影のうっすらした部分は無視）
+  const sw = src.width, sh = src.height, A = (x, y) => data[(y * sw + x) * 4 + 3] > 96;
+  out.clipped = false;
+  for (let x = 0; x < sw && !out.clipped; x++) out.clipped = A(x, 0) || A(x, sh - 1);
+  for (let y = 0; y < sh && !out.clipped; y++) out.clipped = A(0, y) || A(sw - 1, y);
   if (x1 < 0) { out.width = exact ? maxW : 2; out.height = exact ? maxH : 2; return out; }
   const cw = x1 - x0 + 1, ch = y1 - y0 + 1;
   const sc = Math.min((maxW - margin * 2) / cw, (maxH - margin * 2) / ch);
@@ -870,7 +954,6 @@ async function exportCurrent() {
   });
 }
 async function exportZip() {
-  if (!window.JSZip) { alert('ZIPライブラリの読み込みに失敗しました'); return; }
   await withBusy(async () => {
     const zip = new JSZip();
     const clipped = [];
@@ -976,10 +1059,28 @@ function modelPicker() {
 }
 
 function panelModel() {
-  body.append(sec('プリセット',
-    el('div', { class: 'btns' }, ...PRESETS.map(p => btn(p.name, () => loadModel(p.url, p.name)))),
-    el('p', { class: 'note' }, 'recordolphin / kakapop / vibestar などは下のボタンかステージへのドロップで読み込めます。'),
-    el('div', { class: 'btns' }, btn('📂 VRM / GLB を開く', () => document.getElementById('modelFile').click(), 'primary'))));
+  const loaded = nm => models.some(m => m.name === nm);
+  const fileBtns = folderFiles.map(f => {
+    const nm = modelNameOf(f.name);
+    const b = btn((loaded(nm) ? '✓ ' : '') + nm, () => {
+      const i = models.findIndex(m => m.name === nm);
+      if (i >= 0) { selModel = i; renderPanel(); } else loadFromFolder([f]);
+    }, loaded(nm) ? 'on' : '');
+    b.title = f.path;
+    return b;
+  });
+  const rest = folderFiles.filter(f => !loaded(modelNameOf(f.name)));
+  body.append(sec('モデルフォルダ',
+    el('div', { class: 'btns' },
+      btn('📁 モデルフォルダを開く', openFolder, 'primary'),
+      savedHandle && !folderFiles.length ? btn(`前回のフォルダ「${savedHandle.name}」`, reopenFolder) : null,
+      btn('ファイルを選ぶ', () => document.getElementById('modelFile').click())),
+    folderFiles.length ? el('p', { class: 'note' }, `「${folderName}」のモデル（クリックで読み込み）`) : el('p', { class: 'note' },
+      'sushihamster / sushifairy / recordolphin / kakapop / vibestar の .vrm・.glb が入ったフォルダを選んでね。サブフォルダの中も探します。'),
+    fileBtns.length ? el('div', { class: 'btns' }, ...fileBtns) : null,
+    rest.length > 1 ? el('div', { class: 'btns', style: 'margin-top:6px' }, btn(`まだの ${rest.length} 体をまとめて読み込む`, () => loadFromFolder(rest))) : null));
+  if (!IS_FILE) body.append(sec('サイト内のモデル',
+    el('div', { class: 'btns' }, ...PRESETS.map(p => btn(p.name, () => loadModel(p.url, p.name))))));
   if (!models.length) return;
   const list = el('div', { class: 'list' });
   models.forEach((m, i) => {
@@ -1169,6 +1270,8 @@ if (saved) {
 suppressDirty = false;
 renderSlots();
 renderPanel();
+initFolder();
+})();
 </script>
 </body>
 </html>
