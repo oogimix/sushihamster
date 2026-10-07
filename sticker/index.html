@@ -8,7 +8,7 @@
 <link rel="icon" href="../favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Modak&family=Bagel+Fat+One&family=Titan+One&family=Chewy&family=Fredoka:wght@700&family=Baloo+2:wght@800&family=Sniglet:wght@800&family=Lilita+One&family=Rubik+Bubbles&family=Comfortaa:wght@700&family=Quicksand:wght@700&family=Audiowide&family=Orbitron:wght@800&family=Righteous&family=Pacifico&family=Caveat:wght@700&family=Gochi+Hand&family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Potta+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kosugi+Maru&family=Hachi+Maru+Pop&family=Yusei+Magic&family=Darumadrop+One&family=RocknRoll+One&family=Kiwi+Maru:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Modak&family=Bagel+Fat+One&family=Titan+One&family=Chewy&family=Fredoka:wght@700&family=Baloo+2:wght@800&family=Sniglet:wght@800&family=Lilita+One&family=Rubik+Bubbles&family=DM+Serif+Display&family=Lobster&family=Yellowtail&family=Monoton&family=Shippori+Mincho+B1:wght@800&family=Comfortaa:wght@700&family=Quicksand:wght@700&family=Audiowide&family=Orbitron:wght@800&family=Righteous&family=Pacifico&family=Caveat:wght@700&family=Gochi+Hand&family=Mochiy+Pop+One&family=Dela+Gothic+One&family=Potta+One&family=M+PLUS+Rounded+1c:wght@800;900&family=Zen+Maru+Gothic:wght@900&family=Kosugi+Maru&family=Hachi+Maru+Pop&family=Yusei+Magic&family=Darumadrop+One&family=RocknRoll+One&family=Kiwi+Maru:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#fff4f8; --panel:#ffffff; --ink:#4a2a3a; --sub:#9a7a8a; --line:#f3d2df;
@@ -164,10 +164,11 @@ const FONTS = [
   ['英字：ぷっくり', ['Modak', 'Bagel Fat One', 'Titan One', 'Chewy', 'Fredoka', 'Baloo 2', 'Sniglet', 'Lilita One', 'Rubik Bubbles']],
   ['英字：手書き', ['Pacifico', 'Caveat', 'Gochi Hand']],
   ['英字：Y2K・エアロ', ['Comfortaa', 'Quicksand', 'Audiowide', 'Orbitron', 'Righteous']],
+  ['英字：レトロ', ['DM Serif Display', 'Lobster', 'Yellowtail', 'Monoton']],
   ['日本語', ['Mochiy Pop One', 'Dela Gothic One', 'Potta One', 'M PLUS Rounded 1c', 'Zen Maru Gothic', 'Kosugi Maru',
-    'Hachi Maru Pop', 'Yusei Magic', 'Darumadrop One', 'RocknRoll One', 'Kiwi Maru']],
+    'Hachi Maru Pop', 'Yusei Magic', 'Darumadrop One', 'RocknRoll One', 'Kiwi Maru', 'Shippori Mincho B1']],
 ];
-const FONT_WEIGHT = { 'Comfortaa': 700, 'Quicksand': 700, 'Orbitron': 800, 'Fredoka': 700, 'Baloo 2': 800, 'Sniglet': 800, 'Caveat': 700, 'M PLUS Rounded 1c': 900, 'Zen Maru Gothic': 900, 'Kiwi Maru': 500 };
+const FONT_WEIGHT = { 'Shippori Mincho B1': 800, 'Comfortaa': 700, 'Quicksand': 700, 'Orbitron': 800, 'Fredoka': 700, 'Baloo 2': 800, 'Sniglet': 800, 'Caveat': 700, 'M PLUS Rounded 1c': 900, 'Zen Maru Gothic': 900, 'Kiwi Maru': 500 };
 
 // 素材プリセット（top/bottom：上下グラデ、rough：ざらつき、metal：金属感、coat：表面コート、irid：虹色、sheen：ふわふわ、env：映り込み）
 const MAT_PRESETS = {
@@ -186,6 +187,9 @@ const MAT_PRESETS = {
   'クリアライム': { top: '#e4ffc2', bottom: '#6fd222', rough: 0.05, metal: 0, coat: 1, irid: 0.15, sheen: 0, opacity: 1, env: 1.4, trans: 0.6 },
   'クリアピンク': { top: '#ffd9ec', bottom: '#ff58a8', rough: 0.05, metal: 0, coat: 1, irid: 0.2, sheen: 0, opacity: 1, env: 1.4, trans: 0.6 },
   'Y2Kシルバー':  { top: '#ffffff', bottom: '#c9d4e4', rough: 0.05, metal: 1, coat: 1, irid: 0.5, sheen: 0, opacity: 1, env: 1.8 },
+  // stripes：下半分に入る横縞の本数（80年代クロームのサンセット表現）、stripeColor：縞の色
+  'ベイパー':     { top: '#7af5ff', bottom: '#ff71ce', rough: 0.1, metal: 0.55, coat: 1, irid: 0.5, sheen: 0, opacity: 1, env: 1.6, stripes: 6, stripeColor: '#8a4dff' },
+  'サンセット':   { top: '#ffe289', bottom: '#ff5e87', rough: 0.12, metal: 0.35, coat: 1, irid: 0, sheen: 0, opacity: 1, env: 1.4, stripes: 5, stripeColor: '#ff9d2e' },
 };
 // ワンタッチ完成スタイル（第一弾スタンプの文字を参考に、フォント・形・加工・素材をまとめて設定）
 const TYPE_STYLES = {
@@ -205,12 +209,14 @@ const TYPE_STYLES = {
   'Y2Kクローム':    { ref: 'Y2K',      font: 'Audiowide', thick: 0.02, round: 0.012, fx: 'none', puff: 0.9, spacing: 0.02, mat: 'Y2Kシルバー' },
   'サイバー':       { ref: '2000',     font: 'Orbitron', thick: 0.015, round: 0.01, fx: 'tube', fxAmt: 0.9, puff: 1, spacing: 0.04, mat: 'クリアアクア',
                       top: '#d8fbff', bottom: '#19c8e8' },
+  'ベイパーウェイブ': { ref: 'VAPOR',  jpFont: 'Shippori Mincho B1', font: 'DM Serif Display', thick: 0.022, round: 0.012, fx: 'none', puff: 0.85, spacing: 0.16, mat: 'ベイパー' },
+  'シティポップ':   { ref: 'City',     jpFont: 'Yusei Magic', font: 'Yellowtail', thick: 0.04, round: 0.02, fx: 'none', puff: 1.05, spacing: 0.02, mat: 'サンセット' },
   'パステル':       { ref: 'CHU',      font: 'Fredoka', thick: 0.03, round: 0.02, fx: 'none', puff: 1, spacing: -0.02, mat: 'バルーン',
                       top: '#ffe0f0', bottom: '#f5a3cf', rough: 0.5, coat: 0.3 },
 };
 function applyTypeStyle(L, name) {
   const { ref, mat, ...st } = TYPE_STYLES[name];
-  Object.assign(L, { jitter3d: 0, bounce: 0, fxAmt: 1, jpFont: '', trans: 0 }, MAT_PRESETS[mat], { mat, style: name }, st);
+  Object.assign(L, { jitter3d: 0, bounce: 0, fxAmt: 1, jpFont: '', trans: 0, stripes: 0 }, MAT_PRESETS[mat], { mat, style: name }, st);
 }
 const FX = [['none', 'なし'], ['cloud', 'くも'], ['drip', 'したたり'], ['bubble', '泡'], ['tube', 'チューブ']];
 const SWATCHES = ['#ff5c98', '#ff8fb8', '#ff3b3b', '#ff9418', '#ffd23f', '#a6e34a', '#3ccf8e', '#2ec4d6', '#1b9be6', '#5b6cff',
@@ -309,7 +315,7 @@ function defaultText(text = 'よろしく') {
     size: 0.25, spacing: -0.03, lineH: 1.05, curve: 0, jitter: 0, bounce: 0, jitter3d: 0,
     ...SHAPE_PRESETS['ふつう'], fx: 'none', fxAmt: 1, puff: 1, quality: 64,
     pos: [0, 1, 0.3], rot: [0, 0, 0],
-    mat: 'バルーン', trans: 0, ...MAT_PRESETS['バルーン'], jpFont: '',
+    mat: 'バルーン', trans: 0, stripes: 0, stripeColor: '#8a4dff', ...MAT_PRESETS['バルーン'], jpFont: '',
   };
 }
 // 古い（2D文字の）保存データや欠けた項目を補う
@@ -659,7 +665,7 @@ const JP_FONT_LIST = FONTS.find(g => g[0] === '日本語')[1];
 const JP_PAIR = {
   'Modak': 'Mochiy Pop One', 'Bagel Fat One': 'Mochiy Pop One', 'Titan One': 'Mochiy Pop One', 'Chewy': 'Mochiy Pop One',
   'Fredoka': 'M PLUS Rounded 1c', 'Baloo 2': 'M PLUS Rounded 1c', 'Sniglet': 'Zen Maru Gothic', 'Lilita One': 'Dela Gothic One',
-  'Rubik Bubbles': 'Mochiy Pop One', 'Comfortaa': 'Zen Maru Gothic', 'Quicksand': 'Zen Maru Gothic', 'Audiowide': 'Dela Gothic One', 'Orbitron': 'Dela Gothic One', 'Righteous': 'Dela Gothic One', 'Pacifico': 'Hachi Maru Pop', 'Caveat': 'Yusei Magic', 'Gochi Hand': 'Yusei Magic',
+  'Rubik Bubbles': 'Mochiy Pop One', 'Comfortaa': 'Zen Maru Gothic', 'Quicksand': 'Zen Maru Gothic', 'Audiowide': 'Dela Gothic One', 'Orbitron': 'Dela Gothic One', 'Righteous': 'Dela Gothic One', 'DM Serif Display': 'Shippori Mincho B1', 'Monoton': 'Dela Gothic One', 'Lobster': 'Yusei Magic', 'Yellowtail': 'Yusei Magic', 'Pacifico': 'Hachi Maru Pop', 'Caveat': 'Yusei Magic', 'Gochi Hand': 'Yusei Magic',
 };
 const isLatin = ch => { const c = ch.codePointAt(0); return c < 0x250 || (c >= 0x2000 && c < 0x2070); };
 function jpFontOf(L) { return L.jpFont || JP_PAIR[L.font] || 'Mochiy Pop One'; }
@@ -938,12 +944,15 @@ function makeMaterial() {
   const mat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, envMap, iridescenceIOR: 1.8, iridescenceThicknessRange: [120, 820], clearcoatRoughness: 0.05 });
   mat.userData.uTop = { value: new THREE.Color() };
   mat.userData.uBot = { value: new THREE.Color() };
+  mat.userData.uStripes = { value: 0 };
+  mat.userData.uStripeCol = { value: new THREE.Color() };
   mat.onBeforeCompile = sh => {
     sh.uniforms.uTop = mat.userData.uTop; sh.uniforms.uBot = mat.userData.uBot;
+    sh.uniforms.uStripes = mat.userData.uStripes; sh.uniforms.uStripeCol = mat.userData.uStripeCol;
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vGy;')
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvGy = position.y;');
-    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vGy;\nuniform vec3 uTop;\nuniform vec3 uBot;')
-      .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= mix(uBot, uTop, smoothstep(-0.42, 0.42, vGy));');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vGy;\nuniform vec3 uTop;\nuniform vec3 uBot;\nuniform float uStripes;\nuniform vec3 uStripeCol;')
+      .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= mix(uBot, uTop, smoothstep(-0.42, 0.42, vGy));\nif (uStripes > 0.5) {\n  float sy = clamp((vGy + 0.42) / 0.84, 0.0, 1.0);\n  // 下半分だけ、下へ行くほど太くなる縞（80年代クロームのサンセット）\n  float band = fract(sy * uStripes);\n  float w = mix(0.62, 0.15, sy / 0.52);\n  float m = (1.0 - step(w, band)) * (1.0 - smoothstep(0.45, 0.52, sy));\n  diffuseColor.rgb = mix(diffuseColor.rgb, uStripeCol, m * 0.9);\n}');
   };
   mat.customProgramCacheKey = () => 'puffyText';
   return mat;
@@ -951,6 +960,8 @@ function makeMaterial() {
 function updateMaterial(mat, L) {
   mat.userData.uTop.value.set(L.top);
   mat.userData.uBot.value.set(L.bottom);
+  mat.userData.uStripes.value = L.stripes || 0;
+  mat.userData.uStripeCol.value.set(L.stripeColor || '#8a4dff');
   mat.roughness = L.rough; mat.metalness = L.metal;
   mat.clearcoat = L.coat; mat.iridescence = L.irid;
   mat.sheen = L.sheen; mat.sheenColor.set(0xffffff); mat.sheenRoughness = 0.6;
@@ -1576,7 +1587,9 @@ function panelText() {
     slider('ふわふわ', () => L.sheen, v => L.sheen = v, 0, 1, 0.01, pct),
     slider('映り込み', () => L.env, v => L.env = v, 0, 3, 0.05),
     slider('透け', () => 1 - L.opacity, v => L.opacity = 1 - v, 0, 0.8, 0.01, pct),
-    slider('クリア感', () => L.trans || 0, v => L.trans = v, 0, 1, 0.01, pct)));
+    slider('クリア感', () => L.trans || 0, v => L.trans = v, 0, 1, 0.01, pct),
+    slider('サンセット縞', () => L.stripes || 0, v => L.stripes = v, 0, 12, 1),
+    (L.stripes || 0) > 0 ? color('縞の色', () => L.stripeColor || '#8a4dff', v => L.stripeColor = v) : null));
 
   body.append(sec('形（ふくらみ・加工）',
     el('div', { class: 'btns' }, ...Object.entries(SHAPE_PRESETS).map(([k, v]) =>
