@@ -131,6 +131,7 @@ input[type=file]{display:none}
       <button data-tab="face">表情</button>
       <button data-tab="camera">カメラ・ライト</button>
       <button data-tab="text">文字</button>
+      <button data-tab="anime">アニメ</button>
       <button data-tab="export">書き出し</button>
     </div>
     <div class="tab-body" id="tabBody"></div>
@@ -143,7 +144,7 @@ input[type=file]{display:none}
 <script>
 (() => {
 // three.js / three-vrm / JSZip は lib/vendor.js に同梱（ダブルクリックで開いてもオフラインで動く）
-const { THREE, GLTFLoader, OrbitControls, VRMLoaderPlugin, MeshoptDecoder, JSZip } = window.Vendor;
+const { THREE, GLTFLoader, OrbitControls, VRMLoaderPlugin, MeshoptDecoder, JSZip, UPNG } = window.Vendor;
 const IS_FILE = location.protocol === 'file:';
 
 // ===== 定数 =====
@@ -324,6 +325,7 @@ const EXPR_PRESETS = {
 const models = [];            // 読み込み済みモデル（three オブジェクトを持つ）
 let selModel = -1;
 const state = {
+  anime: null,
   texts: [],
   selText: 0,
   settings: defaultSettings(),
@@ -360,6 +362,12 @@ const loader = new GLTFLoader();
 loader.register(p => new VRMLoaderPlugin(p));
 loader.setMeshoptDecoder(MeshoptDecoder);   // recordolphin が meshopt 圧縮を使用
 
+// 動くスタンプの設定（スロットごと）
+function defaultAnime() {
+  return { on: false, dur: 2, fps: 10, loops: 2, char: 'ゆらゆら', text: 'ぷかぷか', clip: true };
+}
+const CHAR_MOTIONS = ['なし', 'ゆらゆら', 'ぴょんぴょん', 'ぷるぷる', 'くるくる', 'のりのり'];
+const TEXT_MOTIONS = ['なし', 'ぷかぷか', 'ドキドキ', 'ゆれる', 'ジャンプ'];
 function defaultSettings() {
   return { outlineW: 0, outlineColor: '#ffffff', amb: 0.9, key: 1.0, keyAz: 30, keyEl: 40, shadow: true };
 }
@@ -1210,11 +1218,67 @@ function drawGuide() {
     g.strokeRect(x0, y0, x1 - x0, y1 - y0);
   }
 }
+// phase(0〜1)に応じてキャラと文字を動かす（d.pos などの保存値は書き換えない）
+function applyBoneRotOffsets(m) {
+  const d = m.data;
+  if (!m.bones || !d.boneRot) return;
+  const e = new THREE.Euler(), q = new THREE.Quaternion();
+  for (const [bn, r] of Object.entries(d.boneRot)) {
+    const b = m.bones.get(bn);
+    if (b) { e.set(r[0] * D2R, r[1] * D2R, r[2] * D2R); b.quaternion.multiply(q.setFromEuler(e)); }
+  }
+}
+function applyAnime(phase) {
+  const A = state.anime || defaultAnime();
+  const w = phase * Math.PI * 2;
+  for (const m of models) {
+    if (!m.root.visible) continue;
+    const d = m.data;
+    m.root.position.set(...d.pos);
+    m.root.rotation.set(0, d.rotY * D2R, 0);
+    m.root.scale.setScalar(d.scale);
+    // GLB はモーションをそのまま再生
+    if (A.clip && m.action && m.clips[d.anim]) {
+      const c = m.clips[d.anim];
+      m.action.time = (d.animTime + phase * A.dur) % c.duration;
+      m.mixer.update(0);
+      applyBoneRotOffsets(m);
+    }
+    const sc = m.height || 1;
+    switch (A.char) {
+      case 'ゆらゆら': m.root.rotation.z += Math.sin(w) * 8 * D2R; break;
+      case 'ぴょんぴょん': { const h = Math.abs(Math.sin(w)); m.root.position.y += h * 0.1 * sc; m.root.scale.y *= 1 - 0.06 * (1 - h); break; }
+      case 'ぷるぷる': m.root.rotation.z += Math.sin(w * 6) * 3 * D2R; m.root.position.x += Math.sin(w * 8) * 0.008 * sc; break;
+      case 'くるくる': m.root.rotation.y += w; break;
+      case 'のりのり': m.root.rotation.z += Math.sin(w * 2) * 5 * D2R; m.root.position.y += Math.abs(Math.sin(w * 2)) * 0.04 * sc; break;
+    }
+  }
+  state.texts.forEach((L, li) => {
+    const o = textGroups.get(L.id);
+    if (!o || !o.group.visible) return;
+    o.group.position.fromArray(L.pos);
+    o.group.rotation.set(L.rot[0] * D2R, L.rot[1] * D2R, L.rot[2] * D2R);
+    o.group.scale.set(L.size, L.size, L.size * L.puff);
+    const ph = w + li * 1.3;
+    switch (A.text) {
+      case 'ぷかぷか': o.group.position.y += Math.sin(ph) * L.size * 0.12; break;
+      case 'ドキドキ': { const k = 1 + 0.07 * Math.sin(ph * 2); o.group.scale.multiplyScalar(k); break; }
+      case 'ゆれる': o.group.rotation.z += Math.sin(ph) * 6 * D2R; break;
+      case 'ジャンプ': o.group.position.y += Math.abs(Math.sin(ph)) * L.size * 0.2; break;
+    }
+  });
+}
+let previewAnim = false, previewT = 0;
 function renderFrame(dt) {
   for (const m of models) {
     if (m.vrm) { applyPose(m); m.vrm.update(dt); }
   }
   syncTexts();
+  if (previewAnim) {
+    const A = state.anime || defaultAnime();
+    previewT = (previewT + dt) % A.dur;
+    applyAnime(previewT / A.dur);
+  }
   renderer.render(scene, camera);
   compose(stageCtx);
 }
@@ -1266,6 +1330,7 @@ function serialize() {
     camera: { pos: camera.position.toArray(), target: controls.target.toArray(), fov: camera.fov },
     texts: clone(state.texts),
     settings: clone(state.settings),
+    anime: clone(state.anime || defaultAnime()),
   };
 }
 function applySlot(slot, settle = true) {
@@ -1285,6 +1350,7 @@ function applySlot(slot, settle = true) {
   state.texts = clone(slot.texts || []).map(normalizeText);
   state.selText = Math.min(state.selText, Math.max(0, state.texts.length - 1));
   state.settings = { ...defaultSettings(), ...clone(slot.settings || {}) };
+  state.anime = { ...defaultAnime(), ...clone(slot.anime || {}) };
   applyLights();
 }
 function markDirty() {
@@ -1490,6 +1556,119 @@ document.getElementById('projFile').addEventListener('change', async e => {
   } catch (err) { alert('読み込めませんでした: ' + err.message); }
 });
 
+// ===== 動くスタンプ（APNG）書き出し =====
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c; }
+  return t;
+})();
+function crc32(u8, from, to) {
+  let c = 0xFFFFFFFF;
+  for (let i = from; i < to; i++) c = CRC_TABLE[(c ^ u8[i]) & 255] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+// UPNG はループ回数を無限で書くので、acTL チャンクを書き換えて 1〜4回にする
+function setApngLoops(buf, loops) {
+  const u8 = new Uint8Array(buf), dv = new DataView(buf);
+  let off = 8;
+  while (off + 8 <= u8.length) {
+    const len = dv.getUint32(off), type = String.fromCharCode(u8[off + 4], u8[off + 5], u8[off + 6], u8[off + 7]);
+    if (type === 'acTL') {
+      dv.setUint32(off + 12, loops);
+      dv.setUint32(off + 8 + len, crc32(u8, off + 4, off + 8 + len));
+      break;
+    }
+    off += 12 + len;
+  }
+  return u8;
+}
+function animFrameCount(A) { return Math.max(2, Math.min(20, Math.round(A.fps * A.dur))); }
+// 1スロットをAPNGに。全フレーム共通の切り抜き枠で書き出す
+async function renderSlotApng(slot, maxW, maxH, exact) {
+  applySlot(slot, true);
+  await Promise.all(state.texts.map(ensureFonts));
+  await Promise.all(models.map(m => applyNeta(m)));
+  await document.fonts.ready;
+  syncTexts(true);
+  const A = state.anime || defaultAnime();
+  const F = animFrameCount(A), dt = A.dur / F;
+  const step = ph => {
+    for (const m of models) if (m.vrm) applyPose(m);
+    applyAnime(ph);
+    for (const m of models) if (m.vrm) m.vrm.update(dt);
+  };
+  for (let k = 0; k < F * 2; k++) step((k % F) / F);   // ゆれものの助走（ループ頭とつながるように）
+  const shots = [];
+  for (let k = 0; k < F; k++) {
+    step(k / F);
+    renderer.render(scene, camera);
+    compose(workCtx);
+    const c = document.createElement('canvas'); c.width = CW; c.height = CH;
+    c.getContext('2d').drawImage(work, 0, 0);
+    shots.push(c);
+  }
+  // 全フレームの不透明部分を合わせた枠
+  let x0 = CW, y0 = CH, x1 = -1, y1 = -1;
+  for (const c of shots) {
+    const data = c.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, CW, CH).data;
+    for (let y = 0; y < CH; y++) for (let x = 0; x < CW; x++) {
+      if (data[(y * CW + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    }
+  }
+  if (x1 < 0) { x0 = 0; y0 = 0; x1 = CW - 1; y1 = CH - 1; }
+  const cw = x1 - x0 + 1, ch = y1 - y0 + 1, margin = exact ? 0 : MARGIN;
+  const scl = Math.min((maxW - margin * 2) / cw, (maxH - margin * 2) / ch);
+  const dw = cw * scl, dh = ch * scl;
+  const ow = exact ? maxW : Math.min(maxW, Math.ceil((dw + margin * 2) / 2) * 2);
+  const oh = exact ? maxH : Math.min(maxH, Math.ceil((dh + margin * 2) / 2) * 2);
+  const out = document.createElement('canvas'); out.width = ow; out.height = oh;
+  const o = out.getContext('2d', { willReadFrequently: true });
+  o.imageSmoothingQuality = 'high';
+  const bufs = [];
+  for (const c of shots) {
+    o.clearRect(0, 0, ow, oh);
+    o.drawImage(c, x0, y0, cw, ch, (ow - dw) / 2, (oh - dh) / 2, dw, dh);
+    bufs.push(o.getImageData(0, 0, ow, oh).data.buffer.slice(0));
+  }
+  const delays = Array(F).fill(Math.round(1000 * A.dur / F));
+  // 256色に減色して 300KB 以下を狙う（LINEの上限）
+  let png = UPNG.encode(bufs, ow, oh, 256, delays);
+  if (png.byteLength > 290 * 1024) png = UPNG.encode(bufs, ow, oh, 128, delays);
+  if (png.byteLength > 290 * 1024) png = UPNG.encode(bufs, ow, oh, 64, delays);
+  return setApngLoops(png, Math.max(1, Math.min(4, A.loops)));
+}
+async function exportApngCurrent() {
+  await withBusy(async () => {
+    showProgress('APNG書き出し中…');
+    const u8 = await renderSlotApng(state.slots[state.active], 320, 270, false);
+    download(new Blob([u8], { type: 'image/png' }), `${String(state.active + 1).padStart(2, '0')}.png`);
+    const kb = Math.round(u8.length / 1024);
+    setStatus(`APNGを保存しました（${kb}KB${kb > 300 ? ' ⚠ LINEの上限300KBを超えています。フレーム数か秒数を減らしてね' : ''}）`);
+  });
+}
+async function exportApngZip() {
+  await withBusy(async () => {
+    const zip = new JSZip();
+    const over = [];
+    for (let i = 0; i < state.slots.length; i++) {
+      showProgress(`APNG書き出し中… ${i + 1} / ${state.slots.length}`);
+      await new Promise(r => setTimeout(r, 0));
+      const u8 = await renderSlotApng(state.slots[i], 320, 270, false);
+      if (u8.length > 300 * 1024) over.push(i + 1);
+      zip.file(`${String(i + 1).padStart(2, '0')}.png`, u8);
+    }
+    const mi = Math.min(state.mainSlot ?? state.active, state.slots.length - 1);
+    showProgress('main / tab を作成中…');
+    zip.file('main.png', await renderSlotApng(state.slots[mi], 240, 240, true));
+    const c = await renderSlotStill(state.slots[mi]);
+    zip.file('tab.png', await toBlob(trimToCanvas(c, 96, 74, 0, true)));
+    showProgress('ZIP作成中…');
+    download(await zip.generateAsync({ type: 'blob' }), 'line_animation_stickers.zip');
+    setStatus(`動くスタンプ${state.slots.length}枚 + main.png + tab.png を書き出しました` +
+      (over.length ? `　⚠ ${over.join(', ')}枚目が300KB超過` : ''));
+  });
+}
+
 // ===== UI ヘルパー =====
 const body = document.getElementById('tabBody');
 function el(tag, attrs = {}, ...kids) {
@@ -1537,6 +1716,7 @@ function curModel() { return models[selModel]; }
 
 // ===== パネル =====
 function showTab(t) {
+  if (t !== 'anime' && previewAnim) previewAnim = false;
   tab = t;
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
   renderPanel();
@@ -1544,7 +1724,7 @@ function showTab(t) {
 document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
 function renderPanel() {
   body.innerHTML = '';
-  ({ model: panelModel, pose: panelPose, face: panelFace, camera: panelCamera, text: panelText, export: panelExport })[tab]();
+  ({ model: panelModel, pose: panelPose, face: panelFace, camera: panelCamera, text: panelText, anime: panelAnime, export: panelExport })[tab]();
 }
 function needModel(vrmOnly) {
   const m = curModel();
@@ -1839,6 +2019,30 @@ function panelText() {
     slider('向き Y', () => R[1], v => R[1] = v, -180, 180, 1, v => v + '°'),
     slider('回転 Z', () => R[2], v => R[2] = v, -180, 180, 1, v => v + '°'),
     el('p', { class: 'note' }, '「前後」でキャラの後ろに回すと、O の穴からのぞく構図なども作れます。')));
+}
+
+function panelAnime() {
+  const A = state.anime || (state.anime = defaultAnime());
+  const F = animFrameCount(A);
+  const pv = btn(previewAnim ? '■ プレビュー停止' : '▶ プレビュー再生', () => { previewAnim = !previewAnim; previewT = 0; renderPanel(); }, previewAnim ? 'on' : 'primary');
+  body.append(sec('動くスタンプ（APNG）',
+    el('div', { class: 'btns' }, pv),
+    el('p', { class: 'note' }, `LINEのアニメーションスタンプ：最大320×270px・1〜4秒・5〜20フレーム・300KB以下。いまの設定：${F}フレーム / ${A.dur}秒 × ${A.loops}ループ`)));
+  body.append(sec('動き',
+    select('キャラの動き', CHAR_MOTIONS.map(m => [m, m]), () => A.char, v => A.char = v),
+    check('モーションを再生（GLBキャラ）', () => A.clip, v => A.clip = v),
+    select('文字の動き', TEXT_MOTIONS.map(m => [m, m]), () => A.text, v => A.text = v),
+    el('p', { class: 'note' }, 'recordolphin / kakapop / vibestar は、ポーズタブで選んだクリップがそのまま動きます。VRM（sushihamster / sushifairy）は上の「キャラの動き」+ゆれもので動きます。')));
+  body.append(sec('タイミング',
+    select('長さ', [[1, '1秒'], [2, '2秒'], [3, '3秒'], [4, '4秒']], () => A.dur, v => { A.dur = +v; renderPanel(); }),
+    select('なめらかさ', [[5, '5fps'], [10, '10fps'], [15, '15fps'], [20, '20fps']], () => A.fps, v => { A.fps = +v; renderPanel(); }),
+    select('ループ回数', [[1, '1回'], [2, '2回'], [3, '3回'], [4, '4回']], () => A.loops, v => A.loops = +v),
+    el('p', { class: 'note' }, 'フレーム数は fps × 秒で決まり、20を超えるぶんは自動で間引かれます。容量が300KBを超えたら、秒数かfpsを下げてください。')));
+  body.append(sec('書き出し',
+    el('div', { class: 'btns' },
+      btn('このスタンプをAPNG', exportApngCurrent),
+      btn(`全${state.slots.length}枚を動くスタンプZIP`, exportApngZip, 'primary')),
+    el('p', { class: 'note' }, '動き・タイミングの設定はスタンプ1枚ごとに保存されます。静止画スタンプの書き出しは「書き出し」タブのままです。')));
 }
 
 function panelExport() {
