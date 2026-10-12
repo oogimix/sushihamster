@@ -34,6 +34,10 @@
     "tooltip": "Contact via email",
     "email_label": "📩 Contact: sush1h4mst3r@gmail.com"
   },
+  "logomaker": {
+    "prompt": "Make a one-of-a-kind logo♪",
+    "link": "💫Play with the Logo Maker!"
+  },
   "form": {
     "name_label": "Your Name",
     "name_placeholder": "Enter your name"

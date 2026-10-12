@@ -34,6 +34,10 @@
     "tooltip": "通过邮件联系我们",
     "email_label": "📩 联系邮箱：sush1h4mst3r@gmail.com"
   },
+  "logomaker": {
+    "prompt": "來做世界上獨一無二的標誌吧♪",
+    "link": "💫用標誌產生器來玩吧！"
+  },
   "form": {
     "name_label": "姓名",
     "name_placeholder": "请输入您的姓名"

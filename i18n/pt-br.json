@@ -34,6 +34,10 @@
     "tooltip": "Entrar em contato por e-mail",
     "email_label": "📩 Contato: sush1h4mst3r@gmail.com"
   },
+  "logomaker": {
+    "prompt": "Crie um logo único no mundo♪",
+    "link": "💫Brinque no Logo Maker!"
+  },
   "form": {
     "name_label": "Nome",
     "name_placeholder": "Digite seu nome"
