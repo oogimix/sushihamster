@@ -1,5 +1,5 @@
 (() => {
-  const b64 = "c3VzaDFoNG1zdDNyQGdtYWlsLmNvbQ=="; // sush1h4mst3r@gmail.com
+  const b64 = "c3VzaDFoNG1zdGVyQGdtYWlsLmNvbQ=="; // sush1h4mster@gmail.com
   const email = atob(b64);
 
   function mount(selector = "#email-link") {
