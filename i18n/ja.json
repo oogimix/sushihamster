@@ -55,10 +55,25 @@
       "name": "sushifairy",
       "desc": "お鮨の妖精。<br>ふわふわのシャリがみんなのハートもふわふわにしてくれるよ。<br>チャームポイントはわさびのしっぽ。"
     },
+    "recordolphin": {
+      "alt": "recordolphin",
+      "name": "recordolphin",
+      "desc": "フレッシュピンクのイルカ。<br>海のように広く深く曲をdigするよ。<br>チャームポイントはレコードの浮き輪。"
+    },
+    "kakapop": {
+      "alt": "kakapop",
+      "name": "kakapop",
+      "desc": "ウォームイエローのカカポ。<br>いつか空を飛ぶことをのんびり夢見ているよ。<br>チャームポイントはカセットのポシェット。"
+    },
+    "vibestar": {
+      "alt": "vibestar",
+      "name": "vibestar",
+      "desc": "蓄光グリーンのお星さま。<br>バイブスを上げるために宇宙からやって来たよ。<br>チャームポイントはローラースケート。"
+    },
     "friends": {
       "alt": "oogimixとLinopink",
       "name": "oogimix ＆ Linopink",
-      "desc": "sushihamster&sushifairyとは別の次元にいる仲間。<br>音楽の力で繋がっているよ。"
+      "desc": "sushihamster達とは別の次元にいる仲間。<br>音楽の力で繋がっているよ。"
     }
   },
   "information": {

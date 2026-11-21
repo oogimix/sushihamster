@@ -55,10 +55,25 @@
       "name": "sushifairy",
       "desc": "A sushi fairy.<br>The fluffy rice makes everyone's heart feel fluffy too.<br>Its charm point is its wasabi tail."
     },
+    "recordolphin": {
+      "alt": "recordolphin",
+      "name": "recordolphin",
+      "desc": "A fresh pink dolphin.<br>It digs for tunes as wide and deep as the sea.<br>Its charm point is the record float ring."
+    },
+    "kakapop": {
+      "alt": "kakapop",
+      "name": "kakapop",
+      "desc": "A warm yellow kakapo.<br>It dreams, nice and slowly, of flying in the sky someday.<br>Its charm point is the cassette pouch."
+    },
+    "vibestar": {
+      "alt": "vibestar",
+      "name": "vibestar",
+      "desc": "A glow-in-the-dark green star.<br>It came from outer space to raise the vibes.<br>Its charm point is the roller skates."
+    },
     "friends": {
       "alt": "oogimix and Linopink",
       "name": "oogimix & Linopink",
-      "desc": "Friends from another dimension from sushihamster & sushifairy.<br>Connected through the power of music."
+      "desc": "Friends from a different dimension than the sushihamster crew.<br>Connected through the power of music."
     }
   },
   "information": {

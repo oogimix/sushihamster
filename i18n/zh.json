@@ -55,10 +55,25 @@
       "name": "sushifairy",
       "desc": "寿司的精灵。<br>松软的米饭也会把大家的心变得松软。<br>魅力点是芥末小尾巴。"
     },
+    "recordolphin": {
+      "alt": "recordolphin",
+      "name": "recordolphin",
+      "desc": "清新粉色的海豚。<br>像大海一样广阔又深邃地挖掘好歌哦。<br>魅力点是唱片游泳圈。"
+    },
+    "kakapop": {
+      "alt": "kakapop",
+      "name": "kakapop",
+      "desc": "暖黄色的鸮鹦鹉。<br>悠闲地梦想着有一天能飞上天空。<br>魅力点是卡带小挎包。"
+    },
+    "vibestar": {
+      "alt": "vibestar",
+      "name": "vibestar",
+      "desc": "夜光绿色的小星星。<br>为了让气氛嗨起来，从宇宙来到这里。<br>魅力点是轮滑鞋。"
+    },
     "friends": {
       "alt": "oogimix 和 Linopink",
       "name": "oogimix ＆ Linopink",
-      "desc": "与寿司仓鼠＆寿司精灵处在不同次元的伙伴。<br>靠音乐的力量相连。"
+      "desc": "与sushihamster们身处不同次元的伙伴。<br>靠音乐的力量相连。"
     }
   },
   "information": {

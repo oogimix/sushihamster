@@ -55,10 +55,25 @@
       "name": "sushifairy",
       "desc": "El hada del sushi.<br>El arroz esponjoso también hace que el corazón de todos se sienta suave.<br>Su encanto es la cola de wasabi."
     },
+    "recordolphin": {
+      "alt": "recordolphin",
+      "name": "recordolphin",
+      "desc": "Un delfín de un rosa fresco.<br>Busca canciones de forma tan amplia y profunda como el mar.<br>Su encanto es el flotador de disco."
+    },
+    "kakapop": {
+      "alt": "kakapop",
+      "name": "kakapop",
+      "desc": "Un kakapo amarillo cálido.<br>Sueña tranquilamente con volar por el cielo algún día.<br>Su encanto es la bolsita de casete."
+    },
+    "vibestar": {
+      "alt": "vibestar",
+      "name": "vibestar",
+      "desc": "Una estrellita verde que brilla en la oscuridad.<br>Vino del espacio para subir las vibras.<br>Su encanto son los patines."
+    },
     "friends": {
       "alt": "oogimix y Linopink",
       "name": "oogimix ＆ Linopink",
-      "desc": "Amigos en otra dimensión distinta a sushihamster & sushifairy.<br>Conectados por el poder de la música."
+      "desc": "Amigos que viven en una dimensión distinta a la de los sushihamsters.<br>Conectados por el poder de la música."
     }
   },
   "information": {

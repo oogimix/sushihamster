@@ -55,10 +55,25 @@
       "name": "sushifairy",
       "desc": "A fada do sushi.<br>O arroz fofinho deixa o coração de todo mundo fofinho também.<br>O charme é o rabinho de wasabi."
     },
+    "recordolphin": {
+      "alt": "recordolphin",
+      "name": "recordolphin",
+      "desc": "Um golfinho rosa vibrante.<br>Garimpa músicas de forma ampla e profunda como o mar.<br>O charme é a boia em forma de disco."
+    },
+    "kakapop": {
+      "alt": "kakapop",
+      "name": "kakapop",
+      "desc": "Um kakapo amarelo quentinho.<br>Sonha, bem devagarinho, em voar pelo céu um dia.<br>O charme é a pochete de fita cassete."
+    },
+    "vibestar": {
+      "alt": "vibestar",
+      "name": "vibestar",
+      "desc": "Uma estrelinha verde que brilha no escuro.<br>Veio do espaço para subir o astral.<br>O charme são os patins."
+    },
     "friends": {
       "alt": "oogimix e Linopink",
       "name": "oogimix ＆ Linopink",
-      "desc": "Compas que vivem em outra dimensão do sushihamster & sushifairy.<br>Estamos conectados pelo poder da música."
+      "desc": "Amigos que vivem em uma dimensão diferente da dos sushihamsters.<br>Estamos conectados pelo poder da música."
     }
   },
   "information": {

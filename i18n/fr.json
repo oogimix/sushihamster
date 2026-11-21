@@ -55,10 +55,25 @@
       "name": "sushifairy",
       "desc": "La fée du sushi.<br>Son riz moelleux adoucit aussi le cœur de tout le monde.<br>Son charme : la petite queue au wasabi."
     },
+    "recordolphin": {
+      "alt": "recordolphin",
+      "name": "recordolphin",
+      "desc": "Un dauphin rose éclatant.<br>Il fouille la musique aussi largement et profondément que la mer.<br>Son charme : la bouée en forme de disque."
+    },
+    "kakapop": {
+      "alt": "kakapop",
+      "name": "kakapop",
+      "desc": "Un kakapo jaune chaleureux.<br>Il rêve tranquillement de voler dans le ciel un jour.<br>Son charme : la pochette cassette."
+    },
+    "vibestar": {
+      "alt": "vibestar",
+      "name": "vibestar",
+      "desc": "Une étoile verte phosphorescente.<br>Elle est venue de l'espace pour faire monter les vibes.<br>Son charme : les patins à roulettes."
+    },
     "friends": {
       "alt": "oogimix et Linopink",
       "name": "oogimix ＆ Linopink",
-      "desc": "Des amis dans une autre dimension que sushihamster & sushifairy.<br>Reliés par le pouvoir de la musique."
+      "desc": "Des amis venus d'une autre dimension que celle des sushihamsters.<br>Reliés par le pouvoir de la musique."
     }
   },
   "information": {
